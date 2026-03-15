@@ -1,0 +1,20 @@
+{
+  "screens": {
+    "com-android-chrome-org-chromium-chrome-browser-firstrun-firstrunactivity-e3b0c44298fc1c14": {
+      "activity_name": "org.chromium.chrome.browser.firstrun.FirstRunActivity",
+      "anchors": [],
+      "clickable_text": [],
+      "fallback_actions": [],
+      "package_name": "com.android.chrome",
+      "screen_id": "com-android-chrome-org-chromium-chrome-browser-firstrun-firstrunactivity-e3b0c44298fc1c14",
+      "signature": {
+        "activity_name": "org.chromium.chrome.browser.firstrun.FirstRunActivity",
+        "clickable_text": [],
+        "package_name": "com.android.chrome",
+        "screenshot_sha256": "ba83e6633fafb012",
+        "text_digest": "e3b0c44298fc1c14",
+        "top_visible_text": []
+      }
+    }
+  }
+}

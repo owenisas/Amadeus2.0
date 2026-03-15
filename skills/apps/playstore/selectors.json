@@ -1,0 +1,171 @@
+{
+  "selectors": [
+    {
+      "activity_name": ".AssetBrowserActivity",
+      "anchor_text": [
+        "\u52a0\u5165 Google Play Games\uff0c\u7545\u4eab\u66f4\u4e1d\u6ed1\u7684\u6e38\u620f\u4f53\u9a8c",
+        "\u4ee5\u540e\u518d\u8bf4",
+        "\u52a0\u5165"
+      ],
+      "component_type": "touch_target",
+      "label": "\u4ee5\u540e\u518d\u8bf4",
+      "package_name": "com.android.vending",
+      "reason": "Dismiss the Google Play Games promo before continuing into Play Store search or install flows.",
+      "screen_id": "playstore-promo",
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.42685185185185187,
+        "x": 0.058333333333333334,
+        "y": 0.9083333333333333
+      }
+    },
+    {
+      "activity_name": ".AssetBrowserActivity",
+      "anchor_text": [
+        "2048 game",
+        "Number Charm: 2048 Games",
+        "2048\u65b9\u5757\u6d88\u9664\u6570\u5b57\u6e38\u620f - M2 Blocks"
+      ],
+      "component_type": "touch_target",
+      "label": "Number Charm: 2048 Games\nHDuo Fun Games\n\u76ca\u667a\n\u903b\u8f91\u89e3\u8c1c\n\u4f11\u95f2\n\u661f\u7ea7\uff1a4.3\n\u4e0b\u8f7d\u91cf\u8d85\u8fc7 1,000\u4e07\u6b21",
+      "package_name": "com.android.vending",
+      "reason": "Open the top matching result row for the requested 2048 game query.",
+      "screen_id": "playstore-search-results-2048",
+      "target_box": {
+        "height": 0.06875,
+        "width": 0.7666666666666667,
+        "x": 0.058333333333333334,
+        "y": 0.22458333333333333
+      }
+    },
+    {
+      "activity_name": ".AssetBrowserActivity",
+      "anchor_text": [
+        "Number Charm: 2048 Games",
+        "\u5b89\u88c5",
+        "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5"
+      ],
+      "component_type": "touch_target",
+      "label": "\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+      "package_name": "com.android.vending",
+      "reason": "Start a free install from the Play Store detail page.",
+      "screen_id": "playstore-detail-number-charm",
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.8824074074074074,
+        "x": 0.05925925925925926,
+        "y": 0.3120833333333333
+      }
+    },
+    {
+      "activity_name": ".AssetBrowserActivity",
+      "anchor_text": [
+        "Number Charm: 2048 Games",
+        "\u7b49\u5f85\u4e2d...",
+        "\u53d6\u6d88"
+      ],
+      "component_type": "touch_target",
+      "label": "\u53d6\u6d88",
+      "package_name": "com.android.vending",
+      "reason": "Install is in progress; this confirms the correct queued-install screen.",
+      "screen_id": "playstore-install-progress-number-charm",
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.14444444444444443,
+        "x": 0.7972222222222223,
+        "y": 0.11083333333333334
+      }
+    },
+    {
+      "activity_name": ".AssetBrowserActivity",
+      "anchor_text": [
+        "Number Charm: 2048 Games",
+        "\u5378\u8f7d",
+        "\u5f00\u59cb\u6e38\u620f"
+      ],
+      "component_type": "touch_target",
+      "label": "\u5f00\u59cb\u6e38\u620f",
+      "package_name": "com.android.vending",
+      "reason": "Installed-state action indicating the app is ready to launch.",
+      "screen_id": "playstore-installed-number-charm",
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.42685185185185187,
+        "x": 0.5148148148148148,
+        "y": 0.15666666666666668
+      }
+    },
+    {
+      "activity_name": ".AssetBrowserActivity",
+      "anchor_text": [
+        "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a",
+        "\u5b89\u88c5",
+        "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+        "\u5305\u542b\u5185\u8d2d\u5546\u54c1",
+        "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+        "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237"
+      ],
+      "component_type": "search_action",
+      "label": "\u5728 Google Play \u4e2d\u641c\u7d22",
+      "package_name": "com.android.vending",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-android-vending-assetbrowseractivity-50c9490abe653b5d",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.11666666666666667,
+        "x": 0.7574074074074074,
+        "y": 0.030833333333333334
+      }
+    },
+    {
+      "activity_name": ".AssetBrowserActivity",
+      "anchor_text": [
+        "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a",
+        "\u5b89\u88c5",
+        "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+        "\u5305\u542b\u5185\u8d2d\u5546\u54c1",
+        "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+        "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237"
+      ],
+      "component_type": "search_action",
+      "label": "\u8bed\u97f3\u641c\u7d22",
+      "package_name": "com.android.vending",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-android-vending-assetbrowseractivity-50c9490abe653b5d",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.11666666666666667,
+        "x": 0.8740740740740741,
+        "y": 0.030833333333333334
+      }
+    },
+    {
+      "activity_name": ".AssetBrowserActivity",
+      "anchor_text": [
+        "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a",
+        "\u5b89\u88c5",
+        "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+        "\u5305\u542b\u5185\u8d2d\u5546\u54c1",
+        "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+        "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237"
+      ],
+      "component_type": "search_action",
+      "label": "\u641c\u7d22",
+      "package_name": "com.android.vending",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-android-vending-assetbrowseractivity-50c9490abe653b5d",
+      "search_related": true,
+      "target_box": {
+        "height": 0.07,
+        "width": 0.25,
+        "x": 0.5,
+        "y": 0.90375
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "selectors": [
+    {
+      "activity_name": "",
+      "anchor_text": [
+        "Your Orders",
+        "Track package"
+      ],
+      "label": "Your Orders",
+      "package_name": "com.amazon.mShop.android.shopping",
+      "reason": "Bootstrap selector for order status flows.",
+      "screen_id": "amazon-bootstrap-home",
+      "target_box": {
+        "height": 0.1,
+        "width": 0.32,
+        "x": 0.34,
+        "y": 0.24
+      }
+    },
+    {
+      "activity_name": "",
+      "anchor_text": [
+        "Track package"
+      ],
+      "label": "Track package",
+      "package_name": "com.amazon.mShop.android.shopping",
+      "reason": "Bootstrap selector for direct tracking flows.",
+      "screen_id": "amazon-bootstrap-home",
+      "target_box": {
+        "height": 0.09,
+        "width": 0.34,
+        "x": 0.33,
+        "y": 0.42
+      }
+    }
+  ]
+}

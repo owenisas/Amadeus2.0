@@ -1,0 +1,21 @@
+{
+  "selectors": [
+    {
+      "label": "搜索邮件",
+      "packageName": "com.google.android.gm",
+      "screenId": "gmail-inbox-search",
+      "reason": "Observed dynamic component from the Gmail inbox hierarchy.",
+      "anchorText": ["搜索邮件", "主要", "关闭"],
+      "resourceId": "com.google.android.gm:id/open_search",
+      "className": "android.widget.EditText",
+      "componentType": "text_input",
+      "searchRelated": true,
+      "targetBox": {
+        "x": 0.03888889,
+        "y": 0.035,
+        "width": 0.9222222,
+        "height": 0.06125
+      }
+    }
+  ]
+}

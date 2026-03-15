@@ -1,0 +1,31 @@
+{
+  "screens": {
+    "amazon-bootstrap-home": {
+      "activity_name": "",
+      "anchors": [
+        "Your Orders",
+        "Track package",
+        "Account"
+      ],
+      "clickable_text": [
+        "Your Orders",
+        "Track package"
+      ],
+      "fallback_actions": [
+        "tap"
+      ],
+      "package_name": "com.amazon.mShop.android.shopping",
+      "screen_id": "amazon-bootstrap-home",
+      "signature": {
+        "activity_name": "",
+        "package_name": "com.amazon.mShop.android.shopping",
+        "text_digest": "bootstrap",
+        "top_visible_text": [
+          "Your Orders",
+          "Track package",
+          "Account"
+        ]
+      }
+    }
+  }
+}

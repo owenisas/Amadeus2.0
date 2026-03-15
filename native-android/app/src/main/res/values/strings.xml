@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Native Agent</string>
+    <string name="accessibility_service_label">Native Agent Control</string>
+</resources>

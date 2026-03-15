@@ -1,0 +1,114 @@
+{
+  "app": "playstore",
+  "failure_count": 0,
+  "known_install_recipe": {
+    "detail_screen_id": "playstore-detail-number-charm",
+    "install_progress_screen_id": "playstore-install-progress-number-charm",
+    "installed_screen_id": "playstore-installed-number-charm",
+    "interstitial_screen_id": "playstore-promo",
+    "search_results_screen_id": "playstore-search-results-2048",
+    "validated_with": "Number Charm: 2048 Games"
+  },
+  "last_detected_inputs": [
+    {
+      "class_name": "android.view.View",
+      "clickable": true,
+      "component_type": "search_action",
+      "enabled": true,
+      "focused": false,
+      "label": "\u5728 Google Play \u4e2d\u641c\u7d22",
+      "package_name": "com.android.vending",
+      "resource_id": "",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.11666666666666667,
+        "x": 0.7574074074074074,
+        "y": 0.030833333333333334
+      }
+    },
+    {
+      "class_name": "android.view.View",
+      "clickable": true,
+      "component_type": "search_action",
+      "enabled": true,
+      "focused": false,
+      "label": "\u8bed\u97f3\u641c\u7d22",
+      "package_name": "com.android.vending",
+      "resource_id": "",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.11666666666666667,
+        "x": 0.8740740740740741,
+        "y": 0.030833333333333334
+      }
+    },
+    {
+      "class_name": "android.view.View",
+      "clickable": true,
+      "component_type": "search_action",
+      "enabled": true,
+      "focused": false,
+      "label": "\u641c\u7d22",
+      "package_name": "com.android.vending",
+      "resource_id": "",
+      "search_related": true,
+      "target_box": {
+        "height": 0.07,
+        "width": 0.25,
+        "x": 0.5,
+        "y": 0.90375
+      }
+    }
+  ],
+  "last_screen_signature": {
+    "activity_name": ".AssetBrowserActivity",
+    "clickable_text": [
+      "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a | \u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+      "\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+      "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+      "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+      "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237",
+      "\u7f16\u8f91\u7cbe\u9009",
+      "\u6709\u65b0\u7248\u672c | \u51c6\u5907\u597d\u8fce\u63a5\u76db\u5927\u7684\u6c7d\u6c34\u51b2\u523a\u4e86\u5417\uff1f | \u67e5\u770b",
+      "\u67e5\u770b",
+      "\u6709\u65b0\u7248\u672c | \u6b22\u8fce\u6765\u5230\u7f57\u9a6c\uff01",
+      "\u66f4\u591a\u9009\u9879"
+    ],
+    "package_name": "com.android.vending",
+    "screenshot_sha256": "044ea16ea51961d0",
+    "text_digest": "50c9490abe653b5d",
+    "top_visible_text": [
+      "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a",
+      "\u5b89\u88c5",
+      "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+      "\u5305\u542b\u5185\u8d2d\u5546\u54c1",
+      "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+      "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237",
+      "\u7f16\u8f91\u7cbe\u9009",
+      "\u6709\u65b0\u7248\u672c",
+      "\u51c6\u5907\u597d\u8fce\u63a5\u76db\u5927\u7684\u6c7d\u6c34\u51b2\u523a\u4e86\u5417\uff1f",
+      "\u67e5\u770b"
+    ]
+  },
+  "last_successful_screen": "com-android-vending-assetbrowseractivity-50c9490abe653b5d",
+  "last_verified_install": {
+    "app_name": "Number Charm: 2048 Games",
+    "final_action_label": "\u5f00\u59cb\u6e38\u620f",
+    "status": "installed"
+  },
+  "last_working_action_chain": [
+    {
+      "action": "stop",
+      "activity_name": ".AssetBrowserActivity",
+      "allowed": true,
+      "package_name": "com.android.vending",
+      "reason": "Stop actions are always allowed.",
+      "step": 1
+    }
+  ],
+  "reason": "The Play Store app is installed and ready to open.",
+  "screen_transition_confidence": 1.0,
+  "status": "completed"
+}

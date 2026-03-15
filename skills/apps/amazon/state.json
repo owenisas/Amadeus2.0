@@ -1,0 +1,10 @@
+{
+  "app": "amazon",
+  "failure_count": 0,
+  "last_known_order_status_page_signature": null,
+  "last_successful_screen": null,
+  "last_working_action_chain": [],
+  "reason": "App is not installed on the emulator.",
+  "screen_transition_confidence": 1.0,
+  "status": "error"
+}

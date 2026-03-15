@@ -1,0 +1,54 @@
+{
+  "screens": {
+    "com-google-android-deskclock-com-android-deskclock-deskclock-2824f0e112380704": {
+      "activity_name": "com.android.deskclock.DeskClock",
+      "anchors": [
+        "Clock",
+        "More options",
+        "12:46\u200aAM",
+        "Sun, Mar 15",
+        "Add city",
+        "Alarm",
+        "Timer",
+        "Stopwatch",
+        "Bedtime"
+      ],
+      "clickable_text": [
+        "More options",
+        "Add city",
+        "Alarm",
+        "Timer",
+        "Stopwatch",
+        "Bedtime"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.google.android.deskclock",
+      "screen_id": "com-google-android-deskclock-com-android-deskclock-deskclock-2824f0e112380704",
+      "signature": {
+        "activity_name": "com.android.deskclock.DeskClock",
+        "clickable_text": [
+          "More options",
+          "Add city",
+          "Alarm",
+          "Timer",
+          "Stopwatch",
+          "Bedtime"
+        ],
+        "package_name": "com.google.android.deskclock",
+        "screenshot_sha256": "1a8e319a25b2a4ea",
+        "text_digest": "2824f0e112380704",
+        "top_visible_text": [
+          "Clock",
+          "More options",
+          "12:46\u200aAM",
+          "Sun, Mar 15",
+          "Add city",
+          "Alarm",
+          "Timer",
+          "Stopwatch",
+          "Bedtime"
+        ]
+      }
+    }
+  }
+}

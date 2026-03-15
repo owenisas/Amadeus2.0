@@ -1,0 +1,29 @@
+Metadata-Version: 2.4
+Name: agent-runner
+Version: 0.1.0
+Summary: Vision-first Android automation framework for app-specific agent workflows.
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: Appium-Python-Client>=4.0.0
+Requires-Dist: selenium>=4.24.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+
+# Agent Runner
+
+Vision-first Android automation framework for emulator-driven app workflows.
+
+## Quick start
+
+1. Export a Gemini key:
+   `export GEMINI_API_KEY=...`
+2. Start Appium:
+   `appium`
+3. Run a workflow:
+   `python -m agent_runner run --app amazon --goal "check delivery status for my latest order"`
+
+## Notes
+
+- The framework uses Appium/UIAutomator2 for execution and Gemini for decisioning when a key is present.
+- If `GEMINI_API_KEY` is not set, the runtime falls back to conservative local heuristics for development and testability.
+- Amazon login is treated as a manual prerequisite.

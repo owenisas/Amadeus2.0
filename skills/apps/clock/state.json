@@ -1,0 +1,43 @@
+{
+  "app": "clock",
+  "failure_count": 0,
+  "last_screen_signature": {
+    "activity_name": "com.android.deskclock.DeskClock",
+    "clickable_text": [
+      "More options",
+      "Add city",
+      "Alarm",
+      "Timer",
+      "Stopwatch",
+      "Bedtime"
+    ],
+    "package_name": "com.google.android.deskclock",
+    "screenshot_sha256": "1a8e319a25b2a4ea",
+    "text_digest": "2824f0e112380704",
+    "top_visible_text": [
+      "Clock",
+      "More options",
+      "12:46\u200aAM",
+      "Sun, Mar 15",
+      "Add city",
+      "Alarm",
+      "Timer",
+      "Stopwatch",
+      "Bedtime"
+    ]
+  },
+  "last_successful_screen": "com-google-android-deskclock-com-android-deskclock-deskclock-2824f0e112380704",
+  "last_working_action_chain": [
+    {
+      "action": "stop",
+      "activity_name": "com.android.deskclock.DeskClock",
+      "allowed": true,
+      "package_name": "com.google.android.deskclock",
+      "reason": "Stop actions are always allowed.",
+      "step": 1
+    }
+  ],
+  "reason": "The goal was to open the clock app and stop when it is visible. The current screen shows the Clock app is open, so the goal is complete.",
+  "screen_transition_confidence": 1.0,
+  "status": "completed"
+}

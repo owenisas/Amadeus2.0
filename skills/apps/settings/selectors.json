@@ -1,0 +1,88 @@
+{
+  "selectors": [
+    {
+      "activity_name": ".Settings",
+      "anchor_text": [
+        "\u641c\u7d22\u8bbe\u7f6e",
+        "Google",
+        "\u670d\u52a1\u548c\u504f\u597d\u8bbe\u7f6e",
+        "\u7f51\u7edc\u548c\u4e92\u8054\u7f51",
+        "\u79fb\u52a8\u7f51\u7edc\u3001WLAN\u3001\u70ed\u70b9",
+        "\u5df2\u8fde\u63a5\u7684\u8bbe\u5907"
+      ],
+      "label": "\u7f51\u7edc\u548c\u4e92\u8054\u7f51 | \u79fb\u52a8\u7f51\u7edc\u3001WLAN\u3001\u70ed\u70b9",
+      "package_name": "com.android.settings",
+      "reason": "Heuristic found a network settings entry.",
+      "screen_id": "com-android-settings-settings-0364ef7b678a931a",
+      "target_box": {
+        "height": 0.1,
+        "width": 0.2,
+        "x": 0.4,
+        "y": 0.2
+      }
+    },
+    {
+      "activity_name": ".SubSettings",
+      "anchor_text": [
+        "\u7f51\u7edc\u548c\u4e92\u8054\u7f51",
+        "\u8fd4\u56de",
+        "\u4e92\u8054\u7f51",
+        "AndroidWifi",
+        "SIM \u5361",
+        "T-Mobile"
+      ],
+      "label": "\u4e92\u8054\u7f51 | AndroidWifi",
+      "package_name": "com.android.settings",
+      "reason": "Heuristic found a network settings entry.",
+      "screen_id": "com-android-settings-subsettings-0cbb59e64bda51ba",
+      "target_box": {
+        "height": 0.1,
+        "width": 0.2,
+        "x": 0.4,
+        "y": 0.2
+      }
+    },
+    {
+      "activity_name": ".SubSettings",
+      "anchor_text": [
+        "\u4e92\u8054\u7f51",
+        "\u8fd4\u56de",
+        "\u4fee\u590d\u8fde\u63a5",
+        "0.0",
+        "T-Mobile",
+        "5G"
+      ],
+      "label": "AndroidWifi,\u5df2\u8fde\u63a5,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+      "package_name": "com.android.settings",
+      "reason": "Heuristic found a network settings entry.",
+      "screen_id": "com-android-settings-subsettings-816ebb1d5075eab8",
+      "target_box": {
+        "height": 0.1,
+        "width": 0.2,
+        "x": 0.4,
+        "y": 0.2
+      }
+    },
+    {
+      "activity_name": ".Settings",
+      "anchor_text": [
+        "Profile picture, double tap to open Google Account",
+        "Settings",
+        "Search settings",
+        "Network & internet",
+        "Mobile, Wi\u2011Fi, hotspot",
+        "Connected devices"
+      ],
+      "label": "Network & internet | Mobile, Wi\u2011Fi, hotspot",
+      "package_name": "com.android.settings",
+      "reason": "Clicking 'Network & internet' will open the network settings page, which is the goal.",
+      "screen_id": "com-android-settings-settings-4bb4d635aa4147bc",
+      "target_box": {
+        "height": 0.08,
+        "width": 0.8,
+        "x": 0.5,
+        "y": 0.34
+      }
+    }
+  ]
+}

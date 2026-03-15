@@ -1,0 +1,687 @@
+{
+  "screens": {
+    "com-android-vending-assetbrowseractivity-50c9490abe653b5d": {
+      "activity_name": ".AssetBrowserActivity",
+      "anchors": [
+        "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a",
+        "\u5b89\u88c5",
+        "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+        "\u5305\u542b\u5185\u8d2d\u5546\u54c1",
+        "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+        "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237",
+        "\u7f16\u8f91\u7cbe\u9009",
+        "\u6709\u65b0\u7248\u672c",
+        "\u51c6\u5907\u597d\u8fce\u63a5\u76db\u5927\u7684\u6c7d\u6c34\u51b2\u523a\u4e86\u5417\uff1f",
+        "\u67e5\u770b",
+        "\u6b22\u8fce\u6765\u5230\u7f57\u9a6c\uff01",
+        "\u5e2e\u52a9Jake\u3001Tricky\u548cFresh\u9003\u51fa\u574f\u8b66\u5bdf\u548c\u4ed6\u7684\u5927\u72d7\u7684\u8ffd\u8d76\uff01"
+      ],
+      "clickable_text": [
+        "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a | \u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+        "\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+        "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+        "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+        "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237",
+        "\u7f16\u8f91\u7cbe\u9009",
+        "\u6709\u65b0\u7248\u672c | \u51c6\u5907\u597d\u8fce\u63a5\u76db\u5927\u7684\u6c7d\u6c34\u51b2\u523a\u4e86\u5417\uff1f | \u67e5\u770b",
+        "\u67e5\u770b",
+        "\u6709\u65b0\u7248\u672c | \u6b22\u8fce\u6765\u5230\u7f57\u9a6c\uff01",
+        "\u66f4\u591a\u9009\u9879",
+        "\u767b\u5c71\u8d5b\u8f662 - Hill Climb Racing 2\n\u661f\u7ea7\uff1a4.5",
+        "Temple Run 2: Endless Escape\n\u661f\u7ea7\uff1a4.1"
+      ],
+      "components": [
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a | \u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.39125,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.08875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.2518518518518518,
+            "x": 0.6898148148148148,
+            "y": 0.10666666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.11666666666666667,
+            "x": 0.825,
+            "y": 0.10666666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.07,
+            "width": 0.2351851851851852,
+            "x": 0.058333333333333334,
+            "y": 0.18791666666666668
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.07,
+            "width": 0.3416666666666667,
+            "x": 0.40370370370370373,
+            "y": 0.18791666666666668
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u7f16\u8f91\u7cbe\u9009",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.07,
+            "width": 0.14444444444444443,
+            "x": 0.8555555555555555,
+            "y": 0.18791666666666668
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u6709\u65b0\u7248\u672c | \u51c6\u5907\u597d\u8fce\u63a5\u76db\u5927\u7684\u6c7d\u6c34\u51b2\u523a\u4e86\u5417\uff1f | \u67e5\u770b",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.17958333333333334,
+            "width": 0.7092592592592593,
+            "x": 0.058333333333333334,
+            "y": 0.26125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u67e5\u770b",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.14444444444444443,
+            "x": 0.5935185185185186,
+            "y": 0.37916666666666665
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u6709\u65b0\u7248\u672c | \u6b22\u8fce\u6765\u5230\u7f57\u9a6c\uff01",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.17958333333333334,
+            "width": 0.20277777777777778,
+            "x": 0.7972222222222223,
+            "y": 0.26125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u66f4\u591a\u9009\u9879",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.11666666666666667,
+            "x": 0.8444444444444444,
+            "y": 0.4945833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u767b\u5c71\u8d5b\u8f662 - Hill Climb Racing 2\n\u661f\u7ea7\uff1a4.5",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.19791666666666666,
+            "width": 0.3037037037037037,
+            "x": 0.04351851851851852,
+            "y": 0.5525
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Temple Run 2: Endless Escape\n\u661f\u7ea7\uff1a4.1",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.19791666666666666,
+            "width": 0.3037037037037037,
+            "x": 0.3472222222222222,
+            "y": 0.5525
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Mob Control\n\u661f\u7ea7\uff1a4.2",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.19791666666666666,
+            "width": 0.3037037037037037,
+            "x": 0.6509259259259259,
+            "y": 0.5525
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Pocket Champs\uff1a3D\u7ade\u901f\u6e38\u620f\n\u661f\u7ea7\uff1a4.5",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.19791666666666666,
+            "width": 0.04537037037037037,
+            "x": 0.9546296296296296,
+            "y": 0.5525
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Candy Crush Soda Saga\nKing\n\u76ca\u667a\n\u4e09\u8fde\u6d88\u6e38\u620f\n\u4f11\u95f2\n\u661f\u7ea7\uff1a4.6\n\u4e0b\u8f7d\u91cf\u8d85\u8fc7 5\u4ebf\u6b21\n\u7f16\u8f91\u7cbe\u9009 | \u5c55\u5f00\u201cCandy Crush Soda Saga\u201d\u7684\u5185\u5bb9",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.07625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.8275
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u5c55\u5f00\u201cCandy Crush Soda Saga\u201d\u7684\u5185\u5bb9",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.035,
+            "width": 0.06851851851851852,
+            "x": 0.8731481481481481,
+            "y": 0.8520833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u8f6c\u5230\u4e0a\u4e00\u5c42\u7ea7",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.11666666666666667,
+            "x": 0.011111111111111112,
+            "y": 0.030833333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "subway surfers",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06125,
+            "width": 0.6092592592592593,
+            "x": 0.13703703703703704,
+            "y": 0.02625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "search_action",
+          "enabled": true,
+          "focused": false,
+          "label": "\u5728 Google Play \u4e2d\u641c\u7d22",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": true,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.11666666666666667,
+            "x": 0.7574074074074074,
+            "y": 0.030833333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "search_action",
+          "enabled": true,
+          "focused": false,
+          "label": "\u8bed\u97f3\u641c\u7d22",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": true,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.11666666666666667,
+            "x": 0.8740740740740741,
+            "y": 0.030833333333333334
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.android.vending",
+      "screen_id": "com-android-vending-assetbrowseractivity-50c9490abe653b5d",
+      "signature": {
+        "activity_name": ".AssetBrowserActivity",
+        "clickable_text": [
+          "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a | \u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+          "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237",
+          "\u7f16\u8f91\u7cbe\u9009",
+          "\u6709\u65b0\u7248\u672c | \u51c6\u5907\u597d\u8fce\u63a5\u76db\u5927\u7684\u6c7d\u6c34\u51b2\u523a\u4e86\u5417\uff1f | \u67e5\u770b",
+          "\u67e5\u770b",
+          "\u6709\u65b0\u7248\u672c | \u6b22\u8fce\u6765\u5230\u7f57\u9a6c\uff01",
+          "\u66f4\u591a\u9009\u9879"
+        ],
+        "package_name": "com.android.vending",
+        "screenshot_sha256": "044ea16ea51961d0",
+        "text_digest": "50c9490abe653b5d",
+        "top_visible_text": [
+          "Subway Surfers\nSYBO Games\n\u5305\u542b\u5e7f\u544a",
+          "\u5b89\u88c5",
+          "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "\u5305\u542b\u5185\u8d2d\u5546\u54c1",
+          "\u6709 3,750\u4e07 \u6761\u8bc4\u4ef7\uff0c\u5e73\u5747\u8bc4\u5206\u4e3a 4.6 \u661f",
+          "\u5185\u5bb9\u5206\u7ea7\u4e3a\u6240\u6709\u5e74\u6ee1 10 \u5468\u5c81\u7684\u7528\u6237",
+          "\u7f16\u8f91\u7cbe\u9009",
+          "\u6709\u65b0\u7248\u672c",
+          "\u51c6\u5907\u597d\u8fce\u63a5\u76db\u5927\u7684\u6c7d\u6c34\u51b2\u523a\u4e86\u5417\uff1f",
+          "\u67e5\u770b"
+        ]
+      }
+    },
+    "playstore-detail-number-charm": {
+      "activity_name": ".AssetBrowserActivity",
+      "anchors": [
+        "Number Charm: 2048 Games",
+        "HDuo Fun Games",
+        "\u5b89\u88c5",
+        "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5"
+      ],
+      "clickable_text": [
+        "\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+        "HDuo Fun Games"
+      ],
+      "components": [
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.8824074074074074,
+            "x": 0.05925925925925926,
+            "y": 0.3120833333333333
+          }
+        }
+      ],
+      "fallback_actions": [
+        "tap:\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5"
+      ],
+      "package_name": "com.android.vending",
+      "screen_id": "playstore-detail-number-charm",
+      "signature": {
+        "activity_name": ".AssetBrowserActivity",
+        "clickable_text": [
+          "\u5b89\u88c5 | \u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5",
+          "HDuo Fun Games"
+        ],
+        "package_name": "com.android.vending",
+        "screenshot_sha256": "detail-number-charm",
+        "text_digest": "detail-number-charm",
+        "top_visible_text": [
+          "Number Charm: 2048 Games",
+          "HDuo Fun Games",
+          "\u5b89\u88c5",
+          "\u5728\u66f4\u591a\u8bbe\u5907\u4e0a\u5b89\u88c5"
+        ]
+      }
+    },
+    "playstore-install-progress-number-charm": {
+      "activity_name": ".AssetBrowserActivity",
+      "anchors": [
+        "Number Charm: 2048 Games",
+        "\u7b49\u5f85\u4e2d...",
+        "\u53d6\u6d88"
+      ],
+      "clickable_text": [
+        "\u53d6\u6d88"
+      ],
+      "components": [
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u53d6\u6d88",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.14444444444444443,
+            "x": 0.7972222222222223,
+            "y": 0.11083333333333334
+          }
+        }
+      ],
+      "fallback_actions": [
+        "wait"
+      ],
+      "package_name": "com.android.vending",
+      "screen_id": "playstore-install-progress-number-charm",
+      "signature": {
+        "activity_name": ".AssetBrowserActivity",
+        "clickable_text": [
+          "\u53d6\u6d88"
+        ],
+        "package_name": "com.android.vending",
+        "screenshot_sha256": "progress-number-charm",
+        "text_digest": "progress-number-charm",
+        "top_visible_text": [
+          "Number Charm: 2048 Games",
+          "\u7b49\u5f85\u4e2d...",
+          "\u53d6\u6d88"
+        ]
+      }
+    },
+    "playstore-installed-number-charm": {
+      "activity_name": ".AssetBrowserActivity",
+      "anchors": [
+        "Number Charm: 2048 Games",
+        "\u5df2\u5b89\u88c5",
+        "\u5378\u8f7d",
+        "\u5f00\u59cb\u6e38\u620f"
+      ],
+      "clickable_text": [
+        "\u5378\u8f7d",
+        "\u5f00\u59cb\u6e38\u620f"
+      ],
+      "components": [
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "\u5f00\u59cb\u6e38\u620f",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.42685185185185187,
+            "x": 0.5148148148148148,
+            "y": 0.15666666666666668
+          }
+        }
+      ],
+      "fallback_actions": [
+        "stop"
+      ],
+      "package_name": "com.android.vending",
+      "screen_id": "playstore-installed-number-charm",
+      "signature": {
+        "activity_name": ".AssetBrowserActivity",
+        "clickable_text": [
+          "\u5378\u8f7d",
+          "\u5f00\u59cb\u6e38\u620f"
+        ],
+        "package_name": "com.android.vending",
+        "screenshot_sha256": "installed-number-charm",
+        "text_digest": "installed-number-charm",
+        "top_visible_text": [
+          "Number Charm: 2048 Games",
+          "\u5df2\u5b89\u88c5",
+          "\u5378\u8f7d",
+          "\u5f00\u59cb\u6e38\u620f"
+        ]
+      }
+    },
+    "playstore-promo": {
+      "activity_name": ".AssetBrowserActivity",
+      "anchors": [
+        "\u52a0\u5165 Google Play Games\uff0c\u7545\u4eab\u66f4\u4e1d\u6ed1\u7684\u6e38\u620f\u4f53\u9a8c",
+        "\u4ee5\u540e\u518d\u8bf4",
+        "\u52a0\u5165"
+      ],
+      "clickable_text": [
+        "\u4ee5\u540e\u518d\u8bf4",
+        "\u52a0\u5165"
+      ],
+      "components": [
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": false,
+          "focused": false,
+          "label": "\u4ee5\u540e\u518d\u8bf4",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.42685185185185187,
+            "x": 0.058333333333333334,
+            "y": 0.9083333333333333
+          }
+        }
+      ],
+      "fallback_actions": [
+        "tap:\u4ee5\u540e\u518d\u8bf4",
+        "back"
+      ],
+      "package_name": "com.android.vending",
+      "screen_id": "playstore-promo",
+      "signature": {
+        "activity_name": ".AssetBrowserActivity",
+        "clickable_text": [
+          "\u4ee5\u540e\u518d\u8bf4",
+          "\u52a0\u5165"
+        ],
+        "package_name": "com.android.vending",
+        "screenshot_sha256": "promo",
+        "text_digest": "2ee4477057a42550",
+        "top_visible_text": [
+          "\u52a0\u5165 Google Play Games\uff0c\u7545\u4eab\u66f4\u4e1d\u6ed1\u7684\u6e38\u620f\u4f53\u9a8c",
+          "\u4ee5\u540e\u518d\u8bf4",
+          "\u52a0\u5165"
+        ]
+      }
+    },
+    "playstore-search-results-2048": {
+      "activity_name": ".AssetBrowserActivity",
+      "anchors": [
+        "2048 game",
+        "Number Charm: 2048 Games",
+        "2048\u65b9\u5757\u6d88\u9664\u6570\u5b57\u6e38\u620f - M2 Blocks",
+        "2048"
+      ],
+      "clickable_text": [
+        "Number Charm: 2048 Games\nHDuo Fun Games\n\u76ca\u667a\n\u903b\u8f91\u89e3\u8c1c\n\u4f11\u95f2\n\u661f\u7ea7\uff1a4.3\n\u4e0b\u8f7d\u91cf\u8d85\u8fc7 1,000\u4e07\u6b21",
+        "2048\u65b9\u5757\u6d88\u9664\u6570\u5b57\u6e38\u620f - M2 Blocks\nGuru Puzzle Game\n\u76ca\u667a\n\u5408\u6210\u6d88\u9664\u7c7b\u6e38\u620f\n\u4f11\u95f2\n\u661f\u7ea7\uff1a4.8\n\u4e0b\u8f7d\u91cf\u8d85\u8fc7 1,000\u4e07\u6b21"
+      ],
+      "components": [
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Number Charm: 2048 Games\nHDuo Fun Games\n\u76ca\u667a\n\u903b\u8f91\u89e3\u8c1c\n\u4f11\u95f2\n\u661f\u7ea7\uff1a4.3\n\u4e0b\u8f7d\u91cf\u8d85\u8fc7 1,000\u4e07\u6b21",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06875,
+            "width": 0.7666666666666667,
+            "x": 0.058333333333333334,
+            "y": 0.22458333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "search_action",
+          "enabled": true,
+          "focused": false,
+          "label": "\u5728 Google Play \u4e2d\u641c\u7d22",
+          "package_name": "com.android.vending",
+          "resource_id": "",
+          "search_related": true,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.11666666666666667,
+            "x": 0.7574074074074074,
+            "y": 0.030833333333333334
+          }
+        }
+      ],
+      "fallback_actions": [
+        "tap:first_matching_result"
+      ],
+      "package_name": "com.android.vending",
+      "screen_id": "playstore-search-results-2048",
+      "signature": {
+        "activity_name": ".AssetBrowserActivity",
+        "clickable_text": [
+          "Number Charm: 2048 Games\nHDuo Fun Games\n\u76ca\u667a\n\u903b\u8f91\u89e3\u8c1c\n\u4f11\u95f2\n\u661f\u7ea7\uff1a4.3\n\u4e0b\u8f7d\u91cf\u8d85\u8fc7 1,000\u4e07\u6b21",
+          "2048\u65b9\u5757\u6d88\u9664\u6570\u5b57\u6e38\u620f - M2 Blocks\nGuru Puzzle Game\n\u76ca\u667a\n\u5408\u6210\u6d88\u9664\u7c7b\u6e38\u620f\n\u4f11\u95f2\n\u661f\u7ea7\uff1a4.8\n\u4e0b\u8f7d\u91cf\u8d85\u8fc7 1,000\u4e07\u6b21"
+        ],
+        "package_name": "com.android.vending",
+        "screenshot_sha256": "search-2048",
+        "text_digest": "search-2048",
+        "top_visible_text": [
+          "2048 game",
+          "Number Charm: 2048 Games",
+          "2048\u65b9\u5757\u6d88\u9664\u6570\u5b57\u6e38\u620f - M2 Blocks",
+          "2048"
+        ]
+      }
+    }
+  }
+}

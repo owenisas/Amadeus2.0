@@ -1,0 +1,390 @@
+{
+  "screens": {
+    "com-android-settings-settings-0364ef7b678a931a": {
+      "activity_name": ".Settings",
+      "anchors": [
+        "\u641c\u7d22\u8bbe\u7f6e",
+        "Google",
+        "\u670d\u52a1\u548c\u504f\u597d\u8bbe\u7f6e",
+        "\u7f51\u7edc\u548c\u4e92\u8054\u7f51",
+        "\u79fb\u52a8\u7f51\u7edc\u3001WLAN\u3001\u70ed\u70b9",
+        "\u5df2\u8fde\u63a5\u7684\u8bbe\u5907",
+        "\u84dd\u7259\u3001\u914d\u5bf9",
+        "\u5e94\u7528",
+        "Google \u52a9\u7406\u3001\u6700\u8fd1\u4f7f\u7528\u7684\u5e94\u7528\u3001\u9ed8\u8ba4\u5e94\u7528",
+        "\u901a\u77e5",
+        "\u5386\u53f2\u901a\u77e5\u3001\u5bf9\u8bdd",
+        "\u63d0\u793a\u97f3\u548c\u632f\u52a8"
+      ],
+      "clickable_text": [
+        "\u641c\u7d22\u8bbe\u7f6e",
+        "Google | \u670d\u52a1\u548c\u504f\u597d\u8bbe\u7f6e",
+        "\u7f51\u7edc\u548c\u4e92\u8054\u7f51 | \u79fb\u52a8\u7f51\u7edc\u3001WLAN\u3001\u70ed\u70b9",
+        "\u5df2\u8fde\u63a5\u7684\u8bbe\u5907 | \u84dd\u7259\u3001\u914d\u5bf9",
+        "\u5e94\u7528 | Google \u52a9\u7406\u3001\u6700\u8fd1\u4f7f\u7528\u7684\u5e94\u7528\u3001\u9ed8\u8ba4\u5e94\u7528",
+        "\u901a\u77e5 | \u5386\u53f2\u901a\u77e5\u3001\u5bf9\u8bdd",
+        "\u63d0\u793a\u97f3\u548c\u632f\u52a8 | \u97f3\u91cf\u548c\u89e6\u611f\u53cd\u9988",
+        "\u6a21\u5f0f | \u52ff\u6270\u3001\u7761\u7720\u3001Driving",
+        "\u663e\u793a\u548c\u89e6\u63a7 | \u6df1\u8272\u4e3b\u9898\u3001\u5b57\u4f53\u5927\u5c0f\u3001\u89e6\u63a7",
+        "\u58c1\u7eb8\u4e0e\u98ce\u683c | \u989c\u8272\u3001\u56fe\u6807\u5339\u914d\u4e3b\u9898\u3001\u5e94\u7528\u7f51\u683c"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.android.settings",
+      "screen_id": "com-android-settings-settings-0364ef7b678a931a",
+      "signature": {
+        "activity_name": ".Settings",
+        "clickable_text": [
+          "\u641c\u7d22\u8bbe\u7f6e",
+          "Google | \u670d\u52a1\u548c\u504f\u597d\u8bbe\u7f6e",
+          "\u7f51\u7edc\u548c\u4e92\u8054\u7f51 | \u79fb\u52a8\u7f51\u7edc\u3001WLAN\u3001\u70ed\u70b9",
+          "\u5df2\u8fde\u63a5\u7684\u8bbe\u5907 | \u84dd\u7259\u3001\u914d\u5bf9",
+          "\u5e94\u7528 | Google \u52a9\u7406\u3001\u6700\u8fd1\u4f7f\u7528\u7684\u5e94\u7528\u3001\u9ed8\u8ba4\u5e94\u7528",
+          "\u901a\u77e5 | \u5386\u53f2\u901a\u77e5\u3001\u5bf9\u8bdd",
+          "\u63d0\u793a\u97f3\u548c\u632f\u52a8 | \u97f3\u91cf\u548c\u89e6\u611f\u53cd\u9988",
+          "\u6a21\u5f0f | \u52ff\u6270\u3001\u7761\u7720\u3001Driving",
+          "\u663e\u793a\u548c\u89e6\u63a7 | \u6df1\u8272\u4e3b\u9898\u3001\u5b57\u4f53\u5927\u5c0f\u3001\u89e6\u63a7",
+          "\u58c1\u7eb8\u4e0e\u98ce\u683c | \u989c\u8272\u3001\u56fe\u6807\u5339\u914d\u4e3b\u9898\u3001\u5e94\u7528\u7f51\u683c"
+        ],
+        "package_name": "com.android.settings",
+        "screenshot_sha256": "1ef890b801729122",
+        "text_digest": "0364ef7b678a931a",
+        "top_visible_text": [
+          "\u641c\u7d22\u8bbe\u7f6e",
+          "Google",
+          "\u670d\u52a1\u548c\u504f\u597d\u8bbe\u7f6e",
+          "\u7f51\u7edc\u548c\u4e92\u8054\u7f51",
+          "\u79fb\u52a8\u7f51\u7edc\u3001WLAN\u3001\u70ed\u70b9",
+          "\u5df2\u8fde\u63a5\u7684\u8bbe\u5907",
+          "\u84dd\u7259\u3001\u914d\u5bf9",
+          "\u5e94\u7528",
+          "Google \u52a9\u7406\u3001\u6700\u8fd1\u4f7f\u7528\u7684\u5e94\u7528\u3001\u9ed8\u8ba4\u5e94\u7528",
+          "\u901a\u77e5"
+        ]
+      }
+    },
+    "com-android-settings-settings-4bb4d635aa4147bc": {
+      "activity_name": ".Settings",
+      "anchors": [
+        "Profile picture, double tap to open Google Account",
+        "Settings",
+        "Search settings",
+        "Network & internet",
+        "Mobile, Wi\u2011Fi, hotspot",
+        "Connected devices",
+        "Bluetooth, pairing",
+        "Apps",
+        "Assistant, recent apps, default apps",
+        "Notifications",
+        "Notification history, conversations",
+        "Battery"
+      ],
+      "clickable_text": [
+        "Profile picture, double tap to open Google Account",
+        "Search settings",
+        "Network & internet | Mobile, Wi\u2011Fi, hotspot",
+        "Connected devices | Bluetooth, pairing",
+        "Apps | Assistant, recent apps, default apps",
+        "Notifications | Notification history, conversations",
+        "Battery | Charged",
+        "Storage | 36% used - 5.11 GB free",
+        "Sound & vibration | Volume, haptics, Do Not Disturb"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.android.settings",
+      "screen_id": "com-android-settings-settings-4bb4d635aa4147bc",
+      "signature": {
+        "activity_name": ".Settings",
+        "clickable_text": [
+          "Profile picture, double tap to open Google Account",
+          "Search settings",
+          "Network & internet | Mobile, Wi\u2011Fi, hotspot",
+          "Connected devices | Bluetooth, pairing",
+          "Apps | Assistant, recent apps, default apps",
+          "Notifications | Notification history, conversations",
+          "Battery | Charged",
+          "Storage | 36% used - 5.11 GB free",
+          "Sound & vibration | Volume, haptics, Do Not Disturb"
+        ],
+        "package_name": "com.android.settings",
+        "screenshot_sha256": "b10e2e9fed745837",
+        "text_digest": "4bb4d635aa4147bc",
+        "top_visible_text": [
+          "Profile picture, double tap to open Google Account",
+          "Settings",
+          "Search settings",
+          "Network & internet",
+          "Mobile, Wi\u2011Fi, hotspot",
+          "Connected devices",
+          "Bluetooth, pairing",
+          "Apps",
+          "Assistant, recent apps, default apps",
+          "Notifications"
+        ]
+      }
+    },
+    "com-android-settings-subsettings-0cbb59e64bda51ba": {
+      "activity_name": ".SubSettings",
+      "anchors": [
+        "\u7f51\u7edc\u548c\u4e92\u8054\u7f51",
+        "\u8fd4\u56de",
+        "\u4e92\u8054\u7f51",
+        "AndroidWifi",
+        "SIM \u5361",
+        "T-Mobile",
+        "\u98de\u884c\u6a21\u5f0f",
+        "\u70ed\u70b9\u548c\u7f51\u7edc\u5171\u4eab",
+        "\u5df2\u5173\u95ed",
+        "\u7701\u6d41\u6a21\u5f0f",
+        "VPN",
+        "\u65e0"
+      ],
+      "clickable_text": [
+        "\u8fd4\u56de",
+        "\u4e92\u8054\u7f51 | AndroidWifi",
+        "SIM \u5361 | T-Mobile",
+        "\u98de\u884c\u6a21\u5f0f",
+        "\u70ed\u70b9\u548c\u7f51\u7edc\u5171\u4eab | \u5df2\u5173\u95ed",
+        "\u7701\u6d41\u6a21\u5f0f | \u5df2\u5173\u95ed",
+        "VPN | \u65e0",
+        "\u4e13\u7528 DNS | \u81ea\u52a8",
+        "\u81ea\u9002\u5e94\u8fde\u63a5 | \u5df2\u5f00\u542f",
+        "\u79fb\u52a8\u7f51\u7edc\u5b89\u5168 | \u7f51\u7edc\u7c7b\u578b\u3001\u52a0\u5bc6\u3001\u901a\u77e5\u63a7\u4ef6"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.android.settings",
+      "screen_id": "com-android-settings-subsettings-0cbb59e64bda51ba",
+      "signature": {
+        "activity_name": ".SubSettings",
+        "clickable_text": [
+          "\u8fd4\u56de",
+          "\u4e92\u8054\u7f51 | AndroidWifi",
+          "SIM \u5361 | T-Mobile",
+          "\u98de\u884c\u6a21\u5f0f",
+          "\u70ed\u70b9\u548c\u7f51\u7edc\u5171\u4eab | \u5df2\u5173\u95ed",
+          "\u7701\u6d41\u6a21\u5f0f | \u5df2\u5173\u95ed",
+          "VPN | \u65e0",
+          "\u4e13\u7528 DNS | \u81ea\u52a8",
+          "\u81ea\u9002\u5e94\u8fde\u63a5 | \u5df2\u5f00\u542f",
+          "\u79fb\u52a8\u7f51\u7edc\u5b89\u5168 | \u7f51\u7edc\u7c7b\u578b\u3001\u52a0\u5bc6\u3001\u901a\u77e5\u63a7\u4ef6"
+        ],
+        "package_name": "com.android.settings",
+        "screenshot_sha256": "4b69454c653606e5",
+        "text_digest": "0cbb59e64bda51ba",
+        "top_visible_text": [
+          "\u7f51\u7edc\u548c\u4e92\u8054\u7f51",
+          "\u8fd4\u56de",
+          "\u4e92\u8054\u7f51",
+          "AndroidWifi",
+          "SIM \u5361",
+          "T-Mobile",
+          "\u98de\u884c\u6a21\u5f0f",
+          "\u70ed\u70b9\u548c\u7f51\u7edc\u5171\u4eab",
+          "\u5df2\u5173\u95ed",
+          "\u7701\u6d41\u6a21\u5f0f"
+        ]
+      }
+    },
+    "com-android-settings-subsettings-7116454e949cd52f": {
+      "activity_name": ".SubSettings",
+      "anchors": [
+        "\u4e92\u8054\u7f51",
+        "\u8fd4\u56de",
+        "\u4fee\u590d\u8fde\u63a5",
+        "0.0",
+        "T-Mobile",
+        "\u5df2\u8fde\u63a5/5G",
+        "\u8bbe\u7f6e",
+        "WLAN",
+        "AndroidWifi,\u5df2\u4fdd\u5b58,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+        "AndroidWifi",
+        "\u5df2\u4fdd\u5b58",
+        "\u6dfb\u52a0\u7f51\u7edc"
+      ],
+      "clickable_text": [
+        "\u8fd4\u56de",
+        "\u4fee\u590d\u8fde\u63a5",
+        "T-Mobile | \u5df2\u8fde\u63a5/5G | \u8bbe\u7f6e",
+        "\u8bbe\u7f6e",
+        "WLAN",
+        "AndroidWifi,\u5df2\u4fdd\u5b58,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+        "\u6dfb\u52a0\u7f51\u7edc",
+        "\u7f51\u7edc\u504f\u597d\u8bbe\u7f6e | \u4e0d\u81ea\u52a8\u91cd\u65b0\u5f00\u542f WLAN",
+        "\u5df2\u4fdd\u5b58\u7684\u7f51\u7edc | 1 \u4e2a\u7f51\u7edc",
+        "\u975e\u8fd0\u8425\u5546\u6d41\u91cf\u6d88\u8017 | 2\u670814\u65e5\u81f33\u670814\u65e5\u671f\u95f4\u5df2\u4f7f\u7528 0 B"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.android.settings",
+      "screen_id": "com-android-settings-subsettings-7116454e949cd52f",
+      "signature": {
+        "activity_name": ".SubSettings",
+        "clickable_text": [
+          "\u8fd4\u56de",
+          "\u4fee\u590d\u8fde\u63a5",
+          "T-Mobile | \u5df2\u8fde\u63a5/5G | \u8bbe\u7f6e",
+          "\u8bbe\u7f6e",
+          "WLAN",
+          "AndroidWifi,\u5df2\u4fdd\u5b58,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+          "\u6dfb\u52a0\u7f51\u7edc",
+          "\u7f51\u7edc\u504f\u597d\u8bbe\u7f6e | \u4e0d\u81ea\u52a8\u91cd\u65b0\u5f00\u542f WLAN",
+          "\u5df2\u4fdd\u5b58\u7684\u7f51\u7edc | 1 \u4e2a\u7f51\u7edc",
+          "\u975e\u8fd0\u8425\u5546\u6d41\u91cf\u6d88\u8017 | 2\u670814\u65e5\u81f33\u670814\u65e5\u671f\u95f4\u5df2\u4f7f\u7528 0 B"
+        ],
+        "package_name": "com.android.settings",
+        "screenshot_sha256": "b7847d714450daf4",
+        "text_digest": "7116454e949cd52f",
+        "top_visible_text": [
+          "\u4e92\u8054\u7f51",
+          "\u8fd4\u56de",
+          "\u4fee\u590d\u8fde\u63a5",
+          "0.0",
+          "T-Mobile",
+          "\u5df2\u8fde\u63a5/5G",
+          "\u8bbe\u7f6e",
+          "WLAN",
+          "AndroidWifi,\u5df2\u4fdd\u5b58,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+          "AndroidWifi"
+        ]
+      }
+    },
+    "com-android-settings-subsettings-816ebb1d5075eab8": {
+      "activity_name": ".SubSettings",
+      "anchors": [
+        "\u4e92\u8054\u7f51",
+        "\u8fd4\u56de",
+        "\u4fee\u590d\u8fde\u63a5",
+        "0.0",
+        "T-Mobile",
+        "5G",
+        "\u8bbe\u7f6e",
+        "WLAN",
+        "AndroidWifi,\u5df2\u8fde\u63a5,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+        "AndroidWifi",
+        "\u5df2\u8fde\u63a5",
+        "\u6b63\u5728\u641c\u7d22\u7f51\u7edc\u2026"
+      ],
+      "clickable_text": [
+        "\u8fd4\u56de",
+        "\u4fee\u590d\u8fde\u63a5",
+        "T-Mobile | 5G | \u8bbe\u7f6e",
+        "\u8bbe\u7f6e",
+        "WLAN",
+        "AndroidWifi,\u5df2\u8fde\u63a5,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+        "\u6dfb\u52a0\u7f51\u7edc",
+        "\u7f51\u7edc\u504f\u597d\u8bbe\u7f6e | \u4e0d\u81ea\u52a8\u91cd\u65b0\u5f00\u542f WLAN",
+        "\u5df2\u4fdd\u5b58\u7684\u7f51\u7edc | 1 \u4e2a\u7f51\u7edc",
+        "\u975e\u8fd0\u8425\u5546\u6d41\u91cf\u6d88\u8017 | 2\u670814\u65e5\u81f33\u670814\u65e5\u671f\u95f4\u5df2\u4f7f\u7528 0 B"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.android.settings",
+      "screen_id": "com-android-settings-subsettings-816ebb1d5075eab8",
+      "signature": {
+        "activity_name": ".SubSettings",
+        "clickable_text": [
+          "\u8fd4\u56de",
+          "\u4fee\u590d\u8fde\u63a5",
+          "T-Mobile | 5G | \u8bbe\u7f6e",
+          "\u8bbe\u7f6e",
+          "WLAN",
+          "AndroidWifi,\u5df2\u8fde\u63a5,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+          "\u6dfb\u52a0\u7f51\u7edc",
+          "\u7f51\u7edc\u504f\u597d\u8bbe\u7f6e | \u4e0d\u81ea\u52a8\u91cd\u65b0\u5f00\u542f WLAN",
+          "\u5df2\u4fdd\u5b58\u7684\u7f51\u7edc | 1 \u4e2a\u7f51\u7edc",
+          "\u975e\u8fd0\u8425\u5546\u6d41\u91cf\u6d88\u8017 | 2\u670814\u65e5\u81f33\u670814\u65e5\u671f\u95f4\u5df2\u4f7f\u7528 0 B"
+        ],
+        "package_name": "com.android.settings",
+        "screenshot_sha256": "0cd593157155c5f4",
+        "text_digest": "816ebb1d5075eab8",
+        "top_visible_text": [
+          "\u4e92\u8054\u7f51",
+          "\u8fd4\u56de",
+          "\u4fee\u590d\u8fde\u63a5",
+          "0.0",
+          "T-Mobile",
+          "5G",
+          "\u8bbe\u7f6e",
+          "WLAN",
+          "AndroidWifi,\u5df2\u8fde\u63a5,WLAN \u4fe1\u53f7\u6ee1\u683c\u3002,\u5f00\u653e\u7f51\u7edc",
+          "AndroidWifi"
+        ]
+      }
+    },
+    "com-android-settings-subsettings-c07fa0ff8a5ccf9f": {
+      "activity_name": ".SubSettings",
+      "anchors": [
+        "Network & internet",
+        "Navigate up",
+        "Internet",
+        "AndroidWifi",
+        "SIMs",
+        "T-Mobile",
+        "Airplane mode",
+        "Hotspot & tethering",
+        "Off",
+        "Data Saver",
+        "VPN",
+        "None"
+      ],
+      "clickable_text": [
+        "Navigate up",
+        "Internet | AndroidWifi",
+        "SIMs | T-Mobile",
+        "Airplane mode",
+        "Hotspot & tethering | Off",
+        "Data Saver | Off",
+        "VPN | None",
+        "Private DNS | Automatic",
+        "Adaptive connectivity | On",
+        "Mobile network security | Network type, encryption, notification controls"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.android.settings",
+      "screen_id": "com-android-settings-subsettings-c07fa0ff8a5ccf9f",
+      "signature": {
+        "activity_name": ".SubSettings",
+        "clickable_text": [
+          "Navigate up",
+          "Internet | AndroidWifi",
+          "SIMs | T-Mobile",
+          "Airplane mode",
+          "Hotspot & tethering | Off",
+          "Data Saver | Off",
+          "VPN | None",
+          "Private DNS | Automatic",
+          "Adaptive connectivity | On",
+          "Mobile network security | Network type, encryption, notification controls"
+        ],
+        "package_name": "com.android.settings",
+        "screenshot_sha256": "034cc02c286be760",
+        "text_digest": "c07fa0ff8a5ccf9f",
+        "top_visible_text": [
+          "Network & internet",
+          "Navigate up",
+          "Internet",
+          "AndroidWifi",
+          "SIMs",
+          "T-Mobile",
+          "Airplane mode",
+          "Hotspot & tethering",
+          "Off",
+          "Data Saver"
+        ]
+      }
+    },
+    "e3b0c44298fc1c14": {
+      "activity_name": "",
+      "anchors": [],
+      "clickable_text": [],
+      "fallback_actions": [],
+      "package_name": "",
+      "screen_id": "e3b0c44298fc1c14",
+      "signature": {
+        "activity_name": "",
+        "clickable_text": [],
+        "package_name": "",
+        "screenshot_sha256": "4972d693ee330d1b",
+        "text_digest": "e3b0c44298fc1c14",
+        "top_visible_text": []
+      }
+    }
+  }
+}

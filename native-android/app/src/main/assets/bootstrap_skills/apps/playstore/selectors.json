@@ -1,0 +1,46 @@
+{
+  "selectors": [
+    {
+      "label": "以后再说",
+      "packageName": "com.android.vending",
+      "screenId": "playstore-promo",
+      "reason": "Dismiss the Google Play Games promo before continuing into Play Store search or install flows.",
+      "anchorText": ["加入 Google Play Games，畅享更丝滑的游戏体验", "以后再说", "加入"],
+      "componentType": "touch_target",
+      "targetBox": {
+        "x": 0.058333334,
+        "y": 0.90833336,
+        "width": 0.42685184,
+        "height": 0.0525
+      }
+    },
+    {
+      "label": "安装 | 在更多设备上安装",
+      "packageName": "com.android.vending",
+      "screenId": "playstore-detail-number-charm",
+      "reason": "Start a free install from the Play Store detail page.",
+      "anchorText": ["Number Charm: 2048 Games", "安装", "在更多设备上安装"],
+      "componentType": "touch_target",
+      "targetBox": {
+        "x": 0.05925926,
+        "y": 0.31208333,
+        "width": 0.8824074,
+        "height": 0.0525
+      }
+    },
+    {
+      "label": "开始游戏",
+      "packageName": "com.android.vending",
+      "screenId": "playstore-installed-number-charm",
+      "reason": "Installed-state action indicating the app is ready to launch.",
+      "anchorText": ["Number Charm: 2048 Games", "卸载", "开始游戏"],
+      "componentType": "touch_target",
+      "targetBox": {
+        "x": 0.5148148,
+        "y": 0.15666667,
+        "width": 0.42685184,
+        "height": 0.0525
+      }
+    }
+  ]
+}

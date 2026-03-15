@@ -1,0 +1,48 @@
+{
+  "app": "settings",
+  "failure_count": 0,
+  "last_screen_signature": {
+    "activity_name": ".SubSettings",
+    "clickable_text": [
+      "Navigate up",
+      "Internet | AndroidWifi",
+      "SIMs | T-Mobile",
+      "Airplane mode",
+      "Hotspot & tethering | Off",
+      "Data Saver | Off",
+      "VPN | None",
+      "Private DNS | Automatic",
+      "Adaptive connectivity | On",
+      "Mobile network security | Network type, encryption, notification controls"
+    ],
+    "package_name": "com.android.settings",
+    "screenshot_sha256": "fd202c3941186602",
+    "text_digest": "c07fa0ff8a5ccf9f",
+    "top_visible_text": [
+      "Network & internet",
+      "Navigate up",
+      "Internet",
+      "AndroidWifi",
+      "SIMs",
+      "T-Mobile",
+      "Airplane mode",
+      "Hotspot & tethering",
+      "Off",
+      "Data Saver"
+    ]
+  },
+  "last_successful_screen": "com-android-settings-subsettings-c07fa0ff8a5ccf9f",
+  "last_working_action_chain": [
+    {
+      "action": "stop",
+      "activity_name": ".SubSettings",
+      "allowed": true,
+      "package_name": "com.android.settings",
+      "reason": "Stop actions are always allowed.",
+      "step": 1
+    }
+  ],
+  "reason": "The goal is to open the network settings page and stop. The current screen is the network settings page, so the goal is achieved.",
+  "screen_transition_confidence": 1.0,
+  "status": "completed"
+}
