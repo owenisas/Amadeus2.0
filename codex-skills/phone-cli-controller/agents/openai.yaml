@@ -1,0 +1,4 @@
+interface:
+  display_name: "Phone CLI Controller"
+  short_description: "Drive Android phones from this repo CLI"
+  default_prompt: "Use $phone-cli-controller to control an Android device from the Amadeus CLI."

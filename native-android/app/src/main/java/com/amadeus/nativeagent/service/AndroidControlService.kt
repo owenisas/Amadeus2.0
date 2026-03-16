@@ -5,6 +5,7 @@ import android.accessibilityservice.GestureDescription
 import android.content.Intent
 import android.graphics.Path
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.amadeus.nativeagent.engine.AccessibilityTreeSerializer
@@ -42,7 +43,7 @@ class AndroidControlService : AccessibilityService() {
         val intent = packageManager.getLaunchIntentForPackage(packageName) ?: return false
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
-        return true
+        return waitForPackage(packageName)
     }
 
     fun captureScreen(runDir: File, screenCaptureService: ScreenCaptureService): CapturedScreen {
@@ -165,6 +166,18 @@ class AndroidControlService : AccessibilityService() {
             findFirstScrollable(root.getChild(index))?.let { return it }
         }
         return null
+    }
+
+    private fun waitForPackage(packageName: String, timeoutMs: Long = 5_000): Boolean {
+        val deadline = SystemClock.uptimeMillis() + timeoutMs
+        while (SystemClock.uptimeMillis() < deadline) {
+            val activePackage = rootInActiveWindow?.packageName?.toString().orEmpty().ifBlank { lastPackageName }
+            if (activePackage == packageName) {
+                return true
+            }
+            SystemClock.sleep(100)
+        }
+        return false
     }
 
     companion object {

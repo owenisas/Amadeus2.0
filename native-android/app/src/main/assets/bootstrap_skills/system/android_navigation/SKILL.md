@@ -12,15 +12,14 @@ description: System-level Android navigation guidance for dialogs, permissions, 
 
 ## Core rules
 
-- Do not grant, deny, dismiss, or confirm system or app popups without explicit user approval unless the current app skill says the popup is low-risk and safe to continue automatically.
-- When a modal dialog, permission prompt, onboarding surface, or account-selection screen appears, stop and ask the user what to do.
-- Prefer the least-invasive interpretation of unknown popups.
+- Auto-dismiss low-risk onboarding cards, one-time promos, and routine permission prompts when that keeps the agent moving toward the goal.
+- Only stop for account-selection, sign-in, payment, purchase, or destructive confirmation surfaces.
+- Prefer continuing through lightweight setup surfaces instead of stalling on them.
 
 ## Approval gating
 
-- Treat Android permission dialogs, notification prompts, account chooser screens, and feature-onboarding cards as approval-required.
-- Summarize the popup using the top visible text and the available action labels.
-- If the user approves a specific action, perform only that action and then recapture the screen.
+- Treat account chooser screens, sign-in prompts, payment surfaces, and destructive confirmations as approval-required.
+- Permission prompts, onboarding cards, and harmless promos can be handled automatically when they do not change account state or spend money.
 
 ## System navigation
 

@@ -29,8 +29,22 @@ class SessionStore {
         state.update { it.copy(providerLabel = providerLabel) }
     }
 
+    fun setProjectionGranted(projectionGranted: Boolean) {
+        state.update { it.copy(projectionGranted = projectionGranted) }
+    }
+
     fun setSkills(skills: List<String>) {
         state.update { it.copy(skills = skills) }
+    }
+
+    fun clearDebugLines() {
+        state.update { it.copy(debugLines = emptyList()) }
+    }
+
+    fun appendDebugLine(line: String) {
+        state.update { snapshot ->
+            snapshot.copy(debugLines = (snapshot.debugLines + line).takeLast(80))
+        }
     }
 
     fun setCurrentRun(run: RunRecord?) {

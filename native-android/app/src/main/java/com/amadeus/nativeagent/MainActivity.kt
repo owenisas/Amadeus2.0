@@ -270,6 +270,18 @@ private fun RunMonitorScreen(snapshot: com.amadeus.nativeagent.model.RuntimeSnap
                 }
             }
         }
+        if (snapshot.debugLines.isNotEmpty()) {
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text("Debug trace", fontWeight = FontWeight.Bold)
+                        snapshot.debugLines.takeLast(20).forEach { line ->
+                            Text(line)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

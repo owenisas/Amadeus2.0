@@ -12,6 +12,7 @@ import com.amadeus.nativeagent.runtime.JsonSupport
 import com.amadeus.nativeagent.runtime.SettingsRepository
 import java.io.File
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
@@ -25,7 +26,12 @@ class VisionEngine(
     private val context: Context,
     private val settingsRepository: SettingsRepository,
 ) {
-    private val client = OkHttpClient()
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .callTimeout(15, TimeUnit.SECONDS)
+        .build()
 
     suspend fun decide(
         goal: String,
@@ -177,17 +183,70 @@ private class HeuristicVisionProvider {
         actionHistory: List<RunActionRecord>,
     ): AgentDecision {
         val text = screen.visibleText.joinToString(" ").lowercase()
-        if (listOf("allow", "deny", "not now", "以后再说", "允许", "不允许").any { it in text }) {
+        val labeledComponents = screen.components.filter { it.label.isNotBlank() }
+        fun findLabel(vararg labels: String) = labeledComponents.firstOrNull { component ->
+            val value = component.label.lowercase()
+            labels.any { it == value }
+        }
+
+        if (listOf("choose an account", "sign in", "password", "verification code").any { it in text }) {
             return AgentDecision(
-                screenClassification = "approval_gate",
+                screenClassification = "account_gate",
                 goalProgress = "blocked",
                 nextAction = "stop",
-                confidence = 1f,
-                reason = "User approval required for the current popup.",
+                confidence = 0.98f,
+                reason = "Account or sign-in surface requires explicit user handling.",
                 riskLevel = "medium",
                 requiresUserApproval = true,
             )
         }
+
+        findLabel("got it", "continue", "skip", "next")?.let { dismissComponent ->
+            return AgentDecision(
+                screenClassification = "onboarding_dismiss",
+                goalProgress = "navigating",
+                nextAction = "tap",
+                targetNodeId = dismissComponent.nodeId,
+                targetBox = dismissComponent.targetBox,
+                confidence = 0.96f,
+                reason = "Dismiss the onboarding surface and continue toward the app content.",
+                riskLevel = "low",
+                targetLabel = dismissComponent.label,
+            )
+        }
+
+        findLabel("allow", "允许", "while using the app", "允许在使用应用期间").let { allowComponent ->
+            if (allowComponent != null && listOf("permission", "notification", "allow").any { it in text }) {
+                return AgentDecision(
+                    screenClassification = "permission_dismiss",
+                    goalProgress = "navigating",
+                    nextAction = "tap",
+                    targetNodeId = allowComponent.nodeId,
+                    targetBox = allowComponent.targetBox,
+                    confidence = 0.9f,
+                    reason = "Allow the low-risk permission prompt so the agent can continue.",
+                    riskLevel = "low",
+                    targetLabel = allowComponent.label,
+                )
+            }
+        }
+
+        findLabel("not now", "以后再说", "skip").let { dismissComponent ->
+            if (dismissComponent != null && listOf("promo", "games", "later", "以后再说", "not now").any { it in text }) {
+                return AgentDecision(
+                    screenClassification = "promo_dismiss",
+                    goalProgress = "navigating",
+                    nextAction = "tap",
+                    targetNodeId = dismissComponent.nodeId,
+                    targetBox = dismissComponent.targetBox,
+                    confidence = 0.9f,
+                    reason = "Dismiss the low-risk promo/interstitial and continue.",
+                    riskLevel = "low",
+                    targetLabel = dismissComponent.label,
+                )
+            }
+        }
+
         if (screen.packageName == "com.google.android.gm" && listOf("inbox", "primary", "收件箱", "主要").any { it in text }) {
             return AgentDecision(
                 screenClassification = "gmail_inbox",

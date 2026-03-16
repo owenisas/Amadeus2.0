@@ -198,6 +198,7 @@ data class RuntimeSnapshot(
     val projectionGranted: Boolean = false,
     val overlayGranted: Boolean = false,
     val accessibilityGranted: Boolean = false,
+    val debugLines: List<String> = emptyList(),
 )
 
 @Serializable

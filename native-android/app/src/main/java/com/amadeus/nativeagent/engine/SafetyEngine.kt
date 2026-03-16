@@ -18,23 +18,21 @@ class SafetyEngine {
         val classHint = screen.classNameHint.orEmpty().lowercase()
         val packageName = screen.packageName.lowercase()
         if ("permissioncontroller" in packageName || "grantpermission" in classHint) {
-            return true
+            return false
         }
-        val popupTokens = listOf(
-            "allow",
-            "deny",
-            "not now",
+        val approvalTokens = listOf(
             "choose an account",
-            "notification",
-            "permission",
-            "允许",
-            "不允许",
-            "以后再说",
-            "订阅",
+            "sign in",
+            "password",
+            "verification",
+            "payment",
             "purchase",
+            "subscribe",
             "购买",
+            "付费",
+            "credit card",
         )
-        return popupTokens.any { token -> token in text }
+        return approvalTokens.any { token -> token in text }
     }
 
     fun evaluate(app: AppDefinition, screen: CapturedScreen, decision: AgentDecision): Pair<Boolean, String> {

@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.getSystemService
+import android.view.View.IMPORTANT_FOR_ACCESSIBILITY_YES
 import com.amadeus.nativeagent.runtime.NativeAgentRuntime
 import com.amadeus.nativeagent.model.ApprovalRequest
 
@@ -46,19 +47,27 @@ class ApprovalOverlayService : Service() {
             orientation = LinearLayout.VERTICAL
             setBackgroundColor(0xEE111827.toInt())
             setPadding(32, 32, 32, 32)
+            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+            isFocusable = true
+            isClickable = true
         }
         val titleView = TextView(this).apply {
             text = request.title
             setTextColor(0xFFFFFFFF.toInt())
             textSize = 18f
+            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
         }
         val messageView = TextView(this).apply {
             text = request.message
             setTextColor(0xFFE5E7EB.toInt())
             textSize = 14f
+            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
         }
         val allow = Button(this).apply {
             text = "Allow this action"
+            contentDescription = "Allow this action"
+            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+            isFocusable = true
             setOnClickListener {
                 runtime.approvePendingAction(request.runId, "allow")
                 stopSelf()
@@ -66,6 +75,9 @@ class ApprovalOverlayService : Service() {
         }
         val deny = Button(this).apply {
             text = request.alternativeLabel ?: "Deny"
+            contentDescription = request.alternativeLabel ?: "Deny"
+            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+            isFocusable = true
             setOnClickListener {
                 runtime.approvePendingAction(request.runId, "deny")
                 stopSelf()
@@ -73,6 +85,9 @@ class ApprovalOverlayService : Service() {
         }
         val manual = Button(this).apply {
             text = "Take over manually"
+            contentDescription = "Take over manually"
+            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+            isFocusable = true
             setOnClickListener {
                 runtime.approvePendingAction(request.runId, "manual")
                 stopSelf()
@@ -87,7 +102,7 @@ class ApprovalOverlayService : Service() {
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT,
         ).apply {
             gravity = Gravity.TOP

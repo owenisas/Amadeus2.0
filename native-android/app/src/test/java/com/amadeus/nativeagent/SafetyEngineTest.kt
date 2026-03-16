@@ -21,7 +21,7 @@ class SafetyEngineTest {
     }
 
     @Test
-    fun `requires approval for permission prompts`() {
+    fun `does not require approval for low risk permission prompts`() {
         val screen = capturedScreen(
             packageName = "com.google.android.permissioncontroller",
             visibleText = listOf("Allow Gmail to send notifications?", "Allow", "Deny"),
@@ -35,7 +35,7 @@ class SafetyEngineTest {
             reason = "Permission prompt",
             riskLevel = "medium",
         )
-        assertTrue(engine.requiresApproval(screen, decision))
+        assertFalse(engine.requiresApproval(screen, decision))
     }
 
     @Test

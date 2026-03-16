@@ -15,6 +15,7 @@ description: App-specific navigation guidance for the Gmail Android workflow.
 - Treat the inbox list as the primary safe surface.
 - Allow at most light scrolling through the inbox when the user asks to look through emails.
 - Prefer visible inbox anchors like `Inbox`, `Primary`, `Social`, `Promotions`, `收件箱`, and `主要`.
+- Auto-dismiss the `New in Gmail` onboarding card by tapping `GOT IT`.
 
 ## Dynamic components
 
