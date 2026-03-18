@@ -30,6 +30,30 @@ def make_playstore_state(*, visible_text: list[str], clickable_text: list[str], 
     )
 
 
+def make_amazon_state(*, visible_text: list[str], clickable_text: list[str], components: list[dict]) -> ScreenState:
+    device = DeviceInfo(
+        serial="emulator-5554",
+        width=1080,
+        height=2400,
+        density=420,
+        orientation="portrait",
+        package_name="com.amazon.mShop.android.shopping",
+        activity_name=".OrdersActivity",
+    )
+    return ScreenState(
+        screenshot_path=Path("/tmp/fake.png"),
+        hierarchy_path=Path("/tmp/fake.xml"),
+        screenshot_sha256="abc",
+        xml_source="<hierarchy />",
+        visible_text=visible_text,
+        clickable_text=clickable_text,
+        package_name=device.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=components,
+    )
+
+
 def make_gmail_state(
     *,
     visible_text: list[str],
@@ -175,6 +199,56 @@ def test_goal_requesting_screenshot_uses_capture_tool(tmp_path: Path) -> None:
 
     assert decision.next_action == "tool"
     assert decision.tool_name == "capture_state"
+
+
+def test_amazon_orders_stops_when_no_target_box_can_be_resolved(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["amazon"])
+    state = make_amazon_state(
+        visible_text=["Your Orders"],
+        clickable_text=["Your Orders"],
+        components=[],
+    )
+
+    decision = agent.decide(
+        goal="check delivery status for my latest order",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "stop"
+    assert "no stable target box" in decision.reason
+
+
+def test_amazon_orders_uses_component_target_box_without_selector(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["amazon"])
+    state = make_amazon_state(
+        visible_text=["Your Orders"],
+        clickable_text=["Your Orders"],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Your Orders",
+                "enabled": True,
+                "focused": False,
+                "search_related": False,
+                "target_box": {"x": 0.1, "y": 0.2, "width": 0.5, "height": 0.1},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="check delivery status for my latest order",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_box is not None
+    assert decision.target_box.to_dict() == {"x": 0.1, "y": 0.2, "width": 0.5, "height": 0.1}
 
 
 def test_gmail_inbox_scrolls_once_then_stops(tmp_path: Path) -> None:

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager, suppress
 import fcntl
+import hashlib
 import os
 from pathlib import Path
 import re
@@ -21,6 +22,10 @@ from agent_runner.utils import (
 
 
 class AndroidAdapter:
+    ADB_TIMEOUT_SECONDS = 20.0
+    UI_STABLE_FOR_SECONDS = 0.75
+    UI_POLL_INTERVAL_SECONDS = 0.25
+
     def __init__(
         self,
         *,
@@ -100,8 +105,14 @@ class AndroidAdapter:
         result = self._adb(["shell", "pm", "path", package_name], check=False)
         return result.returncode == 0 and "package:" in result.stdout
 
-    def adb_command(self, args: list[str], *, check: bool = False) -> subprocess.CompletedProcess[str]:
-        return self._adb(args, check=check)
+    def adb_command(
+        self,
+        args: list[str],
+        *,
+        check: bool = False,
+        timeout: float | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        return self._adb(args, check=check, timeout=timeout)
 
     def launch_app(self, package_name: str, activity: str | None = None) -> None:
         self.connect()
@@ -230,7 +241,35 @@ class AndroidAdapter:
         self.wait_for_stable_ui(1.0)
 
     def wait_for_stable_ui(self, seconds: float) -> None:
-        time.sleep(seconds)
+        wait_budget = max(0.0, seconds)
+        if wait_budget == 0:
+            return
+        if self._driver is None:
+            time.sleep(wait_budget)
+            return
+
+        deadline = time.monotonic() + wait_budget
+        stable_for = min(self.UI_STABLE_FOR_SECONDS, wait_budget)
+        last_signature: str | None = None
+        stable_since: float | None = None
+
+        while True:
+            now = time.monotonic()
+            signature = self._ui_stability_signature()
+            if signature is not None:
+                if signature == last_signature:
+                    if stable_since is None:
+                        stable_since = now
+                    if now - stable_since >= stable_for:
+                        return
+                else:
+                    last_signature = signature
+                    stable_since = now
+
+            remaining = deadline - now
+            if remaining <= 0:
+                return
+            time.sleep(min(self.UI_POLL_INTERVAL_SECONDS, remaining))
 
     def current_focus(self) -> tuple[str, str]:
         if self._driver is not None:
@@ -276,11 +315,36 @@ class AndroidAdapter:
             ]
         )
 
-    def _adb(self, args: list[str], *, check: bool) -> subprocess.CompletedProcess[str]:
+    def _ui_stability_signature(self) -> str | None:
+        if self._driver is None:
+            return None
+        try:
+            package_name = self._driver.current_package or ""
+            activity_name = self._driver.current_activity or ""
+            xml_source = self._driver.page_source or ""
+        except Exception:
+            return None
+        digest = hashlib.sha256(xml_source.encode("utf-8")).hexdigest()[:16]
+        return f"{package_name}|{activity_name}|{digest}"
+
+    def _adb(
+        self,
+        args: list[str],
+        *,
+        check: bool,
+        timeout: float | None = None,
+    ) -> subprocess.CompletedProcess[str]:
         command = [self.adb_path, "-s", self.device_serial, *args]
-        return subprocess.run(
-            command,
-            check=check,
-            capture_output=True,
-            text=True,
-        )
+        effective_timeout = self.ADB_TIMEOUT_SECONDS if timeout is None else timeout
+        try:
+            return subprocess.run(
+                command,
+                check=check,
+                capture_output=True,
+                text=True,
+                timeout=effective_timeout,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(
+                f"adb command timed out after {effective_timeout:.1f}s: {' '.join(command)}"
+            ) from exc

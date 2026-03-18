@@ -225,26 +225,26 @@ class VisionAgent:
             for label in clickable:
                 lowered = label.casefold()
                 if "orders" in lowered or "your orders" in lowered:
-                    return VisionDecision(
+                    return self._tap_decision_for_label(
+                        state=state,
+                        skill=skill,
+                        label=label,
                         screen_classification="orders_entry",
                         goal_progress="navigating",
-                        next_action="tap",
-                        target_box=self._lookup_selector_box(skill, label),
                         confidence=0.62,
                         reason="Heuristic found an orders entry point.",
                         risk_level="low",
-                        target_label=label,
                     )
                 if "track package" in lowered or "track" in lowered:
-                    return VisionDecision(
+                    return self._tap_decision_for_label(
+                        state=state,
+                        skill=skill,
+                        label=label,
                         screen_classification="order_detail",
                         goal_progress="nearly_complete",
-                        next_action="tap",
-                        target_box=self._lookup_selector_box(skill, label),
                         confidence=0.57,
                         reason="Heuristic found a tracking affordance.",
                         risk_level="low",
-                        target_label=label,
                     )
             if any(token in text for token in ["delivered", "arriving", "shipped", "out for delivery"]):
                 return VisionDecision.stop("Order status text is already visible on screen.")
@@ -263,15 +263,15 @@ class VisionAgent:
                     or "网络" in label
                     or "互联网" in label
                 ):
-                    return VisionDecision(
+                    return self._tap_decision_for_label(
+                        state=state,
+                        skill=skill,
+                        label=label,
                         screen_classification="settings_root",
                         goal_progress="navigating",
-                        next_action="tap",
-                        target_box=self._lookup_selector_box(skill, label),
                         confidence=0.55,
                         reason="Heuristic found a network settings entry.",
                         risk_level="low",
-                        target_label=label,
                     )
             return VisionDecision.stop("Settings screen is open and no stronger heuristic was found.")
 
@@ -346,15 +346,16 @@ class VisionAgent:
                             risk_level="low",
                             target_label=label,
                         )
-                    return VisionDecision(
+                    return self._tap_decision_for_label(
+                        state=state,
+                        skill=skill,
+                        label=label,
+                        component_type="touch_target",
                         screen_classification="playstore_interstitial",
                         goal_progress="dismissing_popup",
-                        next_action="tap",
-                        target_box=self._lookup_target_box(skill, state, label, component_type="touch_target"),
                         confidence=0.72,
                         reason="Dismiss the Play Store interstitial before searching.",
                         risk_level="low",
-                        target_label=label,
                     )
 
             search_input = self._find_component(components, component_type="text_input", search_related=True)
@@ -377,22 +378,20 @@ class VisionAgent:
                     risk_level="low",
                 )
             if install_goal and install_action:
-                return VisionDecision(
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(install_action.get("target_box")),
                     screen_classification="playstore_detail",
                     goal_progress="starting_install",
-                    next_action="tap",
-                    target_box=BoundingBox.from_dict(install_action.get("target_box")),
                     confidence=0.84,
                     reason="Tap the Play Store install button for the requested free app or game.",
                     risk_level="low",
                     target_label=install_action.get("label") or "install",
                 )
             if install_goal and result_action:
-                return VisionDecision(
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(result_action.get("target_box")),
                     screen_classification="playstore_results",
                     goal_progress="opening_result",
-                    next_action="tap",
-                    target_box=BoundingBox.from_dict(result_action.get("target_box")),
                     confidence=0.79,
                     reason="Open the requested app or game from the Play Store search results.",
                     risk_level="low",
@@ -417,22 +416,20 @@ class VisionAgent:
                         submit_after_input=True,
                         target_label=search_input.get("label") or "search",
                     )
-                return VisionDecision(
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(search_input.get("target_box")),
                     screen_classification="playstore_home",
                     goal_progress="focusing_search",
-                    next_action="tap",
-                    target_box=BoundingBox.from_dict(search_input.get("target_box")),
                     confidence=0.74,
                     reason="Focus the Play Store search field.",
                     risk_level="low",
                     target_label=search_input.get("label") or "search",
                 )
             if ("search field" in goal.casefold() or search_goal or install_goal) and search_action:
-                return VisionDecision(
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(search_action.get("target_box")),
                     screen_classification="playstore_home",
                     goal_progress="opening_search",
-                    next_action="tap",
-                    target_box=BoundingBox.from_dict(search_action.get("target_box")),
                     confidence=0.68,
                     reason="Open the Play Store search UI.",
                     risk_level="low",
@@ -460,11 +457,70 @@ class VisionAgent:
             risk_level="low",
         )
 
-    def _lookup_selector_box(self, skill: SkillBundle, label: str) -> BoundingBox | None:
+    def _tap_decision(
+        self,
+        *,
+        target_box: BoundingBox | None,
+        screen_classification: str,
+        goal_progress: str,
+        confidence: float,
+        reason: str,
+        risk_level: str,
+        target_label: str | None = None,
+    ) -> VisionDecision:
+        if target_box is None:
+            target_name = target_label or screen_classification
+            return VisionDecision.stop(
+                f"Target '{target_name}' matched the goal, but no stable target box was available on the current screen.",
+                goal_progress="blocked",
+            )
+        return VisionDecision(
+            screen_classification=screen_classification,
+            goal_progress=goal_progress,
+            next_action="tap",
+            target_box=target_box,
+            confidence=confidence,
+            reason=reason,
+            risk_level=risk_level,
+            target_label=target_label,
+        )
+
+    def _tap_decision_for_label(
+        self,
+        *,
+        state: ScreenState,
+        skill: SkillBundle,
+        label: str,
+        screen_classification: str,
+        goal_progress: str,
+        confidence: float,
+        reason: str,
+        risk_level: str,
+        component_type: str | None = None,
+    ) -> VisionDecision:
+        return self._tap_decision(
+            target_box=self._lookup_target_box(skill, state, label, component_type=component_type),
+            screen_classification=screen_classification,
+            goal_progress=goal_progress,
+            confidence=confidence,
+            reason=reason,
+            risk_level=risk_level,
+            target_label=label,
+        )
+
+    def _lookup_selector_box(self, skill: SkillBundle, state: ScreenState, label: str) -> BoundingBox | None:
+        screen_text = " ".join(state.visible_text[:12]).casefold()
         for selector in skill.selectors.get("selectors", []):
             if selector.get("label", "").casefold() == label.casefold():
+                if selector.get("package_name") not in {None, "", state.package_name}:
+                    continue
+                if selector.get("activity_name") not in {None, "", state.activity_name}:
+                    continue
+                anchor_text = selector.get("anchor_text") or []
+                if anchor_text and not any(str(anchor).casefold() in screen_text for anchor in anchor_text):
+                    continue
                 return BoundingBox.from_dict(selector.get("target_box"))
-        return BoundingBox(0.4, 0.2, 0.2, 0.1)
+        return None
 
     def _build_prompt(
         self,
@@ -693,7 +749,7 @@ If you cannot proceed safely, return next_action="stop".
             if component_type and component.get("component_type") != component_type:
                 continue
             return BoundingBox.from_dict(component.get("target_box"))
-        return self._lookup_selector_box(skill, label)
+        return self._lookup_selector_box(skill, state, label)
 
     def _playstore_results_visible(self, state: ScreenState, query: str) -> bool:
         text = " ".join(state.visible_text[:60]).casefold()
