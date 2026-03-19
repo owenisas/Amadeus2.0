@@ -190,6 +190,26 @@ data class RunSpec(
 )
 
 @Serializable
+data class ScriptStep(
+    val action: String,
+    val targetLabel: String? = null,
+    val targetBox: BoundingBox? = null,
+    val inputText: String? = null,
+    val submitAfterInput: Boolean = false,
+    val packageName: String? = null,
+    val activity: String? = null,
+    val waitSeconds: Float = 0f,
+    val scriptName: String? = null,
+)
+
+@Serializable
+data class AutomationScript(
+    val name: String,
+    val description: String = "",
+    val steps: List<ScriptStep> = emptyList(),
+)
+
+@Serializable
 data class RuntimeSnapshot(
     val currentRun: RunRecord? = null,
     val runHistory: List<RunRecord> = emptyList(),

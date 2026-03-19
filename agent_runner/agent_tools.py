@@ -124,6 +124,36 @@ class AgentToolExecutor:
                 mutates_device=False,
                 mutates_skills=True,
             ),
+            AgentToolSpec(
+                name="save_script",
+                description=(
+                    "Save a reusable automation script under the app skill. "
+                    "A script is a JSON object with 'name', 'description', and 'steps' (list of actions). "
+                    "Each step has 'action' (tap/type/swipe/back/home/wait/launch_app/run_script), "
+                    "and optional 'target_label', 'input_text', 'submit_after_input', 'package_name', "
+                    "'wait_seconds', 'script_name'. Use this to record repetitive navigation or search sequences."
+                ),
+                requires_state=False,
+                mutates_device=False,
+                mutates_skills=True,
+            ),
+            AgentToolSpec(
+                name="run_script",
+                description=(
+                    "Execute a previously saved automation script by name. "
+                    "The script's steps are replayed in order against the current device state."
+                ),
+                requires_state=True,
+                mutates_device=True,
+                mutates_skills=False,
+            ),
+            AgentToolSpec(
+                name="list_scripts",
+                description="List all saved automation scripts for the current app.",
+                requires_state=False,
+                mutates_device=False,
+                mutates_skills=False,
+            ),
         ]
 
     def execute(
@@ -149,6 +179,9 @@ class AgentToolExecutor:
             "read_skill": self._read_skill,
             "write_skill_file": self._write_skill_file,
             "bootstrap_skill": self._bootstrap_skill,
+            "save_script": self._save_script,
+            "run_script": self._run_script,
+            "list_scripts": self._list_scripts,
         }
         try:
             handler = handlers[tool_name]
@@ -456,6 +489,197 @@ class AgentToolExecutor:
             tool_name="bootstrap_skill",
             ok=True,
             output={"app_name": bundle.app_name, "path": str(bundle.app_dir)},
+        )
+
+    def _save_script(
+        self,
+        arguments: dict[str, Any],
+        *,
+        run_dir: Path,
+        current_state: ScreenState | None,
+        app: AppConfig | None,
+        skill: SkillBundle | None,
+    ) -> ToolExecutionResult:
+        app_name = str(arguments.get("app_name") or (app.name if app else skill.app_name if skill else ""))
+        script_name = str(arguments.get("script_name") or "")
+        if not app_name or not script_name:
+            raise ValueError("save_script requires app_name and script_name.")
+        script_data = arguments.get("script") or arguments
+        if isinstance(script_data, str):
+            script_data = json.loads(script_data)
+        # Ensure required fields
+        if "steps" not in script_data:
+            raise ValueError("save_script requires a 'steps' list in the script payload.")
+        script = {
+            "name": script_name,
+            "description": str(script_data.get("description", "")),
+            "steps": script_data["steps"],
+        }
+        path = self.skill_manager.save_script(app_name, script_name, script)
+        return ToolExecutionResult(
+            tool_name="save_script",
+            ok=True,
+            output={"app_name": app_name, "script_name": script_name, "path": str(path)},
+        )
+
+    def _run_script(
+        self,
+        arguments: dict[str, Any],
+        *,
+        run_dir: Path,
+        current_state: ScreenState | None,
+        app: AppConfig | None,
+        skill: SkillBundle | None,
+    ) -> ToolExecutionResult:
+        app_name = str(arguments.get("app_name") or (app.name if app else skill.app_name if skill else ""))
+        script_name = str(arguments.get("script_name") or "")
+        if not app_name or not script_name:
+            raise ValueError("run_script requires app_name and script_name.")
+        script = self.skill_manager.read_script(app_name, script_name)
+        steps = script.get("steps", [])
+        if not steps:
+            return ToolExecutionResult(
+                tool_name="run_script",
+                ok=True,
+                output={"app_name": app_name, "script_name": script_name, "steps_executed": 0, "message": "Script has no steps."},
+            )
+        executed = 0
+        last_state = current_state
+        for step in steps:
+            action = str(step.get("action", "")).strip()
+            if not action:
+                continue
+            if action == "launch_app":
+                pkg = str(step.get("package_name") or (app.package_name if app else ""))
+                if pkg:
+                    self.android_adapter.launch_app(pkg, step.get("activity"))
+            elif action == "tap":
+                label = step.get("target_label")
+                target_box = BoundingBox.from_dict(step.get("target_box"))
+                if label and last_state:
+                    # Look up the label in current screen components
+                    for component in last_state.components:
+                        if str(component.get("label", "")).casefold() == label.casefold():
+                            target_box = BoundingBox.from_dict(component.get("target_box"))
+                            break
+                if target_box:
+                    self.android_adapter.perform(
+                        VisionDecision(
+                            screen_classification="script_tap",
+                            goal_progress="scripted",
+                            next_action="tap",
+                            target_box=target_box,
+                            confidence=1.0,
+                            reason=f"Script step: tap {label or 'target'}",
+                            risk_level="low",
+                            target_label=label,
+                        ),
+                        last_state or self.android_adapter.capture_state(run_dir),
+                    )
+            elif action == "type":
+                text = str(step.get("input_text") or step.get("text") or "")
+                submit = bool(step.get("submit_after_input", False))
+                if text:
+                    self.android_adapter.perform(
+                        VisionDecision(
+                            screen_classification="script_type",
+                            goal_progress="scripted",
+                            next_action="type",
+                            target_box=None,
+                            confidence=1.0,
+                            reason=f"Script step: type '{text[:30]}'",
+                            risk_level="low",
+                            input_text=text,
+                            submit_after_input=submit,
+                        ),
+                        last_state or self.android_adapter.capture_state(run_dir),
+                    )
+            elif action == "swipe":
+                self.android_adapter.perform(
+                    VisionDecision(
+                        screen_classification="script_swipe",
+                        goal_progress="scripted",
+                        next_action="swipe",
+                        target_box=None,
+                        confidence=1.0,
+                        reason="Script step: swipe",
+                        risk_level="low",
+                    ),
+                    last_state or self.android_adapter.capture_state(run_dir),
+                )
+            elif action == "back":
+                self.android_adapter.perform(
+                    VisionDecision(
+                        screen_classification="script_back",
+                        goal_progress="scripted",
+                        next_action="back",
+                        target_box=None,
+                        confidence=1.0,
+                        reason="Script step: back",
+                        risk_level="low",
+                    ),
+                    last_state or self.android_adapter.capture_state(run_dir),
+                )
+            elif action == "home":
+                self.android_adapter.perform(
+                    VisionDecision(
+                        screen_classification="script_home",
+                        goal_progress="scripted",
+                        next_action="home",
+                        target_box=None,
+                        confidence=1.0,
+                        reason="Script step: home",
+                        risk_level="low",
+                    ),
+                    last_state or self.android_adapter.capture_state(run_dir),
+                )
+            elif action == "wait":
+                wait_secs = float(step.get("wait_seconds", 2.0))
+                self.android_adapter.wait_for_stable_ui(wait_secs)
+            elif action == "run_script":
+                # Nested script execution
+                nested_name = str(step.get("script_name", ""))
+                if nested_name:
+                    self._run_script(
+                        {"app_name": app_name, "script_name": nested_name},
+                        run_dir=run_dir,
+                        current_state=last_state,
+                        app=app,
+                        skill=skill,
+                    )
+            executed += 1
+            # Recapture state after each mutating action
+            if action not in {"wait"}:
+                last_state = self.android_adapter.capture_state(run_dir)
+        return ToolExecutionResult(
+            tool_name="run_script",
+            ok=True,
+            output={
+                "app_name": app_name,
+                "script_name": script_name,
+                "steps_executed": executed,
+                "total_steps": len(steps),
+            },
+            refresh_state=True,
+        )
+
+    def _list_scripts(
+        self,
+        arguments: dict[str, Any],
+        *,
+        run_dir: Path,
+        current_state: ScreenState | None,
+        app: AppConfig | None,
+        skill: SkillBundle | None,
+    ) -> ToolExecutionResult:
+        app_name = str(arguments.get("app_name") or (app.name if app else skill.app_name if skill else ""))
+        if not app_name:
+            raise ValueError("list_scripts requires app_name.")
+        scripts = self.skill_manager.list_scripts(app_name)
+        return ToolExecutionResult(
+            tool_name="list_scripts",
+            ok=True,
+            output={"app_name": app_name, "scripts": scripts},
         )
 
     def _is_safe_adb_command(self, args: list[str]) -> bool:

@@ -2,6 +2,7 @@ package com.amadeus.nativeagent.runtime
 
 import android.content.Context
 import com.amadeus.nativeagent.model.AppStateRecord
+import com.amadeus.nativeagent.model.AutomationScript
 import com.amadeus.nativeagent.model.CapturedScreen
 import com.amadeus.nativeagent.model.RunActionRecord
 import com.amadeus.nativeagent.model.ScreenRecord
@@ -145,6 +146,40 @@ class SkillRepository(private val context: Context) {
         val appDir = File(appSkillsDir, appId)
         appDir.mkdirs()
         return appDir
+    }
+
+    // --- Script management ---
+
+    fun listScripts(appId: String): List<String> {
+        val scriptsDir = File(File(appSkillsDir, appId), "scripts")
+        if (!scriptsDir.exists()) return emptyList()
+        return scriptsDir.listFiles()
+            ?.filter { it.extension == "json" && it.isFile }
+            ?.map { it.name }
+            ?.sorted()
+            .orEmpty()
+    }
+
+    fun readScript(appId: String, scriptName: String): AutomationScript {
+        val name = if (scriptName.endsWith(".json")) scriptName else "$scriptName.json"
+        val file = File(File(File(appSkillsDir, appId), "scripts"), name)
+        if (!file.exists()) error("Script '$scriptName' not found for app '$appId'.")
+        return JsonSupport.json.decodeFromString(AutomationScript.serializer(), file.readText())
+    }
+
+    fun saveScript(appId: String, scriptName: String, script: AutomationScript): File {
+        val name = if (scriptName.endsWith(".json")) scriptName else "$scriptName.json"
+        val scriptsDir = File(File(appSkillsDir, appId), "scripts")
+        scriptsDir.mkdirs()
+        val file = File(scriptsDir, name)
+        file.writeText(JsonSupport.json.encodeToString(AutomationScript.serializer(), script))
+        return file
+    }
+
+    fun deleteScript(appId: String, scriptName: String): Boolean {
+        val name = if (scriptName.endsWith(".json")) scriptName else "$scriptName.json"
+        val file = File(File(File(appSkillsDir, appId), "scripts"), name)
+        return if (file.exists()) { file.delete(); true } else false
     }
 
     private fun ensureBootstrapped() {

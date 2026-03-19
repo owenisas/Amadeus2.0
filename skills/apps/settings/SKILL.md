@@ -1,30 +1,36 @@
 ---
 name: settings
-description: App-specific navigation guidance for the Settings Android workflow.
+description: App-specific navigation guidance for the Android Settings workflow.
 ---
 
 # Settings skill
 
 ## Purpose
 
-- Support low-risk navigation and read-oriented automation for `com.android.settings`.
+- Support read-only Settings navigation for `com.android.settings`.
 - Default goal hint: Navigate and inspect settings pages without changing system state.
 
 ## Navigation conventions
 
-- Prefer tabs, order/detail pages, and dismissible popups.
-- Avoid account mutation flows and irreversible confirmations.
-- Use visible text, package/activity, and normalized target boxes together before falling back to blind taps.
+- The root Settings page shows a scrollable list of category entries (Network & internet, Connected devices, Apps, etc.).
+- Tapping a category opens a sub-settings page.
+- Use `back` to return to the parent settings page.
+- Read toggle states, storage info, and device details without modifying them.
 
-## Stable visual anchors
+## Dynamic components
 
-- Preserve the top visible labels for important screens in `screens.json`.
-- Reuse selectors only when the current screen signature matches the stored package/activity and anchor text.
+- Record category entry selectors (Network & internet, Display, Battery, etc.) in `selectors.json`.
+- Track the current sub-settings page in `state.json`.
 
 ## Risk surfaces to avoid
 
-- factory reset, erase all data
+- Factory reset, erase all data, developer options toggles.
+- Account additions, removals, or modifications.
+- Accessibility service toggling (unrelated to this agent).
+- Any toggle or switch that changes system behavior.
 
 ## Known recipes
 
-- `check latest order status`: navigate to orders, open the most recent order, read status, then stop.
+- `open network settings`: launch Settings, tap "Network & internet" or "网络和互联网", stop when the sub-page is visible.
+- `check storage`: navigate to Storage, read the usage summary, stop.
+- `view device info`: scroll to "About phone" or "About emulated device", tap it, stop when build info is visible.

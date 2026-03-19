@@ -4,7 +4,7 @@ from pathlib import Path
 
 from agent_runner.android_adapter import AndroidAdapter
 from agent_runner.agent_tools import AgentToolExecutor
-from agent_runner.models import ActionRecord, RunContext, RunResult, ScreenState, VisionDecision
+from agent_runner.models import ActionRecord, RunContext, RunResult, ScreenState, SkillBundle, VisionDecision
 from agent_runner.safety import detect_manual_login_required, evaluate_decision
 from agent_runner.skill_manager import SkillManager
 from agent_runner.utils import describe_state_signature, ensure_directory, timestamp_slug
@@ -20,12 +20,44 @@ class Orchestrator:
         vision_agent: VisionAgent,
         skill_manager: SkillManager,
         runs_dir: Path,
+        approval_handler: "callable | None" = None,
     ) -> None:
         self.android_adapter = android_adapter
         self.tool_executor = tool_executor
         self.vision_agent = vision_agent
         self.skill_manager = skill_manager
         self.runs_dir = runs_dir
+        self.approval_handler = approval_handler or self._default_approval_handler
+
+    @staticmethod
+    def _default_approval_handler(decision: VisionDecision, state: ScreenState) -> str:
+        """Interactive terminal approval. Returns 'allow', 'deny', or 'manual'."""
+        import sys
+        print(f"\n{'='*60}")
+        print(f"APPROVAL REQUIRED")
+        print(f"  Surface: {state.package_name} / {state.activity_name}")
+        print(f"  Reason:  {decision.reason}")
+        if decision.target_label:
+            print(f"  Action:  {decision.target_label}")
+        clickable = state.clickable_text[:6]
+        if clickable:
+            print(f"  Available: {', '.join(clickable)}")
+        print(f"{'='*60}")
+        print("  [a] Allow this action")
+        print("  [d] Deny and stop the run")
+        print("  [m] Take over manually")
+        while True:
+            try:
+                choice = input("Choose [a/d/m]: ").strip().lower()
+            except (EOFError, KeyboardInterrupt):
+                return "deny"
+            if choice in ("a", "allow"):
+                return "allow"
+            if choice in ("d", "deny"):
+                return "deny"
+            if choice in ("m", "manual"):
+                return "manual"
+            print("  Invalid choice. Enter a, d, or m.")
 
     def run(self, context: RunContext) -> RunResult:
         with self.android_adapter.session_lock():
@@ -90,6 +122,51 @@ class Orchestrator:
                     )
                     last_screen_id = self.skill_manager.update_after_observation(bundle, state, decision)
 
+                    # --- Approval gate: prompt user and resume if approved ---
+                    if decision.requires_user_approval and decision.next_action == "stop":
+                        resolution = self._request_approval(
+                            decision=decision,
+                            state=state,
+                            step=step,
+                            context=context,
+                            bundle=bundle,
+                            last_screen_id=last_screen_id,
+                            failure_count=failure_count,
+                            run_dir=run_dir,
+                        )
+                        if resolution == "deny":
+                            return RunResult(
+                                status="blocked",
+                                reason="User denied the approval request.",
+                                steps=step,
+                                run_dir=run_dir,
+                                last_state=state,
+                            )
+                        if resolution == "manual":
+                            return RunResult(
+                                status="paused_for_manual",
+                                reason="User chose to take over manually.",
+                                steps=step,
+                                run_dir=run_dir,
+                                last_state=state,
+                            )
+                        # User approved — convert the stop into the concrete action
+                        if decision.target_label and decision.target_box:
+                            decision = VisionDecision(
+                                screen_classification=decision.screen_classification,
+                                goal_progress="approved_by_user",
+                                next_action="tap",
+                                target_box=decision.target_box,
+                                confidence=1.0,
+                                reason=f"User approved: {decision.reason}",
+                                risk_level="low",
+                                target_label=decision.target_label,
+                            )
+                        else:
+                            # Recapture — user may have acted manually
+                            state = self.android_adapter.capture_state(run_dir)
+                            continue
+
                     verdict = evaluate_decision(context.app, state, decision)
                     if not verdict.allowed:
                         context.action_history.append(
@@ -132,18 +209,17 @@ class Orchestrator:
                     )
 
                     if decision.next_action == "stop":
-                        status = "approval_required" if decision.requires_user_approval else "completed"
                         context.action_history.append(action_record)
                         self.skill_manager.update_run_state(
                             bundle,
-                            status=status,
+                            status="completed",
                             reason=decision.reason,
                             last_screen_id=last_screen_id,
                             action_history=[item.to_dict() for item in context.action_history],
                             failure_count=failure_count,
                         )
                         return RunResult(
-                            status=status,
+                            status="completed",
                             reason=decision.reason,
                             steps=step,
                             run_dir=run_dir,
@@ -237,3 +313,26 @@ class Orchestrator:
                 )
             finally:
                 self.android_adapter.close()
+
+    def _request_approval(
+        self,
+        *,
+        decision: VisionDecision,
+        state: ScreenState,
+        step: int,
+        context: RunContext,
+        bundle: SkillBundle,
+        last_screen_id: str | None,
+        failure_count: int,
+        run_dir: Path,
+    ) -> str:
+        """Ask the user to approve, deny, or take over manually. Returns 'allow', 'deny', or 'manual'."""
+        self.skill_manager.update_run_state(
+            bundle,
+            status="approval_required",
+            reason=decision.reason,
+            last_screen_id=last_screen_id,
+            action_history=[item.to_dict() for item in context.action_history],
+            failure_count=failure_count,
+        )
+        return self.approval_handler(decision, state)

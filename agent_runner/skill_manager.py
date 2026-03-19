@@ -18,6 +18,7 @@ DEFAULT_SCREEN_FILE = "screens.json"
 DEFAULT_SELECTOR_FILE = "selectors.json"
 DEFAULT_STATE_FILE = "state.json"
 DEFAULT_MEMORY_FILE = "memory.md"
+SCRIPTS_DIR = "scripts"
 
 
 class SkillManager:
@@ -80,6 +81,44 @@ class SkillManager:
         path = self._skill_file_path(app_name, file_name, create_parent=True)
         dump_json(path, payload)
         return path
+
+    # --- Script management ---
+
+    def list_scripts(self, app_name: str) -> list[str]:
+        """List available script files for an app skill."""
+        scripts_dir = self.skills_root / app_name / SCRIPTS_DIR
+        if not scripts_dir.exists():
+            return []
+        return sorted(f.name for f in scripts_dir.iterdir() if f.suffix == ".json" and f.is_file())
+
+    def read_script(self, app_name: str, script_name: str) -> dict[str, Any]:
+        """Read a saved automation script."""
+        path = self._script_path(app_name, script_name)
+        if not path.exists():
+            raise FileNotFoundError(f"Script '{script_name}' not found for app '{app_name}'.")
+        return load_json(path, default={})
+
+    def save_script(self, app_name: str, script_name: str, script: dict[str, Any]) -> Path:
+        """Save an automation script under the app's scripts/ directory."""
+        if not script_name.endswith(".json"):
+            script_name = f"{script_name}.json"
+        scripts_dir = ensure_directory(self.skills_root / app_name / SCRIPTS_DIR)
+        path = scripts_dir / script_name
+        dump_json(path, script)
+        return path
+
+    def delete_script(self, app_name: str, script_name: str) -> bool:
+        """Delete a saved script. Returns True if it existed."""
+        path = self._script_path(app_name, script_name)
+        if path.exists():
+            path.unlink()
+            return True
+        return False
+
+    def _script_path(self, app_name: str, script_name: str) -> Path:
+        if not script_name.endswith(".json"):
+            script_name = f"{script_name}.json"
+        return self.skills_root / app_name / SCRIPTS_DIR / script_name
 
     def update_after_observation(
         self,
@@ -148,6 +187,7 @@ class SkillManager:
         dump_json(bundle.app_dir / DEFAULT_SCREEN_FILE, bundle.screens)
         dump_json(bundle.app_dir / DEFAULT_SELECTOR_FILE, bundle.selectors)
         dump_json(bundle.app_dir / DEFAULT_STATE_FILE, bundle.state)
+        self.prune_selectors(bundle)
         return screen_id
 
     def update_after_transition(
@@ -200,12 +240,11 @@ class SkillManager:
         )
         dump_json(bundle.app_dir / DEFAULT_STATE_FILE, bundle.state)
         memory_path = bundle.app_dir / DEFAULT_MEMORY_FILE
-        memory_path.write_text(
-            bundle.memory
-            + f"\n- Status: {status}\n- Reason: {reason}\n"
-            + (f"- Last screen: {last_screen_id}\n" if last_screen_id else ""),
-            encoding="utf-8",
+        new_entry = (
+            f"\n- Status: {status}\n- Reason: {reason}\n"
+            + (f"- Last screen: {last_screen_id}\n" if last_screen_id else "")
         )
+        self._append_memory(memory_path, bundle.memory, new_entry)
 
     def _ensure_defaults(self, app: AppConfig, app_dir: Path) -> None:
         skill_path = app_dir / "SKILL.md"
@@ -267,7 +306,7 @@ description: App-specific navigation guidance for the {app.name.title()} Android
 
 ## Known recipes
 
-- `check latest order status`: navigate to orders, open the most recent order, read status, then stop.
+- `explore the app`: launch the app, inspect the main screen, scroll once if needed, then stop.
 """
 
     def _custom_skill_markdown(
@@ -353,6 +392,14 @@ description: System-level Android navigation guidance for dialogs, permissions, 
 
 - Use `back` to leave uncertain surfaces before using `home`.
 - Avoid destructive system actions, account changes, or settings mutations unless the user asked for them explicitly.
+
+## Automation scripts
+
+- When you identify a repetitive navigation sequence (e.g., search for X, dismiss popup, tap result), save it as a script using the `save_script` tool.
+- Scripts are stored per-app under `skills/apps/<app>/scripts/` and can be replayed with `run_script`.
+- Before performing a multi-step navigation you have done before, check `list_scripts` to see if a reusable script already exists.
+- A script is a JSON object with `name`, `description`, and `steps` (list of action objects).
+- Each step has `action` (tap/type/swipe/back/home/wait/launch_app/run_script) and optional fields like `target_label`, `input_text`, `submit_after_input`, `package_name`, `wait_seconds`, `script_name`.
 """
 
     def _screen_id(self, signature: dict[str, Any]) -> str:
@@ -412,3 +459,27 @@ description: System-level Android navigation guidance for dialogs, permissions, 
             return True
         label = (decision.target_label or "").casefold()
         return any(token in label for token in ["search", "enter", "go", "submit"])
+
+    MAX_MEMORY_LINES = 80
+    MAX_SELECTORS = 200
+
+    def _append_memory(self, memory_path: Path, current_memory: str, new_entry: str) -> None:
+        """Append to memory.md and prune to MAX_MEMORY_LINES, keeping the header and most recent entries."""
+        full_text = current_memory + new_entry
+        lines = full_text.splitlines()
+        if len(lines) <= self.MAX_MEMORY_LINES:
+            memory_path.write_text(full_text, encoding="utf-8")
+            return
+        # Keep the first 3 lines (header) and the most recent entries
+        header = lines[:3]
+        recent = lines[-(self.MAX_MEMORY_LINES - 4) :]
+        pruned = header + ["", "<!-- older entries pruned -->"] + recent
+        memory_path.write_text("\n".join(pruned) + "\n", encoding="utf-8")
+
+    def prune_selectors(self, bundle: SkillBundle) -> None:
+        """Keep selectors under MAX_SELECTORS by dropping the oldest entries."""
+        selectors = bundle.selectors.get("selectors", [])
+        if len(selectors) <= self.MAX_SELECTORS:
+            return
+        selectors[:] = selectors[-self.MAX_SELECTORS :]
+        dump_json(bundle.app_dir / DEFAULT_SELECTOR_FILE, bundle.selectors)

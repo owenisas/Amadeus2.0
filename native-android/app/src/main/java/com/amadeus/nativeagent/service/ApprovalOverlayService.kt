@@ -63,9 +63,10 @@ class ApprovalOverlayService : Service() {
             textSize = 14f
             importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
         }
+        val actionText = request.actionLabel.ifBlank { "Allow this action" }
         val allow = Button(this).apply {
-            text = "Allow this action"
-            contentDescription = "Allow this action"
+            text = actionText
+            contentDescription = actionText
             importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
             isFocusable = true
             setOnClickListener {

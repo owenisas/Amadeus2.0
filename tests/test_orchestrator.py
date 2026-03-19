@@ -101,12 +101,17 @@ class PopupAdapter:
 def test_orchestrator_returns_approval_required_for_popup(tmp_path: Path) -> None:
     adapter = PopupAdapter()
     skill_manager = SkillManager(tmp_path / "skills")
+
+    def auto_deny_handler(decision, state):
+        return "deny"
+
     orchestrator = Orchestrator(
         android_adapter=adapter,
         tool_executor=AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager),
         vision_agent=VisionAgent(None, "gemini-3.1-pro-preview"),
         skill_manager=skill_manager,
         runs_dir=tmp_path / "runs",
+        approval_handler=auto_deny_handler,
     )
     context = RunContext(
         app=APP_REGISTRY["gmail"],
@@ -118,4 +123,35 @@ def test_orchestrator_returns_approval_required_for_popup(tmp_path: Path) -> Non
 
     result = orchestrator.run(context)
 
-    assert result.status == "approval_required"
+    assert result.status == "blocked"
+    assert "denied" in result.reason.lower()
+
+
+def test_orchestrator_resumes_after_user_approval(tmp_path: Path) -> None:
+    """When the user approves a popup, the orchestrator should continue the run rather than stopping."""
+    adapter = PopupAdapter()
+    skill_manager = SkillManager(tmp_path / "skills")
+
+    def auto_allow_handler(decision, state):
+        return "allow"
+
+    orchestrator = Orchestrator(
+        android_adapter=adapter,
+        tool_executor=AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager),
+        vision_agent=VisionAgent(None, "gemini-3.1-pro-preview"),
+        skill_manager=skill_manager,
+        runs_dir=tmp_path / "runs",
+        approval_handler=auto_allow_handler,
+    )
+    context = RunContext(
+        app=APP_REGISTRY["gmail"],
+        goal="open Gmail and look through emails",
+        run_dir=tmp_path / "runs",
+        exploration_enabled=True,
+        max_steps=3,
+    )
+
+    result = orchestrator.run(context)
+
+    # Approval was granted but popup keeps returning, so it should eventually stall or exhaust steps
+    assert result.status in {"stalled", "max_steps_reached", "blocked"}

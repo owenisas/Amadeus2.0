@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import com.amadeus.nativeagent.model.AgentDecision
 import com.amadeus.nativeagent.model.ApprovalRequest
+import com.amadeus.nativeagent.model.AutomationScript
 import com.amadeus.nativeagent.model.RunActionRecord
 import com.amadeus.nativeagent.model.RunRecord
 import com.amadeus.nativeagent.model.RunSpec
+import com.amadeus.nativeagent.model.ScriptStep
 import com.amadeus.nativeagent.runtime.NativeAgentRuntime
 import com.amadeus.nativeagent.service.ApprovalOverlayService
 import java.io.File
@@ -42,7 +44,7 @@ class AgentOrchestrator(
                 runDir = runDir.absolutePath,
             )
         )
-        log("run_started app=${spec.appId} goal=${spec.goal}")
+        log("run_started app=${spec.appId} goal=${spec.goal} exploration=${spec.explorationEnabled}")
 
         repeat(50) {
             if (controller.isReady()) {
@@ -106,6 +108,7 @@ class AgentOrchestrator(
                 systemInstruction = runtime.skillRepository.loadSystemSkill(),
                 actionHistory = actions,
                 availableActions = app.allowedActions,
+                explorationEnabled = spec.explorationEnabled,
             )
             log(
                 "decision step=$step action=${decision.nextAction} " +
@@ -236,6 +239,28 @@ class AgentOrchestrator(
             if (effectiveDecision.nextAction == "wait") {
                 log("wait_step")
                 delay(1000)
+            } else if (effectiveDecision.nextAction == "tool" && effectiveDecision.toolName in listOf("run_script", "save_script", "list_scripts")) {
+                val toolResult = executeToolAction(
+                    appId = spec.appId,
+                    decision = effectiveDecision,
+                    runDir = runDir,
+                    currentScreen = current,
+                    log = ::log,
+                )
+                log("tool_result tool=${effectiveDecision.toolName} ok=${toolResult.first} detail=${toolResult.second}")
+                if (!toolResult.first) {
+                    return finish(
+                        runId = runId,
+                        spec = spec,
+                        status = "error",
+                        reason = toolResult.second,
+                        runDir = runDir,
+                        actions = actions,
+                        current = current,
+                        previous = current,
+                        transitionConfidence = 0f,
+                    )
+                }
             } else if (!controller.perform(effectiveDecision, current)) {
                 log("perform_failed action=${effectiveDecision.nextAction}")
                 return finish(
@@ -284,6 +309,56 @@ class AgentOrchestrator(
             previous = current,
             transitionConfidence = 0.4f,
         )
+    }
+
+    private suspend fun executeToolAction(
+        appId: String,
+        decision: AgentDecision,
+        runDir: File,
+        currentScreen: com.amadeus.nativeagent.model.CapturedScreen,
+        log: (String) -> Unit,
+    ): Pair<Boolean, String> {
+        return when (decision.toolName) {
+            "run_script" -> {
+                val scriptName = decision.inputText.orEmpty().ifBlank {
+                    decision.targetLabel.orEmpty()
+                }
+                if (scriptName.isBlank()) {
+                    return false to "run_script requires a script name."
+                }
+                val executor = ScriptExecutor(controller, runtime.skillRepository)
+                val result = executor.execute(appId, scriptName, runDir, currentScreen, log)
+                if (result.ok) {
+                    true to "Script '$scriptName' executed: ${result.stepsExecuted}/${result.totalSteps} steps."
+                } else {
+                    false to (result.error ?: "Script '$scriptName' failed.")
+                }
+            }
+
+            "save_script" -> {
+                val scriptName = decision.targetLabel.orEmpty().ifBlank {
+                    decision.inputText.orEmpty()
+                }
+                if (scriptName.isBlank()) {
+                    return false to "save_script requires a script name in targetLabel or inputText."
+                }
+                // The model can encode steps in the reason field as JSON
+                val script = AutomationScript(
+                    name = scriptName,
+                    description = decision.reason,
+                    steps = emptyList(),
+                )
+                runtime.skillRepository.saveScript(appId, scriptName, script)
+                true to "Script '$scriptName' saved."
+            }
+
+            "list_scripts" -> {
+                val scripts = runtime.skillRepository.listScripts(appId)
+                true to "Available scripts: ${scripts.joinToString(", ").ifBlank { "(none)" }}"
+            }
+
+            else -> false to "Unknown tool '${decision.toolName}'."
+        }
     }
 
     private fun finish(

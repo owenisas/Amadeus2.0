@@ -301,6 +301,87 @@ class VisionAgent:
                 risk_level="low",
             )
 
+        if state.package_name == "com.google.android.youtube":
+            search_goal = self._extract_search_query(goal)
+            subscribe_requested = any(
+                token in goal.casefold() for token in ["subscribe", "订阅"]
+            )
+            if any(token in text for token in [
+                "sign in", "choose an account", "password", "verification",
+            ]):
+                return VisionDecision.stop("Manual login required before YouTube automation can proceed.")
+            # Subscribe button requires user approval
+            if subscribe_requested:
+                for label in clickable:
+                    lowered = label.casefold()
+                    if "subscribe" in lowered or "订阅" in lowered:
+                        return VisionDecision.stop(
+                            f"User approval required to subscribe. Available action: {label}.",
+                            goal_progress="awaiting_user_approval",
+                            requires_user_approval=True,
+                        )
+            # Search flow
+            if search_goal:
+                search_input = self._find_component(components, component_type="text_input", search_related=True)
+                search_action = self._find_component(components, component_type="search_action", search_related=True)
+                if search_input and search_input.get("focused"):
+                    return VisionDecision(
+                        screen_classification="youtube_search_input",
+                        goal_progress="typing_query",
+                        next_action="type",
+                        target_box=BoundingBox.from_dict(search_input.get("target_box")),
+                        confidence=0.8,
+                        reason="Type the YouTube search query and submit.",
+                        risk_level="low",
+                        input_text=search_goal,
+                        submit_after_input=True,
+                        target_label=search_input.get("label") or "search",
+                    )
+                if search_input:
+                    return self._tap_decision(
+                        target_box=BoundingBox.from_dict(search_input.get("target_box")),
+                        screen_classification="youtube_home",
+                        goal_progress="focusing_search",
+                        confidence=0.72,
+                        reason="Focus the YouTube search field.",
+                        risk_level="low",
+                        target_label=search_input.get("label") or "search",
+                    )
+                if search_action:
+                    return self._tap_decision(
+                        target_box=BoundingBox.from_dict(search_action.get("target_box")),
+                        screen_classification="youtube_home",
+                        goal_progress="opening_search",
+                        confidence=0.66,
+                        reason="Open the YouTube search UI.",
+                        risk_level="low",
+                        target_label=search_action.get("label") or "search",
+                    )
+            # Already showing video content or results
+            if any(token in text for token in ["subscribe", "views", "subscribers", "播放", "订阅"]):
+                if not any(item.get("action") == "swipe" for item in action_history[-2:]):
+                    return VisionDecision(
+                        screen_classification="youtube_content",
+                        goal_progress="browsing",
+                        next_action="swipe",
+                        target_box=None,
+                        confidence=0.6,
+                        reason="Scroll once to inspect more YouTube content.",
+                        risk_level="low",
+                    )
+                return VisionDecision.stop("YouTube content is visible and has been scrolled read-only.")
+            if state.visible_text or state.clickable_text:
+                return VisionDecision.stop("YouTube is visible.")
+            return VisionDecision(
+                screen_classification="youtube_unknown",
+                goal_progress="researching",
+                next_action="wait",
+                target_box=None,
+                confidence=0.4,
+                reason="YouTube is open but the page is still stabilizing.",
+                risk_level="low",
+            )
+
         if state.package_name == "com.google.android.gm":
             if any(token in text for token in ["inbox", "primary", "social", "promotions", "更新", "收件箱", "主要", "社交", "推广"]):
                 if not any(item.get("action") == "swipe" for item in action_history[-2:]):
@@ -574,6 +655,9 @@ Return a single JSON object only.
 Use normalized coordinates in target_box with values in the 0..1 range.
 If you type into a search box and the query should be submitted immediately, set submit_after_input=true.
 If you need an explicit tool, return next_action="tool", set tool_name, and set tool_arguments_json to a JSON object string.
+To save a reusable automation script, use tool_name="save_script" with tool_arguments_json containing script_name, description, and steps.
+To replay a saved script, use tool_name="run_script" with tool_arguments_json containing script_name.
+To list available scripts, use tool_name="list_scripts".
 If you cannot proceed safely, return next_action="stop".
 """.strip()
 
@@ -623,10 +707,9 @@ If you cannot proceed safely, return next_action="stop".
     def _should_bypass_model(self, state: ScreenState, heuristic: VisionDecision) -> bool:
         if heuristic.requires_user_approval:
             return True
-        if state.package_name == "com.android.vending":
-            return heuristic.next_action in {"tap", "type", "back", "wait"}
-        if state.package_name == "com.google.android.gm":
-            return heuristic.next_action in {"swipe", "wait", "stop"}
+        # Only bypass when the heuristic has a concrete, high-confidence action
+        if heuristic.confidence >= 0.80 and heuristic.next_action in {"tap", "type", "back"}:
+            return True
         return False
 
     def _approval_required_popup_decision(self, state: ScreenState) -> VisionDecision | None:

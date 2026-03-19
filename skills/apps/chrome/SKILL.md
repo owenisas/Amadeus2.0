@@ -7,24 +7,29 @@ description: App-specific navigation guidance for the Chrome Android workflow.
 
 ## Purpose
 
-- Support low-risk navigation and read-oriented automation for `com.android.chrome`.
+- Support read-only Chrome browsing automation for `com.android.chrome`.
 - Default goal hint: Open Chrome and inspect the current start page without submitting forms.
 
 ## Navigation conventions
 
-- Prefer tabs, order/detail pages, and dismissible popups.
-- Avoid account mutation flows and irreversible confirmations.
-- Use visible text, package/activity, and normalized target boxes together before falling back to blind taps.
+- Prefer reading page content, scrolling, and navigating via the address bar.
+- Treat the New Tab page, bookmarks, and history as safe surfaces.
+- Dismiss onboarding / sync prompts using "No thanks", "Not now", or similar affordances.
+- Avoid filling forms, submitting data, or signing in.
 
-## Stable visual anchors
+## Dynamic components
 
-- Preserve the top visible labels for important screens in `screens.json`.
-- Reuse selectors only when the current screen signature matches the stored package/activity and anchor text.
+- Record address bar, tab switcher, and menu button selectors in `selectors.json`.
+- Track the current page title and URL snippet in `state.json`.
 
 ## Risk surfaces to avoid
 
-- payment, checkout, confirm form resubmission
+- Payment forms, checkout pages, and purchase confirmations.
+- Sign-in / sync prompts that mutate account state.
+- Form submission or data entry on external sites.
 
 ## Known recipes
 
-- `check latest order status`: navigate to orders, open the most recent order, read status, then stop.
+- `open Chrome`: launch Chrome, dismiss onboarding if present, stop when the start page or tab content is visible.
+- `navigate to a URL`: tap the address bar, type the URL, submit, wait for page load, stop.
+- `search for a topic`: tap the address bar, type the search query, submit, scroll through results read-only.

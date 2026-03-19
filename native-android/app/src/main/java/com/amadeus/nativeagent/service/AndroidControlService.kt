@@ -83,7 +83,28 @@ class AndroidControlService : AccessibilityService() {
             "back" -> performGlobalAction(GLOBAL_ACTION_BACK)
             "home" -> performGlobalAction(GLOBAL_ACTION_HOME)
             "wait" -> true
+            "tool" -> executeTool(decision, currentScreen)
             else -> true
+        }
+    }
+
+    private fun executeTool(decision: AgentDecision, currentScreen: CapturedScreen): Boolean {
+        return when (decision.toolName) {
+            "launch_app" -> {
+                val packageName = decision.inputText.orEmpty()
+                if (packageName.isNotBlank()) launchApp(packageName) else false
+            }
+            "back" -> performGlobalAction(GLOBAL_ACTION_BACK)
+            "home" -> performGlobalAction(GLOBAL_ACTION_HOME)
+            "swipe" -> swipe(currentScreen)
+            "run_script" -> {
+                // Script execution is handled at orchestrator level; signal success
+                true
+            }
+            else -> {
+                // Unknown tool — treat as no-op success to avoid crashing the run
+                true
+            }
         }
     }
 

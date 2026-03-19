@@ -18,7 +18,7 @@ class SafetyEngine {
         val classHint = screen.classNameHint.orEmpty().lowercase()
         val packageName = screen.packageName.lowercase()
         if ("permissioncontroller" in packageName || "grantpermission" in classHint) {
-            return false
+            return true
         }
         val approvalTokens = listOf(
             "choose an account",

@@ -40,11 +40,16 @@ class VisionEngine(
         systemInstruction: String,
         actionHistory: List<RunActionRecord>,
         availableActions: List<String>,
+        explorationEnabled: Boolean = true,
     ): AgentDecision {
         val heuristic = HeuristicVisionProvider().decide(goal, screen, skill, actionHistory)
         val apiKey = settingsRepository.geminiApiKey.first().trim()
         val model = settingsRepository.geminiModel.first().trim()
         if (apiKey.isBlank() || heuristic.requiresUserApproval) {
+            return heuristic
+        }
+        // When exploration is disabled, prefer deterministic heuristics over model calls
+        if (!explorationEnabled && heuristic.confidence >= 0.7f) {
             return heuristic
         }
         return try {
@@ -171,6 +176,12 @@ class VisionEngine(
 
             Return JSON with:
             screenClassification, goalProgress, nextAction, targetNodeId, targetBox, confidence, reason, riskLevel, inputText, targetLabel, toolName, requiresUserApproval
+
+            Tool actions:
+            To save a reusable automation script, use nextAction="tool", toolName="save_script", targetLabel=<script_name>, reason=<description>.
+            To replay a saved script, use nextAction="tool", toolName="run_script", inputText=<script_name>.
+            To list available scripts, use nextAction="tool", toolName="list_scripts".
+            Use scripts for repetitive navigation sequences like searching, dismissing popups, or multi-step flows you have done before.
         """.trimIndent()
     }
 }
@@ -217,16 +228,19 @@ private class HeuristicVisionProvider {
 
         findLabel("allow", "允许", "while using the app", "允许在使用应用期间").let { allowComponent ->
             if (allowComponent != null && listOf("permission", "notification", "allow").any { it in text }) {
+                val summary = screen.visibleText.take(3).joinToString("; ")
+                val actions = screen.clickableText.take(4).joinToString(", ")
                 return AgentDecision(
-                    screenClassification = "permission_dismiss",
-                    goalProgress = "navigating",
-                    nextAction = "tap",
+                    screenClassification = "permission_prompt",
+                    goalProgress = "awaiting_user_approval",
+                    nextAction = "stop",
                     targetNodeId = allowComponent.nodeId,
                     targetBox = allowComponent.targetBox,
-                    confidence = 0.9f,
-                    reason = "Allow the low-risk permission prompt so the agent can continue.",
-                    riskLevel = "low",
+                    confidence = 0.98f,
+                    reason = "User approval required for permission prompt: $summary. Available actions: $actions.",
+                    riskLevel = "medium",
                     targetLabel = allowComponent.label,
+                    requiresUserApproval = true,
                 )
             }
         }
