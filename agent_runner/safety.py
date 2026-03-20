@@ -36,6 +36,8 @@ def evaluate_decision(
         return SafetyVerdict(True, "Stop actions are always allowed.")
     if decision.next_action == "tap" and decision.target_box is None:
         return SafetyVerdict(False, "Tap actions require a target_box.")
+    if decision.next_action == "type" and not decision.input_text:
+        return SafetyVerdict(False, "Type actions require input_text.")
     if decision.next_action == "tool" and not decision.tool_name:
         return SafetyVerdict(False, "Tool actions require a tool_name.")
 

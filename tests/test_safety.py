@@ -63,6 +63,26 @@ def test_login_required_detection() -> None:
     assert detect_manual_login_required(amazon_app(), state) is True
 
 
+def test_type_action_without_input_text_is_rejected() -> None:
+    verdict = evaluate_decision(
+        amazon_app(),
+        make_state(visible_text=["Search"]),
+        VisionDecision(
+            screen_classification="search",
+            goal_progress="typing",
+            next_action="type",
+            target_box=None,
+            confidence=0.8,
+            reason="Type into the search box.",
+            risk_level="low",
+            input_text=None,
+        ),
+    )
+
+    assert verdict.allowed is False
+    assert "input_text" in verdict.reason
+
+
 def test_playstore_install_allowed_for_free_app() -> None:
     playstore = AppConfig(
         name="playstore",
