@@ -22,6 +22,8 @@ class NativeAgentViewModel(application: Application) : AndroidViewModel(applicat
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
     val model = runtime.settingsRepository.geminiModel
         .stateIn(viewModelScope, SharingStarted.Eagerly, "gemini-3.1-pro-preview")
+    val yoloMode = runtime.settingsRepository.yoloMode
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun setApiKey(value: String) {
         viewModelScope.launch { runtime.settingsRepository.setGeminiApiKey(value) }
@@ -29,6 +31,10 @@ class NativeAgentViewModel(application: Application) : AndroidViewModel(applicat
 
     fun setModel(value: String) {
         viewModelScope.launch { runtime.settingsRepository.setGeminiModel(value) }
+    }
+
+    fun setYoloMode(value: Boolean) {
+        viewModelScope.launch { runtime.settingsRepository.setYoloMode(value) }
     }
 
     fun refreshPermissions() {

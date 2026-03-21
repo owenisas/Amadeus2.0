@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 
 from agent_runner.android_adapter import AndroidAdapter
@@ -22,6 +23,11 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--app", required=True, help="App registry key, for example amazon.")
     run_parser.add_argument("--goal", required=True, help="Natural-language goal for the agent.")
     run_parser.add_argument("--max-steps", type=int, default=12, help="Maximum number of agent steps.")
+    run_parser.add_argument(
+        "--yolo",
+        action="store_true",
+        help="Run without interactive approval prompts. Existing hard safety blocks still apply.",
+    )
 
     doctor_parser = subparsers.add_parser("doctor", help="Print local runtime configuration.")
     doctor_parser.add_argument("--json", action="store_true", help="Return machine-readable output.")
@@ -43,6 +49,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     runtime = load_runtime_config()
+    yolo_mode = bool(getattr(args, "yolo", False)) or os.environ.get("AGENT_RUNNER_YOLO", "").strip().casefold() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
 
     if args.command == "doctor":
         payload = {
@@ -132,6 +144,7 @@ def main(argv: list[str] | None = None) -> int:
         run_dir=Path("."),
         exploration_enabled=True,
         max_steps=args.max_steps,
+        yolo_mode=yolo_mode,
     )
     try:
         result = orchestrator.run(context)
@@ -145,6 +158,8 @@ def main(argv: list[str] | None = None) -> int:
             "run_dir": str(result.run_dir),
             "package_name": result.last_state.package_name if result.last_state else None,
             "activity_name": result.last_state.activity_name if result.last_state else None,
+            "yolo_mode": context.yolo_mode,
+            "notice": result.notice,
         },
         indent=2,
         sort_keys=True,

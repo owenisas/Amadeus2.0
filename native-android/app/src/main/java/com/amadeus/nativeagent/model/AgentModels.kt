@@ -161,6 +161,7 @@ data class RunRecord(
     val goal: String,
     val status: String,
     val reason: String,
+    val notice: String? = null,
     val stepCount: Int = 0,
     val runDir: String,
     val actions: List<RunActionRecord> = emptyList(),
@@ -187,6 +188,7 @@ data class RunSpec(
     val goal: String,
     val maxSteps: Int,
     val explorationEnabled: Boolean,
+    val yoloMode: Boolean = false,
 )
 
 @Serializable

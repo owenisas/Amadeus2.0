@@ -5,21 +5,22 @@ import com.amadeus.nativeagent.model.AppDefinition
 import com.amadeus.nativeagent.model.CapturedScreen
 
 class SafetyEngine {
-    fun detectManualLoginRequired(app: AppDefinition, screen: CapturedScreen): Boolean {
+    fun detectManualLoginRequired(app: AppDefinition, screen: CapturedScreen, yoloMode: Boolean = false): Boolean {
+        if (yoloMode) {
+            return false
+        }
         val text = screen.visibleText.joinToString(" ").lowercase()
         return app.manualLoginTokens.any { token -> token.lowercase() in text }
     }
 
-    fun requiresApproval(screen: CapturedScreen, decision: AgentDecision): Boolean {
+    fun requiresApproval(screen: CapturedScreen, decision: AgentDecision, yoloMode: Boolean = false): Boolean {
+        if (yoloMode) {
+            return false
+        }
         if (decision.requiresUserApproval) {
             return true
         }
         val text = screen.visibleText.joinToString(" ").lowercase()
-        val classHint = screen.classNameHint.orEmpty().lowercase()
-        val packageName = screen.packageName.lowercase()
-        if ("permissioncontroller" in packageName || "grantpermission" in classHint) {
-            return true
-        }
         val approvalTokens = listOf(
             "choose an account",
             "sign in",
@@ -39,8 +40,9 @@ class SafetyEngine {
         if (decision.nextAction == "stop") {
             return true to decision.reason
         }
+        val screenText = if (decision.screenClassification == "approval_surface") "" else screen.visibleText.joinToString(" ").lowercase()
         val riskText = buildString {
-            append(screen.visibleText.joinToString(" ").lowercase())
+            append(screenText)
             append(' ')
             append(decision.reason.lowercase())
             append(' ')

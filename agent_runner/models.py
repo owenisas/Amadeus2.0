@@ -265,6 +265,7 @@ class RunContext:
     run_dir: Path
     exploration_enabled: bool
     max_steps: int
+    yolo_mode: bool = False
     action_history: list[ActionRecord] = field(default_factory=list)
 
 
@@ -275,3 +276,4 @@ class RunResult:
     steps: int
     run_dir: Path
     last_state: ScreenState | None = None
+    notice: str | None = None

@@ -20,10 +20,16 @@ class AgentOrchestrator(
     private val runtime: NativeAgentRuntime,
     private val controller: AndroidController,
 ) {
+    companion object {
+        const val YOLO_NOTICE =
+            "YOLO mode enabled: native approval overlays are bypassed and the agent will auto-continue through approval surfaces when it finds a stable action. Purchase and other local safety blocks still apply."
+    }
+
     suspend fun run(runId: String, spec: RunSpec): RunRecord {
         val app = runtime.appRegistry.byId(spec.appId)
         val skill = runtime.skillRepository.loadSkill(spec.appId)
         val runDir = File(runtime.skillRepository.runsDirectory(), runId).apply { mkdirs() }
+        val notice = if (spec.yoloMode) YOLO_NOTICE else null
         val debugLogFile = File(runDir, "agent_debug.log")
         fun log(message: String) {
             val line = "[${System.currentTimeMillis()}] $message"
@@ -41,10 +47,11 @@ class AgentOrchestrator(
                 goal = spec.goal,
                 status = "running",
                 reason = "Preparing automation runtime.",
+                notice = notice,
                 runDir = runDir.absolutePath,
             )
         )
-        log("run_started app=${spec.appId} goal=${spec.goal} exploration=${spec.explorationEnabled}")
+        log("run_started app=${spec.appId} goal=${spec.goal} exploration=${spec.explorationEnabled} yolo=${spec.yoloMode}")
 
         repeat(50) {
             if (controller.isReady()) {
@@ -77,6 +84,7 @@ class AgentOrchestrator(
                     goal = spec.goal,
                     status = "running",
                     reason = "Step $step on ${current.packageName}",
+                    notice = notice,
                     stepCount = actions.size,
                     runDir = runDir.absolutePath,
                     actions = actions,
@@ -86,7 +94,7 @@ class AgentOrchestrator(
             runtime.skillRepository.recordObservation(spec.appId, current)
             runtime.skillRepository.mergeDynamicSelectors(spec.appId, current.components, current)
 
-            if (runtime.safetyEngine.detectManualLoginRequired(app, current)) {
+            if (runtime.safetyEngine.detectManualLoginRequired(app, current, yoloMode = spec.yoloMode)) {
                 log("manual_login_required screen=${runtime.skillRepository.screenId(current)}")
                 return finish(
                     runId = runId,
@@ -109,6 +117,7 @@ class AgentOrchestrator(
                 actionHistory = actions,
                 availableActions = app.allowedActions,
                 explorationEnabled = spec.explorationEnabled,
+                yoloMode = spec.yoloMode,
             )
             log(
                 "decision step=$step action=${decision.nextAction} " +
@@ -118,7 +127,7 @@ class AgentOrchestrator(
 
             var effectiveDecision = decision
             var approvedByUser = false
-            if (runtime.safetyEngine.requiresApproval(current, decision)) {
+            if (runtime.safetyEngine.requiresApproval(current, decision, yoloMode = spec.yoloMode)) {
                 log("approval_requested reason=${decision.reason}")
                 val request = ApprovalRequest(
                     runId = runId,
@@ -134,6 +143,7 @@ class AgentOrchestrator(
                     goal = spec.goal,
                     status = "approval_required",
                     reason = decision.reason,
+                    notice = notice,
                     stepCount = step,
                     runDir = runDir.absolutePath,
                     actions = actions,
@@ -365,12 +375,12 @@ class AgentOrchestrator(
         runId: String,
         spec: RunSpec,
         status: String,
-        reason: String,
-        runDir: File,
-        actions: List<RunActionRecord>,
-        current: com.amadeus.nativeagent.model.CapturedScreen,
-        previous: com.amadeus.nativeagent.model.CapturedScreen,
-        transitionConfidence: Float,
+            reason: String,
+            runDir: File,
+            actions: List<RunActionRecord>,
+            current: com.amadeus.nativeagent.model.CapturedScreen,
+            previous: com.amadeus.nativeagent.model.CapturedScreen,
+            transitionConfidence: Float,
     ): RunRecord {
         runtime.skillRepository.recordTransition(
             spec.appId,
@@ -388,6 +398,7 @@ class AgentOrchestrator(
             goal = spec.goal,
             status = status,
             reason = reason,
+            notice = if (spec.yoloMode) YOLO_NOTICE else null,
             stepCount = actions.size,
             runDir = runDir.absolutePath,
             actions = actions,
@@ -410,6 +421,7 @@ class AgentOrchestrator(
             goal = spec.goal,
             status = status,
             reason = reason,
+            notice = if (spec.yoloMode) YOLO_NOTICE else null,
             runDir = runDir.absolutePath,
         )
         runtime.sessionStore.setCurrentRun(record)

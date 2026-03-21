@@ -67,6 +67,7 @@ private fun NativeAgentApp(viewModel: NativeAgentViewModel) {
     val snapshot by viewModel.snapshot.collectAsStateWithLifecycle()
     val apiKey by viewModel.apiKey.collectAsStateWithLifecycle()
     val model by viewModel.model.collectAsStateWithLifecycle()
+    val yoloMode by viewModel.yoloMode.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     val projectionLauncher = rememberLauncherForActivityResult(
@@ -96,9 +97,11 @@ private fun NativeAgentApp(viewModel: NativeAgentViewModel) {
             0 -> HomeScreen(
                 apiKey = apiKey,
                 model = model,
+                yoloMode = yoloMode,
                 snapshot = snapshot,
                 onApiKeyChange = viewModel::setApiKey,
                 onModelChange = viewModel::setModel,
+                onYoloModeChange = viewModel::setYoloMode,
                 onRequestAccessibility = {
                     context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 },
@@ -118,8 +121,16 @@ private fun NativeAgentApp(viewModel: NativeAgentViewModel) {
 
             1 -> RunComposerScreen(
                 runtime = runtime,
-                onStartRun = { appId, goal, maxSteps, exploration ->
-                    val spec = RunSpec(appId = appId, goal = goal, maxSteps = maxSteps, explorationEnabled = exploration)
+                yoloMode = yoloMode,
+                onYoloModeChange = viewModel::setYoloMode,
+                onStartRun = { appId, goal, maxSteps, exploration, runYoloMode ->
+                    val spec = RunSpec(
+                        appId = appId,
+                        goal = goal,
+                        maxSteps = maxSteps,
+                        explorationEnabled = exploration,
+                        yoloMode = runYoloMode,
+                    )
                     runtime.startRun(JsonSupport.json.encodeToString(RunSpec.serializer(), spec))
                 },
             )
@@ -135,9 +146,11 @@ private fun NativeAgentApp(viewModel: NativeAgentViewModel) {
 private fun HomeScreen(
     apiKey: String,
     model: String,
+    yoloMode: Boolean,
     snapshot: com.amadeus.nativeagent.model.RuntimeSnapshot,
     onApiKeyChange: (String) -> Unit,
     onModelChange: (String) -> Unit,
+    onYoloModeChange: (Boolean) -> Unit,
     onRequestAccessibility: () -> Unit,
     onRequestOverlay: () -> Unit,
     onRequestProjection: () -> Unit,
@@ -178,13 +191,30 @@ private fun HomeScreen(
                 }
             }
         }
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Approval mode", fontWeight = FontWeight.Bold)
+                    Button(onClick = { onYoloModeChange(!yoloMode) }) {
+                        Text("YOLO mode: ${if (yoloMode) "enabled" else "disabled"}")
+                    }
+                    if (yoloMode) {
+                        Text(
+                            "Notice: YOLO mode bypasses native approval overlays and auto-continues through approval surfaces when it finds a stable action. Purchase and other local safety blocks still remain active.",
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
 @Composable
 private fun RunComposerScreen(
     runtime: NativeAgentRuntime,
-    onStartRun: (String, String, Int, Boolean) -> Unit,
+    yoloMode: Boolean,
+    onYoloModeChange: (Boolean) -> Unit,
+    onStartRun: (String, String, Int, Boolean, Boolean) -> Unit,
 ) {
     var selectedAppId by rememberSaveable { mutableStateOf(runtime.appRegistry.apps.first().id) }
     var goal by rememberSaveable { mutableStateOf(runtime.appRegistry.apps.first().defaultGoalHint) }
@@ -228,8 +258,18 @@ private fun RunComposerScreen(
             }
         }
         item {
+            Button(onClick = { onYoloModeChange(!yoloMode) }) {
+                Text("Approval mode: ${if (yoloMode) "YOLO" else "manual approval"}")
+            }
+        }
+        if (yoloMode) {
+            item {
+                Text("Notice: this run will bypass approval overlays and continue automatically when a stable approval action is available.")
+            }
+        }
+        item {
             Button(
-                onClick = { onStartRun(selectedAppId, goal, maxSteps.toIntOrNull() ?: 12, explorationEnabled) },
+                onClick = { onStartRun(selectedAppId, goal, maxSteps.toIntOrNull() ?: 12, explorationEnabled, yoloMode) },
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Start run")
@@ -249,6 +289,7 @@ private fun RunMonitorScreen(snapshot: com.amadeus.nativeagent.model.RuntimeSnap
                     Text(currentRun?.status ?: "No active run")
                     Text(currentRun?.reason ?: "Start a run from Run Composer.")
                     currentRun?.let {
+                        it.notice?.let { notice -> Text(notice) }
                         Text("Goal: ${it.goal}")
                         Text("Steps: ${it.stepCount}")
                         Text("Run dir: ${it.runDir}")
@@ -308,6 +349,7 @@ private fun RunsScreen(snapshot: com.amadeus.nativeagent.model.RuntimeSnapshot) 
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("${run.appId}: ${run.status}", fontWeight = FontWeight.Bold)
                     Text(run.reason)
+                    run.notice?.let { notice -> Text(notice) }
                     Text("Steps: ${run.stepCount}")
                     Text("Run dir: ${run.runDir}")
                 }

@@ -20,6 +20,46 @@ class VisionAgent:
         "scroll": "swipe",
         "go_back": "back",
     }
+    YOLO_PRIMARY_ACTION_TOKENS = (
+        "allow",
+        "agree",
+        "accept",
+        "continue",
+        "ok",
+        "got it",
+        "next",
+        "turn on",
+        "enable",
+        "yes",
+        "sign in",
+        "open",
+        "允许",
+        "同意",
+        "继续",
+        "确定",
+        "知道了",
+        "下一步",
+        "完成",
+        "打开",
+        "转至 gmail",
+    )
+    YOLO_SECONDARY_ACTION_TOKENS = (
+        "not now",
+        "later",
+        "skip",
+        "dismiss",
+        "close",
+        "cancel",
+        "deny",
+        "don't allow",
+        "don’t allow",
+        "以后再说",
+        "稍后",
+        "跳过",
+        "关闭",
+        "取消",
+        "不允许",
+    )
 
     def __init__(self, api_key: str | None, model: str) -> None:
         self.api_key = api_key
@@ -34,6 +74,7 @@ class VisionAgent:
         system_instruction: str = "",
         action_history: list[dict[str, Any]],
         available_tools: list[dict[str, Any]] | None = None,
+        yolo_mode: bool = False,
     ) -> VisionDecision:
         heuristic = self._heuristic_decision(
             goal=goal,
@@ -42,19 +83,24 @@ class VisionAgent:
             system_instruction=system_instruction,
             action_history=action_history,
             available_tools=available_tools or [],
+            yolo_mode=yolo_mode,
         )
-        if self._should_bypass_model(state, heuristic):
+        if self._should_bypass_model(state, heuristic, yolo_mode=yolo_mode):
             return heuristic
         if not self.api_key:
             return heuristic
-        return self._gemini_decision(
+        decision = self._gemini_decision(
             goal=goal,
             state=state,
             skill=skill,
             system_instruction=system_instruction,
             action_history=action_history,
             available_tools=available_tools or [],
+            yolo_mode=yolo_mode,
         )
+        if yolo_mode:
+            return self._apply_yolo_overrides(state=state, skill=skill, decision=decision)
+        return decision
 
     def _gemini_decision(
         self,
@@ -65,6 +111,7 @@ class VisionAgent:
         system_instruction: str,
         action_history: list[dict[str, Any]],
         available_tools: list[dict[str, Any]],
+        yolo_mode: bool,
     ) -> VisionDecision:
         prompt = self._build_prompt(
             goal=goal,
@@ -73,6 +120,7 @@ class VisionAgent:
             system_instruction=system_instruction,
             action_history=action_history,
             available_tools=available_tools,
+            yolo_mode=yolo_mode,
         )
         image_bytes = Path(state.screenshot_path).read_bytes()
         payload = {
@@ -152,6 +200,7 @@ class VisionAgent:
                 system_instruction=system_instruction,
                 action_history=action_history,
                 available_tools=available_tools,
+                yolo_mode=yolo_mode,
             )
             fallback.reason = f"Gemini request failed ({exc.code}); heuristic fallback used. {detail[:180]}"
             return fallback
@@ -163,6 +212,7 @@ class VisionAgent:
                 system_instruction=system_instruction,
                 action_history=action_history,
                 available_tools=available_tools,
+                yolo_mode=yolo_mode,
             )
             fallback.reason = f"Gemini request failed; heuristic fallback used. {exc.reason}"
             return fallback
@@ -178,6 +228,7 @@ class VisionAgent:
                 system_instruction=system_instruction,
                 action_history=action_history,
                 available_tools=available_tools,
+                yolo_mode=yolo_mode,
             )
             fallback.reason = "Gemini returned non-JSON content; heuristic fallback used."
             return fallback
@@ -192,13 +243,14 @@ class VisionAgent:
         system_instruction: str,
         action_history: list[dict[str, Any]],
         available_tools: list[dict[str, Any]],
+        yolo_mode: bool,
     ) -> VisionDecision:
         text = " ".join(state.visible_text[:60]).casefold()
         clickable = state.clickable_text
         components = state.components
         tool_names = {tool.get("name", "") for tool in available_tools}
 
-        popup_decision = self._approval_required_popup_decision(state)
+        popup_decision = self._approval_required_popup_decision(state, skill, yolo_mode=yolo_mode)
         if popup_decision is not None:
             return popup_decision
 
@@ -218,7 +270,7 @@ class VisionAgent:
                 confidence=0.88,
             )
 
-        if "sign in" in text or "password" in text or "verification" in text:
+        if "password" in text or "verification" in text or (not yolo_mode and "sign in" in text):
             return VisionDecision.stop("Manual login required before automation can proceed.")
 
         if "latest order" in goal.casefold() or "delivery" in goal.casefold():
@@ -306,9 +358,9 @@ class VisionAgent:
             subscribe_requested = any(
                 token in goal.casefold() for token in ["subscribe", "订阅"]
             )
-            if any(token in text for token in [
-                "sign in", "choose an account", "password", "verification",
-            ]):
+            if any(token in text for token in ["password", "verification"]) or (
+                not yolo_mode and any(token in text for token in ["sign in", "choose an account"])
+            ):
                 return VisionDecision.stop("Manual login required before YouTube automation can proceed.")
             # Subscribe button requires user approval
             if subscribe_requested:
@@ -612,7 +664,17 @@ class VisionAgent:
         system_instruction: str,
         action_history: list[dict[str, Any]],
         available_tools: list[dict[str, Any]],
+        yolo_mode: bool,
     ) -> str:
+        login_policy = (
+            "- YOLO mode is enabled. Do not ask for approval on onboarding, permission, or consent prompts. "
+            "Pick the safest viable action and continue autonomously.\n"
+            "- Never invent credentials. If a password or verification code is required, stop."
+            if yolo_mode
+            else "- Stop if login or verification is required.\n"
+            "- If a popup, dialog, permission prompt, onboarding card, or system surface requires user approval, "
+            "stop and ask for approval instead of acting automatically."
+        )
         return f"""
 You are controlling an Android app in low-risk exploration mode.
 
@@ -621,9 +683,8 @@ Goal:
 
 Safety policy:
 - Never purchase, confirm payment, submit an irreversible form, message support, or edit account settings.
-- Stop if login or verification is required.
 - Prefer reading status/details and navigating low-risk tabs or order pages.
-- If a popup, dialog, permission prompt, onboarding card, or system surface requires user approval, stop and ask for approval instead of acting automatically.
+{login_policy}
 
 Current app:
 - package: {state.package_name}
@@ -704,15 +765,29 @@ If you cannot proceed safely, return next_action="stop".
             return {}
         return parsed if isinstance(parsed, dict) else {}
 
-    def _should_bypass_model(self, state: ScreenState, heuristic: VisionDecision) -> bool:
+    def _should_bypass_model(
+        self,
+        state: ScreenState,
+        heuristic: VisionDecision,
+        *,
+        yolo_mode: bool,
+    ) -> bool:
         if heuristic.requires_user_approval:
             return True
+        if yolo_mode and heuristic.next_action == "stop" and "manual login required" in heuristic.reason.casefold():
+            return False
         # Only bypass when the heuristic has a concrete, high-confidence action
         if heuristic.confidence >= 0.80 and heuristic.next_action in {"tap", "type", "back"}:
             return True
         return False
 
-    def _approval_required_popup_decision(self, state: ScreenState) -> VisionDecision | None:
+    def _approval_required_popup_decision(
+        self,
+        state: ScreenState,
+        skill: SkillBundle,
+        *,
+        yolo_mode: bool,
+    ) -> VisionDecision | None:
         text = " ".join(state.visible_text[:60]).casefold()
         clickable = state.clickable_text[:6]
         resource_ids = " ".join(
@@ -760,15 +835,100 @@ If you cannot proceed safely, return next_action="stop".
                 "welcome",
             ]
         ) and has_modal_tokens
-        if not (is_permission_surface or has_permission_tokens or has_onboarding_actions):
+        has_consent_actions = any(
+            token in text
+            for token in [
+                "agree",
+                "accept",
+                "continue",
+                "user agreement",
+                "privacy policy",
+                "用户须知",
+                "同意",
+                "继续",
+                "隐私政策",
+            ]
+        )
+        if not (is_permission_surface or has_permission_tokens or has_onboarding_actions or has_consent_actions):
             return None
         action_labels = ", ".join(clickable) if clickable else "no explicit action labels detected"
         summary = "; ".join(state.visible_text[:4]) or state.activity_name or state.package_name
+        if yolo_mode:
+            auto_decision = self._auto_approval_popup_decision(state=state, skill=skill, summary=summary)
+            if auto_decision is not None:
+                return auto_decision
+            return VisionDecision.stop(
+                f"YOLO mode detected an approval surface but no stable action was available: {summary}.",
+                goal_progress="blocked",
+            )
         return VisionDecision.stop(
             f"User approval required for popup or system surface: {summary}. Available actions: {action_labels}.",
             goal_progress="awaiting_user_approval",
             requires_user_approval=True,
         )
+
+    def _apply_yolo_overrides(
+        self,
+        *,
+        state: ScreenState,
+        skill: SkillBundle,
+        decision: VisionDecision,
+    ) -> VisionDecision:
+        if not decision.requires_user_approval:
+            return decision
+        if decision.next_action != "stop":
+            decision.requires_user_approval = False
+            return decision
+        auto_decision = self._auto_approval_popup_decision(
+            state=state,
+            skill=skill,
+            summary=decision.reason or state.activity_name,
+        )
+        if auto_decision is not None:
+            return auto_decision
+        return VisionDecision.stop(
+            f"YOLO mode bypassed approval prompts, but no stable action was found. {decision.reason}",
+            goal_progress="blocked",
+        )
+
+    def _auto_approval_popup_decision(
+        self,
+        *,
+        state: ScreenState,
+        skill: SkillBundle,
+        summary: str,
+    ) -> VisionDecision | None:
+        for tokens in (self.YOLO_PRIMARY_ACTION_TOKENS, self.YOLO_SECONDARY_ACTION_TOKENS):
+            for token in tokens:
+                for component in state.components[:20]:
+                    label = str(component.get("label", "")).strip()
+                    if not label or component.get("enabled") is False:
+                        continue
+                    if token not in label.casefold():
+                        continue
+                    return self._tap_decision(
+                        target_box=BoundingBox.from_dict(component.get("target_box")),
+                        screen_classification="approval_surface",
+                        goal_progress="yolo_auto_approval",
+                        confidence=0.96,
+                        reason="YOLO mode auto-continued through an approval surface.",
+                        risk_level="low",
+                        target_label=label,
+                    )
+                for label in state.clickable_text[:8]:
+                    if token not in label.casefold():
+                        continue
+                    return self._tap_decision_for_label(
+                        state=state,
+                        skill=skill,
+                        label=label,
+                        screen_classification="approval_surface",
+                        goal_progress="yolo_auto_approval",
+                        confidence=0.94,
+                        reason="YOLO mode auto-continued through an approval surface.",
+                        risk_level="low",
+                    )
+        return None
 
     def _extract_search_query(self, goal: str) -> str | None:
         lowered = goal.strip()

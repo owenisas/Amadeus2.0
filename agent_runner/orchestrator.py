@@ -12,6 +12,12 @@ from agent_runner.vision_agent import VisionAgent
 
 
 class Orchestrator:
+    YOLO_NOTICE = (
+        "YOLO mode enabled: interactive approval prompts are bypassed and the agent will "
+        "auto-continue through approval surfaces when it finds a stable action. Purchase and "
+        "other local safety blocks still apply."
+    )
+
     def __init__(
         self,
         *,
@@ -66,6 +72,7 @@ class Orchestrator:
                 context.run_dir = run_dir
                 bundle = self.skill_manager.load_skill(context.app)
                 system_instruction = self.skill_manager.load_system_skill()
+                notice = self.YOLO_NOTICE if context.yolo_mode else None
 
                 if not self.android_adapter.is_package_installed(context.app.package_name):
                     self.skill_manager.update_run_state(
@@ -81,6 +88,7 @@ class Orchestrator:
                         reason=f"{context.app.package_name} is not installed on {self.android_adapter.device_serial}.",
                         steps=0,
                         run_dir=run_dir,
+                        notice=notice,
                     )
 
                 self.android_adapter.launch_app(context.app.package_name, context.app.launch_activity)
@@ -93,7 +101,7 @@ class Orchestrator:
                 for step in range(1, context.max_steps + 1):
                     last_state = state
 
-                    if detect_manual_login_required(context.app, state):
+                    if not context.yolo_mode and detect_manual_login_required(context.app, state):
                         reason = "Manual login required before automation can continue."
                         self.skill_manager.update_after_observation(bundle, state, None)
                         self.skill_manager.update_run_state(
@@ -110,6 +118,7 @@ class Orchestrator:
                             steps=step,
                             run_dir=run_dir,
                             last_state=state,
+                            notice=notice,
                         )
 
                     decision = self.vision_agent.decide(
@@ -119,6 +128,7 @@ class Orchestrator:
                         system_instruction=system_instruction,
                         action_history=[item.to_dict() for item in context.action_history],
                         available_tools=[tool.to_dict() for tool in self.tool_executor.list_tools()],
+                        yolo_mode=context.yolo_mode,
                     )
                     last_screen_id = self.skill_manager.update_after_observation(bundle, state, decision)
 
@@ -141,6 +151,7 @@ class Orchestrator:
                                 steps=step,
                                 run_dir=run_dir,
                                 last_state=state,
+                                notice=notice,
                             )
                         if resolution == "manual":
                             return RunResult(
@@ -149,6 +160,7 @@ class Orchestrator:
                                 steps=step,
                                 run_dir=run_dir,
                                 last_state=state,
+                                notice=notice,
                             )
                         # User approved — convert the stop into the concrete action
                         if decision.target_label and decision.target_box:
@@ -195,6 +207,7 @@ class Orchestrator:
                             steps=step,
                             run_dir=run_dir,
                             last_state=state,
+                            notice=notice,
                         )
 
                     action_record = ActionRecord(
@@ -224,6 +237,7 @@ class Orchestrator:
                             steps=step,
                             run_dir=run_dir,
                             last_state=state,
+                            notice=notice,
                         )
 
                     if decision.next_action == "tool":
@@ -253,6 +267,7 @@ class Orchestrator:
                                 steps=step,
                                 run_dir=run_dir,
                                 last_state=state,
+                                notice=notice,
                             )
                         next_state = state
                         if tool_result.captured_state is not None:
@@ -293,6 +308,7 @@ class Orchestrator:
                             steps=step,
                             run_dir=run_dir,
                             last_state=next_state,
+                            notice=notice,
                         )
 
                 reason = "Max steps reached."
@@ -310,6 +326,7 @@ class Orchestrator:
                     steps=context.max_steps,
                     run_dir=run_dir,
                     last_state=last_state,
+                    notice=notice,
                 )
             finally:
                 self.android_adapter.close()

@@ -381,6 +381,52 @@ def test_gmail_notification_permission_requires_user_approval(tmp_path: Path) ->
     assert decision.requires_user_approval is True
 
 
+def test_gmail_notification_permission_auto_allows_in_yolo_mode(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["gmail"])
+    device = DeviceInfo(
+        serial="emulator-5554",
+        width=1080,
+        height=2400,
+        density=420,
+        orientation="portrait",
+        package_name="com.google.android.permissioncontroller",
+        activity_name="com.android.permissioncontroller.permission.ui.GrantPermissionsActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/fake.png"),
+        hierarchy_path=Path("/tmp/fake.xml"),
+        screenshot_sha256="abc",
+        xml_source="<hierarchy />",
+        visible_text=["Allow Gmail to send notifications?", "Allow", "Don't allow"],
+        clickable_text=["Allow", "Don't allow"],
+        package_name=device.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=[
+            {
+                "component_type": "button",
+                "label": "Allow",
+                "enabled": True,
+                "search_related": False,
+                "target_box": {"x": 0.12, "y": 0.48, "width": 0.75, "height": 0.06},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="open Gmail and look through emails",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.requires_user_approval is False
+    assert decision.target_label == "Allow"
+
+
 def test_gmail_meet_overlay_requires_user_approval(tmp_path: Path) -> None:
     agent = VisionAgent(None, "gemini-3.1-pro-preview")
     bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["gmail"])

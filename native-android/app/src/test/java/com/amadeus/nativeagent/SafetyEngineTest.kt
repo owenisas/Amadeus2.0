@@ -21,6 +21,13 @@ class SafetyEngineTest {
     }
 
     @Test
+    fun `yolo mode bypasses manual login gate`() {
+        val app = appDefinition()
+        val screen = capturedScreen(visibleText = listOf("Sign in", "Enter password"))
+        assertFalse(engine.detectManualLoginRequired(app, screen, yoloMode = true))
+    }
+
+    @Test
     fun `does not require approval for low risk permission prompts`() {
         val screen = capturedScreen(
             packageName = "com.google.android.permissioncontroller",
@@ -36,6 +43,25 @@ class SafetyEngineTest {
             riskLevel = "medium",
         )
         assertFalse(engine.requiresApproval(screen, decision))
+    }
+
+    @Test
+    fun `yolo mode bypasses approval requirement`() {
+        val screen = capturedScreen(
+            packageName = "com.google.android.permissioncontroller",
+            visibleText = listOf("Allow Gmail to send notifications?", "Allow", "Deny"),
+            classNameHint = "GrantPermissionsActivity",
+        )
+        val decision = AgentDecision(
+            screenClassification = "permission",
+            goalProgress = "awaiting_user_approval",
+            nextAction = "stop",
+            confidence = 1f,
+            reason = "Permission prompt",
+            riskLevel = "medium",
+            requiresUserApproval = true,
+        )
+        assertFalse(engine.requiresApproval(screen, decision, yoloMode = true))
     }
 
     @Test

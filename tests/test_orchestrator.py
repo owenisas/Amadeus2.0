@@ -127,6 +127,73 @@ def test_orchestrator_returns_approval_required_for_popup(tmp_path: Path) -> Non
     assert "denied" in result.reason.lower()
 
 
+class PopupActionAdapter(PopupAdapter):
+    def capture_state(self, run_dir: Path):
+        device = DeviceInfo(
+            serial="emulator-5554",
+            width=1080,
+            height=2400,
+            density=420,
+            orientation="portrait",
+            package_name="com.google.android.permissioncontroller",
+            activity_name="com.android.permissioncontroller.permission.ui.GrantPermissionsActivity",
+        )
+        return ScreenState(
+            screenshot_path=run_dir / "fake.png",
+            hierarchy_path=run_dir / "fake.xml",
+            screenshot_sha256="abc",
+            xml_source="<hierarchy />",
+            visible_text=["Allow Gmail to send notifications?", "Allow", "Don't allow"],
+            clickable_text=["Allow", "Don't allow"],
+            package_name=device.package_name,
+            activity_name=device.activity_name,
+            device=device,
+            components=[
+                {
+                    "component_type": "button",
+                    "label": "Allow",
+                    "enabled": True,
+                    "search_related": False,
+                    "target_box": {"x": 0.12, "y": 0.48, "width": 0.75, "height": 0.06},
+                }
+            ],
+        )
+
+    def perform(self, decision, state):
+        return None
+
+
+def test_orchestrator_yolo_mode_skips_interactive_approval(tmp_path: Path) -> None:
+    adapter = PopupActionAdapter()
+    skill_manager = SkillManager(tmp_path / "skills")
+
+    def exploding_handler(decision, state):
+        raise AssertionError("approval handler should not be called in yolo mode")
+
+    orchestrator = Orchestrator(
+        android_adapter=adapter,
+        tool_executor=AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager),
+        vision_agent=VisionAgent(None, "gemini-3.1-pro-preview"),
+        skill_manager=skill_manager,
+        runs_dir=tmp_path / "runs",
+        approval_handler=exploding_handler,
+    )
+    context = RunContext(
+        app=APP_REGISTRY["gmail"],
+        goal="open Gmail and look through emails",
+        run_dir=tmp_path / "runs",
+        exploration_enabled=True,
+        max_steps=3,
+        yolo_mode=True,
+    )
+
+    result = orchestrator.run(context)
+
+    assert result.status == "stalled"
+    assert result.notice is not None
+    assert "yolo mode enabled" in result.notice.casefold()
+
+
 def test_orchestrator_resumes_after_user_approval(tmp_path: Path) -> None:
     """When the user approves a popup, the orchestrator should continue the run rather than stopping."""
     adapter = PopupAdapter()

@@ -26,6 +26,47 @@ class VisionEngine(
     private val context: Context,
     private val settingsRepository: SettingsRepository,
 ) {
+    companion object {
+        private val yoloPrimaryActionTokens = listOf(
+            "allow",
+            "agree",
+            "accept",
+            "continue",
+            "ok",
+            "got it",
+            "next",
+            "yes",
+            "open",
+            "允许",
+            "同意",
+            "继续",
+            "确定",
+            "知道了",
+            "下一步",
+            "完成",
+            "打开",
+            "同意并继续",
+            "转至 gmail",
+        )
+        private val yoloSecondaryActionTokens = listOf(
+            "not now",
+            "later",
+            "skip",
+            "dismiss",
+            "close",
+            "cancel",
+            "don't allow",
+            "don’t allow",
+            "deny",
+            "以后再说",
+            "稍后",
+            "跳过",
+            "关闭",
+            "取消",
+            "不允许",
+        )
+    }
+
     private val client = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
@@ -41,11 +82,12 @@ class VisionEngine(
         actionHistory: List<RunActionRecord>,
         availableActions: List<String>,
         explorationEnabled: Boolean = true,
+        yoloMode: Boolean = false,
     ): AgentDecision {
-        val heuristic = HeuristicVisionProvider().decide(goal, screen, skill, actionHistory)
+        val heuristic = HeuristicVisionProvider().decide(goal, screen, skill, actionHistory, yoloMode = yoloMode)
         val apiKey = settingsRepository.geminiApiKey.first().trim()
         val model = settingsRepository.geminiModel.first().trim()
-        if (apiKey.isBlank() || heuristic.requiresUserApproval) {
+        if (apiKey.isBlank() || (heuristic.requiresUserApproval && !yoloMode)) {
             return heuristic
         }
         // When exploration is disabled, prefer deterministic heuristics over model calls
@@ -64,6 +106,7 @@ class VisionEngine(
                     availableActions = availableActions,
                     screen = screen,
                 ),
+                yoloMode = yoloMode,
             )
         } catch (_: Exception) {
             heuristic
@@ -74,8 +117,9 @@ class VisionEngine(
         apiKey: String,
         model: String,
         request: VisionProviderRequest,
+        yoloMode: Boolean,
     ): AgentDecision {
-        val prompt = buildPrompt(request)
+        val prompt = buildPrompt(request, yoloMode = yoloMode)
         val screenshotBytes = File(request.screen.screenshotPath).readBytes()
         val body = JSONObject()
             .put(
@@ -122,7 +166,7 @@ class VisionEngine(
                 .getJSONObject(0)
                 .getString("text")
             val decoded = com.amadeus.nativeagent.runtime.JsonSupport.json.decodeFromString<VisionProviderResponse>(text)
-            return AgentDecision(
+            val decision = AgentDecision(
                 screenClassification = decoded.screenClassification,
                 goalProgress = decoded.goalProgress,
                 nextAction = decoded.nextAction.lowercase(Locale.US),
@@ -136,16 +180,23 @@ class VisionEngine(
                 toolName = decoded.toolName,
                 requiresUserApproval = decoded.requiresUserApproval,
             )
+            return if (yoloMode) applyYoloOverrides(screen = request.screen, decision = decision) else decision
         }
     }
 
-    private fun buildPrompt(request: VisionProviderRequest): String {
+    private fun buildPrompt(request: VisionProviderRequest, yoloMode: Boolean): String {
         val treeSnippet = JsonSupport.json.encodeToString(request.screen.rawTree).take(12000)
         val components = JsonSupport.json.encodeToString(request.screen.components.take(20))
+        val approvalPolicy = if (yoloMode) {
+            "YOLO mode is enabled. Do not ask for approval on onboarding, permission, or consent prompts. " +
+                "Pick the safest viable action and continue autonomously. Never invent credentials. If a password or verification code is required, stop."
+        } else {
+            "Stop and require user approval for permissions, subscriptions, purchases, account changes, and ambiguous popups."
+        }
         return """
             You are controlling an Android phone using AccessibilityService and screenshots.
             Follow the system instruction and app skill. Prefer safe, reversible actions.
-            Stop and require user approval for permissions, subscriptions, purchases, account changes, and ambiguous popups.
+            $approvalPolicy
 
             System instruction:
             ${request.systemInstruction}
@@ -184,6 +235,61 @@ class VisionEngine(
             Use scripts for repetitive navigation sequences like searching, dismissing popups, or multi-step flows you have done before.
         """.trimIndent()
     }
+
+    private fun applyYoloOverrides(screen: CapturedScreen, decision: AgentDecision): AgentDecision {
+        if (!decision.requiresUserApproval) {
+            return decision
+        }
+        if (decision.nextAction != "stop") {
+            return decision.copy(requiresUserApproval = false)
+        }
+        autoApprovalDecision(screen, preferredLabel = decision.targetLabel)?.let { return it }
+        return decision.copy(requiresUserApproval = false)
+    }
+
+    private fun autoApprovalDecision(
+        screen: CapturedScreen,
+        preferredLabel: String? = null,
+    ): AgentDecision? {
+        val preferred = preferredLabel?.trim().orEmpty()
+        if (preferred.isNotBlank()) {
+            screen.components.firstOrNull { it.label.equals(preferred, ignoreCase = true) }?.let { component ->
+                return AgentDecision(
+                    screenClassification = "approval_surface",
+                    goalProgress = "yolo_auto_approval",
+                    nextAction = "tap",
+                    targetNodeId = component.nodeId,
+                    targetBox = component.targetBox,
+                    confidence = 0.96f,
+                    reason = "YOLO mode auto-continued through an approval surface.",
+                    riskLevel = "low",
+                    targetLabel = component.label,
+                )
+            }
+        }
+        for (tokens in listOf(yoloPrimaryActionTokens, yoloSecondaryActionTokens)) {
+            for (token in tokens) {
+                screen.components.firstOrNull { component ->
+                    component.label.isNotBlank() &&
+                        component.enabled &&
+                        component.label.lowercase().contains(token)
+                }?.let { component ->
+                    return AgentDecision(
+                        screenClassification = "approval_surface",
+                        goalProgress = "yolo_auto_approval",
+                        nextAction = "tap",
+                        targetNodeId = component.nodeId,
+                        targetBox = component.targetBox,
+                        confidence = 0.95f,
+                        reason = "YOLO mode auto-continued through an approval surface.",
+                        riskLevel = "low",
+                        targetLabel = component.label,
+                    )
+                }
+            }
+        }
+        return null
+    }
 }
 
 private class HeuristicVisionProvider {
@@ -192,6 +298,7 @@ private class HeuristicVisionProvider {
         screen: CapturedScreen,
         skill: SkillBundle,
         actionHistory: List<RunActionRecord>,
+        yoloMode: Boolean,
     ): AgentDecision {
         val text = screen.visibleText.joinToString(" ").lowercase()
         val labeledComponents = screen.components.filter { it.label.isNotBlank() }
@@ -200,7 +307,9 @@ private class HeuristicVisionProvider {
             labels.any { it == value }
         }
 
-        if (listOf("choose an account", "sign in", "password", "verification code").any { it in text }) {
+        if (listOf("password", "verification code").any { it in text } ||
+            (!yoloMode && listOf("choose an account", "sign in").any { it in text })
+        ) {
             return AgentDecision(
                 screenClassification = "account_gate",
                 goalProgress = "blocked",
@@ -228,6 +337,19 @@ private class HeuristicVisionProvider {
 
         findLabel("allow", "允许", "while using the app", "允许在使用应用期间").let { allowComponent ->
             if (allowComponent != null && listOf("permission", "notification", "allow").any { it in text }) {
+                if (yoloMode) {
+                    return AgentDecision(
+                        screenClassification = "approval_surface",
+                        goalProgress = "yolo_auto_approval",
+                        nextAction = "tap",
+                        targetNodeId = allowComponent.nodeId,
+                        targetBox = allowComponent.targetBox,
+                        confidence = 0.98f,
+                        reason = "YOLO mode auto-continued through an approval surface.",
+                        riskLevel = "low",
+                        targetLabel = allowComponent.label,
+                    )
+                }
                 val summary = screen.visibleText.take(3).joinToString("; ")
                 val actions = screen.clickableText.take(4).joinToString(", ")
                 return AgentDecision(
@@ -241,6 +363,26 @@ private class HeuristicVisionProvider {
                     riskLevel = "medium",
                     targetLabel = allowComponent.label,
                     requiresUserApproval = true,
+                )
+            }
+        }
+
+        findLabel("agree", "accept", "continue", "同意", "继续", "同意并继续").let { consentComponent ->
+            if (consentComponent != null && listOf("privacy", "agreement", "用户须知", "隐私", "同意").any { it in text }) {
+                return AgentDecision(
+                    screenClassification = if (yoloMode) "approval_surface" else "consent_gate",
+                    goalProgress = if (yoloMode) "yolo_auto_approval" else "navigating",
+                    nextAction = "tap",
+                    targetNodeId = consentComponent.nodeId,
+                    targetBox = consentComponent.targetBox,
+                    confidence = 0.95f,
+                    reason = if (yoloMode) {
+                        "YOLO mode auto-continued through an approval surface."
+                    } else {
+                        "Accept the low-risk consent surface and continue into the app."
+                    },
+                    riskLevel = "low",
+                    targetLabel = consentComponent.label,
                 )
             }
         }

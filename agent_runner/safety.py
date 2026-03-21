@@ -58,8 +58,8 @@ def evaluate_decision(
             ],
         )
     ).casefold()
-    screen_text = " ".join(state.visible_text[:60]).casefold()
-    combined = " ".join([decision_text, screen_text])
+    screen_text = "" if decision.screen_classification == "approval_surface" else " ".join(state.visible_text[:60]).casefold()
+    combined = " ".join([decision_text, screen_text]).strip()
 
     if app.name == "playstore":
         for token in PLAYSTORE_PURCHASE_TOKENS:
