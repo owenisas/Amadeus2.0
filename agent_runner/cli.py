@@ -134,6 +134,18 @@ def _write_run_trace(run_dir: Path, payload: dict[str, Any]) -> None:
     dump_json(run_dir / "agent_trace.json", payload)
 
 
+def _runtime_error_payload(*, reason: str, run_dir: Path | None = None, appium_start_hint: str | None = None) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "status": "error",
+        "reason": reason,
+    }
+    if run_dir and run_dir != Path("."):
+        payload["run_dir"] = str(run_dir)
+    if appium_start_hint:
+        payload["appium_start_hint"] = appium_start_hint
+    return payload
+
+
 def _clip(value: object, limit: int = 120) -> str:
     text = str(value or "")
     if len(text) <= limit:
@@ -425,6 +437,29 @@ def main(argv: list[str] | None = None) -> int:
         )
         try:
             result = orchestrator.run(context)
+        except Exception as exc:
+            task.status = "error"
+            task.last_reason = str(exc)
+            task.checkpoints.append(
+                {
+                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    "task_status": "error",
+                    "reason": str(exc),
+                }
+            )
+            task_manager.save_task(task)
+            error_payload = _runtime_error_payload(
+                reason=str(exc),
+                run_dir=context.run_dir if context.run_dir != Path(".") else None,
+                appium_start_hint=(
+                    f'export ANDROID_SDK_ROOT="{runtime.android_sdk_root}" '
+                    f'ANDROID_HOME="{runtime.android_sdk_root}" && appium'
+                ),
+            )
+            if context.run_dir != Path("."):
+                _write_run_trace(context.run_dir, error_payload)
+            print(json.dumps(error_payload, indent=2, sort_keys=True))
+            return 1
         finally:
             adapter.close()
         task = task_manager.record_run_result(task, result)
@@ -455,6 +490,19 @@ def main(argv: list[str] | None = None) -> int:
     context, orchestrator, events = run_context_for(args.app, args.goal, max_steps=args.max_steps, yolo=yolo_mode)
     try:
         result = orchestrator.run(context)
+    except Exception as exc:
+        error_payload = _runtime_error_payload(
+            reason=str(exc),
+            run_dir=context.run_dir if context.run_dir != Path(".") else None,
+            appium_start_hint=(
+                f'export ANDROID_SDK_ROOT="{runtime.android_sdk_root}" '
+                f'ANDROID_HOME="{runtime.android_sdk_root}" && appium'
+            ),
+        )
+        if context.run_dir != Path("."):
+            _write_run_trace(context.run_dir, error_payload)
+        print(json.dumps(error_payload, indent=2, sort_keys=True))
+        return 1
     finally:
         adapter.close()
     payload = _build_run_payload(

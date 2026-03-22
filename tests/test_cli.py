@@ -4,6 +4,7 @@ from agent_runner.cli import (
     _decision_log,
     _format_live_event,
     _model_errors,
+    _runtime_error_payload,
     _simplify_action_history,
     _simplify_events,
     _state_snapshots,
@@ -216,3 +217,15 @@ def test_cli_parser_supports_tui_command() -> None:
     args = parser.parse_args(["tui"])
 
     assert args.command == "tui"
+
+
+def test_cli_runtime_error_payload_includes_run_dir_and_hint() -> None:
+    payload = _runtime_error_payload(
+        reason="Appium server is unavailable at http://127.0.0.1:4723. Start Appium and retry.",
+        run_dir=Path("runs/settings-1"),
+        appium_start_hint='export ANDROID_SDK_ROOT="/sdk" ANDROID_HOME="/sdk" && appium',
+    )
+
+    assert payload["status"] == "error"
+    assert payload["run_dir"] == "runs/settings-1"
+    assert "appium" in payload["appium_start_hint"]

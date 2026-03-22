@@ -222,3 +222,9 @@ def test_perform_tap_uses_resolved_component_box(monkeypatch: pytest.MonkeyPatch
     adapter.perform(decision, state)
 
     assert captured == {"x": 539, "y": 2289}
+
+
+def test_detects_appium_unavailable_error() -> None:
+    assert AndroidAdapter._is_appium_unavailable_error(
+        "HTTPConnectionPool(host='127.0.0.1', port=4723): Failed to establish a new connection: [Errno 61] Connection refused"
+    )

@@ -98,6 +98,15 @@ class AndroidAdapter:
                     raise
                 self._reset_uiautomator2_services()
                 time.sleep(float(attempt))
+            except Exception as exc:  # pragma: no cover - transport stack varies by machine
+                self._driver = None
+                message = str(exc)
+                if self._is_appium_unavailable_error(message):
+                    raise RuntimeError(
+                        f"Appium server is unavailable at {self.appium_url}. "
+                        "Start Appium and retry."
+                    ) from exc
+                raise
 
     def close(self) -> None:
         if self._driver is None:
@@ -436,6 +445,19 @@ class AndroidAdapter:
                 "instrumentation process cannot be initialized",
                 "socket hang up",
                 "could not proxy command",
+            ]
+        )
+
+    @staticmethod
+    def _is_appium_unavailable_error(message: str) -> bool:
+        lowered = message.casefold()
+        return any(
+            token in lowered
+            for token in [
+                "failed to establish a new connection",
+                "max retries exceeded",
+                "connection refused",
+                "httpconnectionpool",
             ]
         )
 
