@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import shutil
 import subprocess
 import threading
 import time
@@ -70,6 +72,8 @@ class SessionJob:
 class SessionController:
     IDLE_CAPTURE_TTL_SECONDS = 2.0
     SCHEDULER_POLL_SECONDS = 5.0
+    APPIUM_AUTOSTART_COOLDOWN_SECONDS = 15.0
+    APPIUM_START_TIMEOUT_SECONDS = 12.0
 
     def __init__(self, runtime) -> None:
         self.runtime = runtime
@@ -88,6 +92,7 @@ class SessionController:
         self.job_manager = JobManager(runtime.runs_dir / "jobs")
         self.event_queue = EventQueue(runtime.runs_dir)
         self.session_run_dir = ensure_directory(runtime.runs_dir / "session-live")
+        self.appium_log_path = self.event_queue.root / "appium.log"
         self._lock = threading.RLock()
         self._active_job: SessionJob | None = None
         self._last_job: SessionJob | None = None
@@ -97,6 +102,8 @@ class SessionController:
         self._notification_monitor: NotificationMonitor | None = None
         self._scheduler_thread: threading.Thread | None = None
         self._scheduler_stop = threading.Event()
+        self._appium_process: subprocess.Popen[bytes] | None = None
+        self._last_appium_start_attempt_at: float = 0.0
 
     def close(self) -> None:
         self.stop_background_services()
@@ -114,6 +121,39 @@ class SessionController:
             self._scheduler_stop.clear()
             self._scheduler_thread = threading.Thread(target=self._scheduler_loop, daemon=True)
             self._scheduler_thread.start()
+
+    def ensure_appium_running(self, *, force: bool = False) -> dict[str, Any]:
+        status = self._appium_status()
+        if status == "ready":
+            return {"status": status, "started": False, "log_path": str(self.appium_log_path)}
+        now = time.time()
+        if not force and (now - self._last_appium_start_attempt_at) < self.APPIUM_AUTOSTART_COOLDOWN_SECONDS:
+            return {"status": status, "started": False, "log_path": str(self.appium_log_path)}
+        appium_binary = shutil.which("appium")
+        if not appium_binary:
+            raise RuntimeError("Appium is not installed or not on PATH.")
+        env = os.environ.copy()
+        if self.runtime.android_sdk_root:
+            env.setdefault("ANDROID_SDK_ROOT", self.runtime.android_sdk_root)
+            env.setdefault("ANDROID_HOME", self.runtime.android_sdk_root)
+        ensure_directory(self.event_queue.root)
+        with self.appium_log_path.open("ab") as handle:
+            self._appium_process = subprocess.Popen(
+                [appium_binary],
+                stdout=handle,
+                stderr=subprocess.STDOUT,
+                env=env,
+                start_new_session=True,
+            )
+        self._last_appium_start_attempt_at = now
+        deadline = time.time() + self.APPIUM_START_TIMEOUT_SECONDS
+        while time.time() < deadline:
+            if self._appium_process.poll() is not None:
+                raise RuntimeError(f"Appium exited early. Check {self.appium_log_path}.")
+            if self._appium_status() == "ready":
+                return {"status": "ready", "started": True, "log_path": str(self.appium_log_path)}
+            time.sleep(0.5)
+        raise RuntimeError(f"Appium did not become ready within {self.APPIUM_START_TIMEOUT_SECONDS:.0f}s. Check {self.appium_log_path}.")
 
     def stop_background_services(self) -> None:
         self._scheduler_stop.set()

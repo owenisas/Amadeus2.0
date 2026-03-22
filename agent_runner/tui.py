@@ -69,6 +69,13 @@ class AgentSessionTui(App[None]):
         yield Footer()
 
     def on_mount(self) -> None:
+        log = self.query_one("#log", RichLog)
+        try:
+            result = self.controller.ensure_appium_running()
+            if result.get("started"):
+                log.write(f"[startup] Appium started automatically. log={result.get('log_path')}")
+        except Exception as exc:
+            log.write(f"[startup_error] {exc}")
         self.controller.start_background_services(scheduler=True, notifications=True)
         self.set_interval(1.0, self.refresh_panels)
         self.refresh_panels()

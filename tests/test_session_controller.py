@@ -59,3 +59,37 @@ def test_scheduler_defers_due_jobs_while_device_reserved(tmp_path: Path) -> None
     controller.stop_background_services()
 
     assert invoked == []
+
+
+def test_ensure_appium_running_skips_start_when_ready(tmp_path: Path, monkeypatch) -> None:
+    controller = SessionController(_runtime(tmp_path))
+    monkeypatch.setattr(controller, "_appium_status", lambda: "ready")
+
+    payload = controller.ensure_appium_running()
+
+    assert payload["status"] == "ready"
+    assert payload["started"] is False
+
+
+def test_ensure_appium_running_starts_process_when_unavailable(tmp_path: Path, monkeypatch) -> None:
+    controller = SessionController(_runtime(tmp_path))
+    statuses = iter(["unavailable", "unavailable", "ready"])
+    monkeypatch.setattr(controller, "_appium_status", lambda: next(statuses))
+    monkeypatch.setattr("agent_runner.session_controller.shutil.which", lambda name: "/opt/homebrew/bin/appium")
+
+    class FakeProcess:
+        def poll(self):
+            return None
+
+    spawned: list[list[str]] = []
+
+    def fake_popen(command, **kwargs):
+        spawned.append(command)
+        return FakeProcess()
+
+    monkeypatch.setattr("agent_runner.session_controller.subprocess.Popen", fake_popen)
+
+    payload = controller.ensure_appium_running(force=True)
+
+    assert payload["started"] is True
+    assert spawned == [["/opt/homebrew/bin/appium"]]
