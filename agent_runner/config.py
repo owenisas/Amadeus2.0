@@ -7,7 +7,10 @@ from pathlib import Path
 from agent_runner.models import AppConfig
 
 
-DEFAULT_MODEL = "gemini-3.1-pro-preview"
+DEFAULT_MODEL_PROVIDER = "gemini"
+DEFAULT_GEMINI_MODEL = "gemini-3.1-pro-preview"
+DEFAULT_LMSTUDIO_MODEL = "qwen3.5-35b-a3b-uncensored-hauhaucs-aggressive"
+DEFAULT_LMSTUDIO_BASE_URL = "http://127.0.0.1:1234/v1"
 DEFAULT_APPIUM_URL = "http://127.0.0.1:4723"
 DEFAULT_DEVICE_SERIAL = "emulator-5554"
 DEFAULT_RUNS_DIR = Path("runs")
@@ -19,8 +22,13 @@ DEFAULT_SYSTEM_SKILL_FILE = Path("skills/system/android_navigation/SKILL.md")
 class RuntimeConfig:
     appium_url: str
     device_serial: str
+    model_provider: str
+    model_name: str
     gemini_api_key: str | None
     gemini_model: str
+    lmstudio_api_key: str | None
+    lmstudio_model: str
+    lmstudio_base_url: str
     runs_dir: Path
     skills_dir: Path
     system_skill_file: Path
@@ -30,6 +38,14 @@ class RuntimeConfig:
 
 def load_runtime_config() -> RuntimeConfig:
     _load_local_env_files()
+    model_provider = os.environ.get("AGENT_RUNNER_MODEL_PROVIDER", DEFAULT_MODEL_PROVIDER).strip().casefold()
+    if model_provider not in {"gemini", "lmstudio"}:
+        model_provider = DEFAULT_MODEL_PROVIDER
+    gemini_model = os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
+    lmstudio_model = os.environ.get("LMSTUDIO_MODEL", DEFAULT_LMSTUDIO_MODEL)
+    model_name = os.environ.get("AGENT_RUNNER_MODEL_NAME") or (
+        lmstudio_model if model_provider == "lmstudio" else gemini_model
+    )
     android_sdk_root = os.environ.get("ANDROID_SDK_ROOT") or str(
         Path.home() / "Library/Android/sdk"
     )
@@ -39,8 +55,13 @@ def load_runtime_config() -> RuntimeConfig:
     return RuntimeConfig(
         appium_url=os.environ.get("APPIUM_SERVER_URL", DEFAULT_APPIUM_URL),
         device_serial=os.environ.get("ANDROID_DEVICE_SERIAL", DEFAULT_DEVICE_SERIAL),
+        model_provider=model_provider,
+        model_name=model_name,
         gemini_api_key=os.environ.get("GEMINI_API_KEY"),
-        gemini_model=os.environ.get("GEMINI_MODEL", DEFAULT_MODEL),
+        gemini_model=gemini_model,
+        lmstudio_api_key=os.environ.get("LMSTUDIO_API_KEY"),
+        lmstudio_model=lmstudio_model,
+        lmstudio_base_url=os.environ.get("LMSTUDIO_BASE_URL", DEFAULT_LMSTUDIO_BASE_URL).rstrip("/"),
         runs_dir=Path(os.environ.get("AGENT_RUNNER_RUNS_DIR", DEFAULT_RUNS_DIR)),
         skills_dir=Path(os.environ.get("AGENT_RUNNER_SKILLS_DIR", DEFAULT_SKILLS_DIR)),
         system_skill_file=Path(os.environ.get("AGENT_RUNNER_SYSTEM_SKILL_FILE", DEFAULT_SYSTEM_SKILL_FILE)),
@@ -169,6 +190,10 @@ def get_app_config(app_name: str) -> AppConfig:
     except KeyError as exc:
         supported = ", ".join(sorted(APP_REGISTRY))
         raise KeyError(f"Unknown app '{app_name}'. Supported apps: {supported}") from exc
+
+
+def list_app_configs() -> list[AppConfig]:
+    return [APP_REGISTRY[name] for name in sorted(APP_REGISTRY)]
 
 
 def _load_local_env_files() -> None:

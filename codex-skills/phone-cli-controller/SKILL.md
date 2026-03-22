@@ -1,6 +1,6 @@
 ---
 name: phone-cli-controller
-description: Control an Android emulator or connected Android device from the terminal using the Amadeus agent_runner CLI in /Users/user/Documents/Amadeus2.0. Use when asked to open apps, inspect screens, tap/type/swipe, run goal-driven phone workflows, debug Appium or Gemini phone runs, or update per-app phone skills from live captures.
+description: Control an Android emulator or connected Android device from the terminal using the Amadeus agent_runner CLI in /Users/user/Documents/Amadeus2.0. Use when asked to open apps, inspect screens, tap/type/swipe, run goal-driven phone workflows, debug Appium or model-backed phone runs, or update per-app phone skills from live captures.
 ---
 
 # Phone CLI Controller
@@ -19,7 +19,7 @@ Use this skill to drive the desktop CLI controller in `/Users/user/Documents/Ama
 1. Run `doctor --json` first to confirm:
    - device serial
    - Appium URL
-   - Gemini key presence
+   - active model provider and model
    - skills directory
    - runs directory
 2. If Appium is not running, use the `appium_start_hint` from `doctor`.
@@ -51,6 +51,7 @@ Use the smallest control surface that can solve the task.
 - Run `doctor --json`.
 - If the requested app is unknown, inspect `/Users/user/Documents/Amadeus2.0/agent_runner/config.py` and either add a registry entry or use `bootstrap_skill` if the repo already supports that path.
 - If the user references a specific emulator, set `ANDROID_DEVICE_SERIAL` explicitly for the command you run.
+- For multi-turn work that should continue across repeated invocations, prefer `task start` and `task resume` over a plain `run`.
 
 ### 1a. Connect over wireless debugging when needed
 
@@ -91,6 +92,9 @@ Use the smallest control surface that can solve the task.
   - `reason`
   - `steps`
   - `run_dir`
+- Use `task start --app <app> --goal "<goal>"` when the user wants a resumable, persistent workflow.
+- Resume with `task resume --task-id <id>`.
+- The runtime allows only one unfinished task per device at a time.
 
 ### 5. Teach the agent
 

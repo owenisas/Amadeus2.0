@@ -206,6 +206,12 @@ def dump_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
+def append_jsonl(path: Path, payload: Any) -> None:
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, sort_keys=True))
+        handle.write("\n")
+
+
 def load_json(path: Path, default: Any) -> Any:
     if not path.exists():
         return default

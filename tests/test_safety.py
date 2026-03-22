@@ -121,6 +121,59 @@ def test_type_action_without_input_text_is_rejected() -> None:
     assert "input_text" in verdict.reason
 
 
+def test_tool_type_action_accepts_input_text_alias() -> None:
+    app = amazon_app()
+    app.allowed_actions.append("tool")
+    verdict = evaluate_decision(
+        app,
+        make_state(visible_text=["Enter year"]),
+        VisionDecision(
+            screen_classification="qualification",
+            goal_progress="typing",
+            next_action="tool",
+            target_box=None,
+            confidence=0.1,
+            reason="",
+            risk_level="low",
+            tool_name="type",
+            tool_arguments={"input_text": "1990", "submit_after_input": False},
+        ),
+    )
+
+    assert verdict.allowed is True
+
+
+def test_tool_type_submit_flag_name_does_not_trigger_submit_risk_token() -> None:
+    app = AppConfig(
+        name="surveyapp",
+        package_name="com.example.survey",
+        launch_activity=None,
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=["submit"],
+        high_risk_signatures=[],
+        manual_login_tokens=[],
+        default_goal_hint="fill a form",
+    )
+
+    verdict = evaluate_decision(
+        app,
+        make_state(visible_text=["Enter year"]),
+        VisionDecision(
+            screen_classification="qualification",
+            goal_progress="typing",
+            next_action="tool",
+            target_box=None,
+            confidence=0.1,
+            reason="",
+            risk_level="low",
+            tool_name="type",
+            tool_arguments={"input_text": "1985", "submit_after_input": False},
+        ),
+    )
+
+    assert verdict.allowed is True
+
+
 def test_playstore_install_allowed_for_free_app() -> None:
     playstore = AppConfig(
         name="playstore",
@@ -324,3 +377,76 @@ def test_facebook_send_stays_blocked_without_marketplace_goal() -> None:
     )
 
     assert verdict.allowed is False
+
+
+def test_low_confidence_structurally_valid_tap_is_allowed() -> None:
+    verdict = evaluate_decision(
+        amazon_app(),
+        make_state(visible_text=["Settings", "Network & internet"]),
+        VisionDecision(
+            screen_classification="settings_home",
+            goal_progress="navigating",
+            next_action="tap",
+            target_box=BoundingBox(0.1, 0.2, 0.3, 0.1),
+            confidence=0.0,
+            reason="Open Network & internet.",
+            risk_level="low",
+            target_label="Network & internet",
+        ),
+    )
+
+    assert verdict.allowed is True
+
+
+def test_unknown_tool_action_is_rejected() -> None:
+    app = AppConfig(
+        name="settings",
+        package_name="com.android.settings",
+        launch_activity=None,
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=[],
+        high_risk_signatures=[],
+        manual_login_tokens=[],
+        default_goal_hint="inspect settings",
+    )
+
+    verdict = evaluate_decision(
+        app,
+        make_state(visible_text=["Settings"]),
+        VisionDecision.tool(
+            tool_name="definitely_not_a_real_tool",
+            tool_arguments={},
+            reason="Do something invalid.",
+            confidence=0.0,
+        ),
+    )
+
+    assert verdict.allowed is False
+    assert "unknown tool action" in verdict.reason.casefold()
+
+
+def test_tool_tap_requires_target_box_argument() -> None:
+    app = AppConfig(
+        name="settings",
+        package_name="com.android.settings",
+        launch_activity=None,
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=[],
+        high_risk_signatures=[],
+        manual_login_tokens=[],
+        default_goal_hint="inspect settings",
+    )
+
+    verdict = evaluate_decision(
+        app,
+        make_state(visible_text=["Settings"]),
+        VisionDecision.tool(
+            tool_name="tap",
+            tool_arguments={},
+            reason="Tap the settings row.",
+            confidence=0.0,
+        ),
+    )
+
+    assert verdict.allowed is False
+    assert "target_box" in verdict.reason

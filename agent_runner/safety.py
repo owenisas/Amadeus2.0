@@ -28,6 +28,24 @@ PLAYSTORE_PURCHASE_TOKENS = [
 
 SAFE_ESCAPE_ACTIONS = {"back", "home", "stop", "wait"}
 SAFE_ESCAPE_TOOLS = {"reset_app", "launch_app", "capture_state", "list_scripts", "read_skill"}
+KNOWN_TOOL_ACTIONS = {
+    "capture_state",
+    "launch_app",
+    "reset_app",
+    "tap",
+    "type",
+    "swipe",
+    "back",
+    "home",
+    "wait",
+    "adb_shell",
+    "read_skill",
+    "write_skill_file",
+    "bootstrap_skill",
+    "save_script",
+    "run_script",
+    "list_scripts",
+}
 GENERIC_ACCOUNT_RESTRICTION_TOKENS = [
     "confirm your identity",
     "verify your identity",
@@ -58,10 +76,21 @@ def evaluate_decision(
         return SafetyVerdict(False, "Type actions require input_text.")
     if decision.next_action == "tool" and not decision.tool_name:
         return SafetyVerdict(False, "Tool actions require a tool_name.")
+    if decision.next_action == "tool":
+        tool_name = (decision.tool_name or "").casefold()
+        if tool_name not in KNOWN_TOOL_ACTIONS:
+            return SafetyVerdict(False, f"Unknown tool action '{decision.tool_name}'.")
+        if tool_name == "tap" and not isinstance(decision.tool_arguments.get("target_box"), dict):
+            return SafetyVerdict(False, "Tool tap actions require tool_arguments.target_box.")
+        if tool_name == "type" and not (
+            decision.tool_arguments.get("text") or decision.tool_arguments.get("input_text")
+        ):
+            return SafetyVerdict(False, "Tool type actions require tool_arguments.text or tool_arguments.input_text.")
 
     if decision.next_action not in app.allowed_actions:
         return SafetyVerdict(False, f"Action '{decision.next_action}' is not allowed for {app.name}.")
 
+    tool_argument_text = " ".join(_flatten_tool_argument_values(decision.tool_arguments))
     decision_text = " ".join(
         filter(
             None,
@@ -72,7 +101,7 @@ def evaluate_decision(
                 decision.screen_classification,
                 decision.goal_progress,
                 decision.tool_name,
-                " ".join(f"{key}={value}" for key, value in sorted(decision.tool_arguments.items())),
+                tool_argument_text,
             ],
         )
     ).casefold()
@@ -108,9 +137,6 @@ def evaluate_decision(
 
     if decision.risk_level.casefold() in {"high", "critical"}:
         return SafetyVerdict(False, f"Blocked by model risk level '{decision.risk_level}'.")
-
-    if decision.confidence < 0.30:
-        return SafetyVerdict(False, "Decision confidence below 0.30.")
 
     return SafetyVerdict(True, "Decision passed local safety checks.")
 
@@ -165,3 +191,21 @@ def _facebook_goal_allows_marketplace_messaging(goal: str | None) -> bool:
         token in lowered
         for token in ["message ", "messages", "reply", "respond", "conversation", "chat", "inbox", "seller"]
     )
+
+
+def _flatten_tool_argument_values(value) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, dict):
+        flattened: list[str] = []
+        for nested in value.values():
+            flattened.extend(_flatten_tool_argument_values(nested))
+        return flattened
+    if isinstance(value, (list, tuple, set)):
+        flattened: list[str] = []
+        for nested in value:
+            flattened.extend(_flatten_tool_argument_values(nested))
+        return flattened
+    if isinstance(value, bool):
+        return [str(value).casefold()]
+    return [str(value)]

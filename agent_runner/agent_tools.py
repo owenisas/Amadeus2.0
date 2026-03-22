@@ -302,9 +302,9 @@ class AgentToolExecutor:
         app: AppConfig | None,
         skill: SkillBundle | None,
     ) -> ToolExecutionResult:
-        text = str(arguments.get("text") or "")
+        text = str(arguments.get("text") or arguments.get("input_text") or "")
         if not text:
-            raise ValueError("type requires text.")
+            raise ValueError("type requires text or input_text.")
         submit = bool(arguments.get("submit_after_input", False))
         self.android_adapter.perform(
             VisionDecision(

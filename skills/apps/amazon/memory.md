@@ -6,3 +6,6 @@
 
 - Status: error
 - Reason: App is not installed on the emulator.
+
+- Status: error
+- Reason: App is not installed on the emulator.

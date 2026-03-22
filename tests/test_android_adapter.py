@@ -1,8 +1,10 @@
 import subprocess
+from pathlib import Path
 
 import pytest
 
 from agent_runner.android_adapter import AndroidAdapter
+from agent_runner.models import BoundingBox, DeviceInfo, ScreenState, VisionDecision
 
 
 class FakeClock:
@@ -65,3 +67,158 @@ def test_adb_timeout_raises_runtime_error(monkeypatch: pytest.MonkeyPatch) -> No
 
     with pytest.raises(RuntimeError, match="adb command timed out"):
         adapter.adb_command(["shell", "getprop"])
+
+
+def test_resolve_tap_box_snaps_to_nearby_clickable_component() -> None:
+    adapter = make_adapter()
+    device = DeviceInfo(
+        serial="emulator-5554",
+        width=1080,
+        height=2400,
+        density=420,
+        orientation="portrait",
+        package_name="com.fivesurveys.mobile",
+        activity_name=".MainActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/fake.png"),
+        hierarchy_path=Path("/tmp/fake.xml"),
+        screenshot_sha256="abc",
+        xml_source="<hierarchy />",
+        visible_text=["Qualification", "Which languages do you speak?", "English", "Spanish"],
+        clickable_text=["English", "Spanish"],
+        package_name=device.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=[
+            {
+                "component_type": "button",
+                "label": "Next",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.4296, "y": 0.9225, "width": 0.1407, "height": 0.0629},
+            }
+        ],
+    )
+
+    requested = BoundingBox(x=0.5, y=0.96, width=0.1, height=0.1)
+
+    resolved = adapter._resolve_tap_box(requested, state)
+
+    assert resolved.to_dict() == {"x": 0.4296, "y": 0.9225, "width": 0.1407, "height": 0.0629}
+
+
+def test_resolve_tap_box_prefers_visible_button_over_underlying_cards() -> None:
+    adapter = make_adapter()
+    device = DeviceInfo(
+        serial="emulator-5554",
+        width=1080,
+        height=2400,
+        density=420,
+        orientation="portrait",
+        package_name="com.fivesurveys.mobile",
+        activity_name=".MainActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/fake.png"),
+        hierarchy_path=Path("/tmp/fake.xml"),
+        screenshot_sha256="abc",
+        xml_source="<hierarchy />",
+        visible_text=["Qualification", "Which languages do you speak?", "English", "Spanish"],
+        clickable_text=["Take Survey", "Spanish", "Next"],
+        package_name=device.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "5 | (110)",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.0713, "y": 0.95, "width": 0.4176, "height": 0.05},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "4.5 | (39)",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.5111, "y": 0.95, "width": 0.4176, "height": 0.05},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "Qualification overlay",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.0, "y": 0.0333, "width": 1.0, "height": 0.9667},
+            },
+            {
+                "component_type": "button",
+                "label": "Next",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.4296, "y": 0.9225, "width": 0.1407, "height": 0.0629},
+            },
+        ],
+    )
+
+    requested = BoundingBox(x=0.5, y=0.96, width=0.4, height=0.06)
+
+    resolved = adapter._resolve_tap_box(requested, state)
+
+    assert resolved.to_dict() == {"x": 0.4296, "y": 0.9225, "width": 0.1407, "height": 0.0629}
+
+
+def test_perform_tap_uses_resolved_component_box(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = make_adapter()
+    captured: dict[str, int] = {}
+
+    class FakeDriver:
+        def execute_script(self, script, payload):
+            captured["x"] = payload["x"]
+            captured["y"] = payload["y"]
+
+    device = DeviceInfo(
+        serial="emulator-5554",
+        width=1080,
+        height=2400,
+        density=420,
+        orientation="portrait",
+        package_name="com.fivesurveys.mobile",
+        activity_name=".MainActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/fake.png"),
+        hierarchy_path=Path("/tmp/fake.xml"),
+        screenshot_sha256="abc",
+        xml_source="<hierarchy />",
+        visible_text=["Qualification"],
+        clickable_text=["Next"],
+        package_name=device.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=[
+            {
+                "component_type": "button",
+                "label": "Next",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.4296, "y": 0.9225, "width": 0.1407, "height": 0.0629},
+            }
+        ],
+    )
+    decision = VisionDecision(
+        screen_classification="question",
+        goal_progress="acting",
+        next_action="tap",
+        target_box=BoundingBox(x=0.5, y=0.96, width=0.1, height=0.1),
+        confidence=0.8,
+        reason="Tap next.",
+        risk_level="low",
+    )
+    adapter._driver = FakeDriver()
+    monkeypatch.setattr(adapter, "connect", lambda: None)
+    monkeypatch.setattr(adapter, "wait_for_stable_ui", lambda seconds: None)
+
+    adapter.perform(decision, state)
+
+    assert captured == {"x": 539, "y": 2289}

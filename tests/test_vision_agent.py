@@ -1,4 +1,7 @@
+import json
+import io
 from pathlib import Path
+import urllib.error
 
 from agent_runner.config import APP_REGISTRY
 from agent_runner.models import DeviceInfo, ScreenState
@@ -229,6 +232,207 @@ def test_goal_requesting_screenshot_uses_capture_tool(tmp_path: Path) -> None:
 
     assert decision.next_action == "tool"
     assert decision.tool_name == "capture_state"
+
+
+def test_lmstudio_decision_parses_openai_style_json_response(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent(
+        None,
+        "qwen3.5-35b-a3b-uncensored-hauhaucs-aggressive",
+        provider="lmstudio",
+        lmstudio_base_url="http://127.0.0.1:1234/v1",
+    )
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["settings"])
+    state = make_amazon_state(
+        visible_text=["Settings", "Network & internet"],
+        clickable_text=["Network & internet"],
+        components=[],
+    )
+    state.package_name = "com.android.settings"
+    state.activity_name = ".Settings"
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {
+                                "content": json.dumps(
+                                    {
+                                        "screen_classification": "settings_home",
+                                        "goal_progress": "navigating",
+                                        "next_action": "wait",
+                                        "target_box": None,
+                                        "confidence": 0.76,
+                                        "reason": "Wait for the settings surface to finish rendering.",
+                                        "risk_level": "low",
+                                    }
+                                )
+                            }
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+
+    monkeypatch.setattr("urllib.request.urlopen", lambda *args, **kwargs: FakeResponse())
+
+    decision = agent._lmstudio_decision(
+        goal="open network settings",
+        state=state,
+        skill=bundle,
+        system_instruction="",
+        action_history=[],
+        available_tools=[],
+        yolo_mode=False,
+    )
+
+    assert decision.next_action == "wait"
+    assert "settings surface" in decision.reason.casefold()
+
+
+def test_lmstudio_decision_retries_after_http_400_with_text_response_format(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent(
+        None,
+        "qwen3.5-35b-a3b-uncensored-hauhaucs-aggressive",
+        provider="lmstudio",
+        lmstudio_base_url="http://127.0.0.1:1234/v1",
+    )
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["settings"])
+    state = make_amazon_state(
+        visible_text=["Settings", "Network & internet"],
+        clickable_text=["Network & internet"],
+        components=[],
+    )
+    state.package_name = "com.android.settings"
+    state.activity_name = ".Settings"
+    state.screenshot_path.write_bytes(b"fake-image")
+
+    calls: list[dict[str, object]] = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {
+                                "content": "```json\n"
+                                + json.dumps(
+                                    {
+                                        "screen_classification": "settings_home",
+                                        "goal_progress": "navigating",
+                                        "next_action": "wait",
+                                        "target_box": None,
+                                        "confidence": 0.76,
+                                        "reason": "Wait for the settings surface to finish rendering.",
+                                        "risk_level": "low",
+                                    }
+                                )
+                                + "\n```"
+                            }
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+
+    def fake_urlopen(request, timeout=60):
+        payload = json.loads(request.data.decode("utf-8"))
+        calls.append(payload)
+        if len(calls) == 1:
+            raise urllib.error.HTTPError(
+                request.full_url,
+                400,
+                "Bad Request",
+                hdrs=None,
+                fp=io.BytesIO(b'{"error":"bad response_format"}'),
+            )
+        return FakeResponse()
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+
+    decision = agent._lmstudio_decision(
+        goal="open network settings",
+        state=state,
+        skill=bundle,
+        system_instruction="",
+        action_history=[],
+        available_tools=[],
+        yolo_mode=False,
+    )
+
+    assert len(calls) == 2
+    assert calls[0]["response_format"]["type"] == "text"
+    assert isinstance(calls[0]["messages"][0]["content"], list)
+    assert calls[1]["response_format"]["type"] == "text"
+    assert isinstance(calls[1]["messages"][0]["content"], str)
+    assert decision.next_action == "wait"
+
+
+def test_lmstudio_non_json_fallback_records_raw_detail(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent(
+        None,
+        "qwen3.5-35b-a3b-uncensored-hauhaucs-aggressive",
+        provider="lmstudio",
+        lmstudio_base_url="http://127.0.0.1:1234/v1",
+    )
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["settings"])
+    state = make_amazon_state(
+        visible_text=["Settings"],
+        clickable_text=[],
+        components=[],
+    )
+    state.package_name = "com.android.settings"
+    state.activity_name = ".Settings"
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {
+                                "content": "I think you should tap the network option next."
+                            }
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+
+    monkeypatch.setattr("urllib.request.urlopen", lambda *args, **kwargs: FakeResponse())
+
+    decision = agent._lmstudio_decision(
+        goal="open network settings",
+        state=state,
+        skill=bundle,
+        system_instruction="",
+        action_history=[],
+        available_tools=[],
+        yolo_mode=False,
+    )
+
+    assert decision.next_action == "tap" or decision.next_action == "stop" or decision.next_action == "wait"
+    assert agent.last_decision_meta["source"] == "lmstudio_non_json_fallback"
+    assert "tap the network option" in str(agent.last_decision_meta.get("detail", ""))
+
+
 
 
 def test_amazon_orders_stops_when_no_target_box_can_be_resolved(tmp_path: Path) -> None:

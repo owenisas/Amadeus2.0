@@ -189,6 +189,8 @@ class ActionRecord:
     allowed: bool
     package_name: str
     activity_name: str
+    target_label: str | None = None
+    target_box: dict[str, float] | None = None
     tool_name: str | None = None
     tool_arguments: dict[str, Any] = field(default_factory=dict)
     tool_output: dict[str, Any] | None = None
@@ -201,6 +203,8 @@ class ActionRecord:
             "allowed": self.allowed,
             "package_name": self.package_name,
             "activity_name": self.activity_name,
+            "target_label": self.target_label,
+            "target_box": self.target_box,
             "tool_name": self.tool_name,
             "tool_arguments": self.tool_arguments,
             "tool_output": self.tool_output,
@@ -277,3 +281,58 @@ class RunResult:
     run_dir: Path
     last_state: ScreenState | None = None
     notice: str | None = None
+
+
+@dataclass(slots=True)
+class TaskRecord:
+    task_id: str
+    app_name: str
+    device_serial: str
+    goal: str
+    status: str
+    created_at: str
+    updated_at: str
+    yolo_mode: bool
+    step_budget: int
+    total_steps: int = 0
+    last_reason: str | None = None
+    last_run_dir: str | None = None
+    completion_criteria: list[str] = field(default_factory=list)
+    checkpoints: list[dict[str, Any]] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "task_id": self.task_id,
+            "app_name": self.app_name,
+            "device_serial": self.device_serial,
+            "goal": self.goal,
+            "status": self.status,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "yolo_mode": self.yolo_mode,
+            "step_budget": self.step_budget,
+            "total_steps": self.total_steps,
+            "last_reason": self.last_reason,
+            "last_run_dir": self.last_run_dir,
+            "completion_criteria": self.completion_criteria,
+            "checkpoints": self.checkpoints,
+        }
+
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "TaskRecord":
+        return cls(
+            task_id=str(payload["task_id"]),
+            app_name=str(payload["app_name"]),
+            device_serial=str(payload["device_serial"]),
+            goal=str(payload["goal"]),
+            status=str(payload["status"]),
+            created_at=str(payload["created_at"]),
+            updated_at=str(payload["updated_at"]),
+            yolo_mode=bool(payload.get("yolo_mode", False)),
+            step_budget=int(payload.get("step_budget", 12)),
+            total_steps=int(payload.get("total_steps", 0)),
+            last_reason=payload.get("last_reason"),
+            last_run_dir=payload.get("last_run_dir"),
+            completion_criteria=list(payload.get("completion_criteria", [])),
+            checkpoints=list(payload.get("checkpoints", [])),
+        )

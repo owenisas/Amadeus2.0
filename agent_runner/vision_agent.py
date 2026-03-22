@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import json
 import re
+import socket
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -12,6 +13,7 @@ from agent_runner.models import BoundingBox, ScreenState, SkillBundle, VisionDec
 
 
 class VisionAgent:
+    LMSTUDIO_TIMEOUT_SECONDS = 60
     ACTION_ALIASES = {
         "click": "tap",
         "press": "tap",
@@ -61,9 +63,33 @@ class VisionAgent:
         "不允许",
     )
 
-    def __init__(self, api_key: str | None, model: str) -> None:
+    def __init__(
+        self,
+        api_key: str | None,
+        model: str,
+        provider: str = "gemini",
+        *,
+        lmstudio_base_url: str = "http://127.0.0.1:1234/v1",
+        lmstudio_api_key: str | None = None,
+    ) -> None:
+        self.provider = provider.strip().casefold() or "gemini"
         self.api_key = api_key
         self.model = model
+        self.lmstudio_base_url = lmstudio_base_url.rstrip("/")
+        self.lmstudio_api_key = lmstudio_api_key
+        self.last_decision_meta: dict[str, Any] = {
+            "provider": self.provider,
+            "model": self.model,
+            "source": "uninitialized",
+        }
+        self.last_decision_context: dict[str, Any] = {
+            "provider": self.provider,
+            "model": self.model,
+            "source": "uninitialized",
+            "prompt": None,
+            "response_text": None,
+            "response_payload": None,
+        }
 
     def decide(
         self,
@@ -76,6 +102,14 @@ class VisionAgent:
         available_tools: list[dict[str, Any]] | None = None,
         yolo_mode: bool = False,
     ) -> VisionDecision:
+        self.last_decision_context = {
+            "provider": self.provider,
+            "model": self.model,
+            "source": "heuristic_pending",
+            "prompt": None,
+            "response_text": None,
+            "response_payload": None,
+        }
         heuristic = self._heuristic_decision(
             goal=goal,
             state=state,
@@ -86,18 +120,33 @@ class VisionAgent:
             yolo_mode=yolo_mode,
         )
         if self._should_bypass_model(state, heuristic, yolo_mode=yolo_mode):
+            self._set_decision_meta(source="heuristic_bypass")
+            self._set_decision_context(source="heuristic_bypass")
             return heuristic
-        if not self.api_key:
+        if self.provider == "gemini" and not self.api_key:
+            self._set_decision_meta(source="heuristic_no_api_key")
+            self._set_decision_context(source="heuristic_no_api_key")
             return heuristic
-        decision = self._gemini_decision(
-            goal=goal,
-            state=state,
-            skill=skill,
-            system_instruction=system_instruction,
-            action_history=action_history,
-            available_tools=available_tools or [],
-            yolo_mode=yolo_mode,
-        )
+        if self.provider == "lmstudio":
+            decision = self._lmstudio_decision(
+                goal=goal,
+                state=state,
+                skill=skill,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools or [],
+                yolo_mode=yolo_mode,
+            )
+        else:
+            decision = self._gemini_decision(
+                goal=goal,
+                state=state,
+                skill=skill,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools or [],
+                yolo_mode=yolo_mode,
+            )
         if yolo_mode:
             return self._apply_yolo_overrides(state=state, skill=skill, decision=decision)
         return decision
@@ -203,6 +252,8 @@ class VisionAgent:
                 yolo_mode=yolo_mode,
             )
             fallback.reason = f"Gemini request failed ({exc.code}); heuristic fallback used. {detail[:180]}"
+            self._set_decision_meta(source="gemini_http_fallback", detail=detail[:180], status_code=exc.code)
+            self._set_decision_context(source="gemini_http_fallback", prompt=prompt, response_text=detail[:500])
             return fallback
         except urllib.error.URLError as exc:
             fallback = self._heuristic_decision(
@@ -215,6 +266,8 @@ class VisionAgent:
                 yolo_mode=yolo_mode,
             )
             fallback.reason = f"Gemini request failed; heuristic fallback used. {exc.reason}"
+            self._set_decision_meta(source="gemini_network_fallback", detail=str(exc.reason))
+            self._set_decision_context(source="gemini_network_fallback", prompt=prompt, response_text=str(exc.reason))
             return fallback
 
         text = self._extract_text(raw)
@@ -231,8 +284,178 @@ class VisionAgent:
                 yolo_mode=yolo_mode,
             )
             fallback.reason = "Gemini returned non-JSON content; heuristic fallback used."
+            self._set_decision_meta(source="gemini_non_json_fallback", detail=text[:500])
+            self._set_decision_context(source="gemini_non_json_fallback", prompt=prompt, response_text=text, response_payload=raw)
             return fallback
+        self._set_decision_meta(source="gemini_model")
+        self._set_decision_context(source="gemini_model", prompt=prompt, response_text=text, response_payload=raw)
         return self._coerce_decision(decision_payload)
+
+    def _lmstudio_decision(
+        self,
+        *,
+        goal: str,
+        state: ScreenState,
+        skill: SkillBundle,
+        system_instruction: str,
+        action_history: list[dict[str, Any]],
+        available_tools: list[dict[str, Any]],
+        yolo_mode: bool,
+    ) -> VisionDecision:
+        prompt = self._build_prompt(
+            goal=goal,
+            state=state,
+            skill=skill,
+            system_instruction=system_instruction,
+            action_history=action_history,
+            available_tools=available_tools,
+            yolo_mode=yolo_mode,
+        )
+        headers = {"Content-Type": "application/json"}
+        if self.lmstudio_api_key:
+            headers["Authorization"] = f"Bearer {self.lmstudio_api_key}"
+        raw = None
+        last_http_error: tuple[int, str] | None = None
+        try:
+            for payload in self._lmstudio_request_payloads(prompt=prompt, state=state):
+                request = urllib.request.Request(
+                    url=f"{self.lmstudio_base_url}/chat/completions",
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers=headers,
+                    method="POST",
+                )
+                try:
+                    with urllib.request.urlopen(request, timeout=self.LMSTUDIO_TIMEOUT_SECONDS) as response:
+                        raw = json.loads(response.read().decode("utf-8"))
+                        break
+                except urllib.error.HTTPError as exc:
+                    detail = exc.read().decode("utf-8", errors="replace")
+                    last_http_error = (exc.code, detail)
+                    continue
+            if raw is None and last_http_error is not None:
+                code, detail = last_http_error
+                fallback = self._heuristic_decision(
+                    goal=goal,
+                    state=state,
+                    skill=skill,
+                    system_instruction=system_instruction,
+                    action_history=action_history,
+                    available_tools=available_tools,
+                    yolo_mode=yolo_mode,
+                )
+                fallback.reason = f"LM Studio request failed ({code}); heuristic fallback used. {detail[:180]}"
+                self._set_decision_meta(source="lmstudio_http_fallback", detail=detail[:180], status_code=code)
+                self._set_decision_context(source="lmstudio_http_fallback", prompt=prompt, response_text=detail[:500])
+                return fallback
+        except (TimeoutError, socket.timeout) as exc:
+            fallback = self._heuristic_decision(
+                goal=goal,
+                state=state,
+                skill=skill,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools,
+                yolo_mode=yolo_mode,
+            )
+            fallback.reason = f"LM Studio request timed out; heuristic fallback used. {exc}"
+            self._set_decision_meta(source="lmstudio_timeout_fallback", detail=str(exc))
+            self._set_decision_context(source="lmstudio_timeout_fallback", prompt=prompt, response_text=str(exc))
+            return fallback
+        except urllib.error.URLError as exc:
+            fallback = self._heuristic_decision(
+                goal=goal,
+                state=state,
+                skill=skill,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools,
+                yolo_mode=yolo_mode,
+            )
+            fallback.reason = f"LM Studio request failed; heuristic fallback used. {exc.reason}"
+            self._set_decision_meta(source="lmstudio_network_fallback", detail=str(exc.reason))
+            self._set_decision_context(source="lmstudio_network_fallback", prompt=prompt, response_text=str(exc.reason))
+            return fallback
+
+        text = self._extract_lmstudio_text(raw)
+        try:
+            decision_payload = json.loads(self._extract_json_object(text))
+        except json.JSONDecodeError:
+            fallback = self._heuristic_decision(
+                goal=goal,
+                state=state,
+                skill=skill,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools,
+                yolo_mode=yolo_mode,
+            )
+            fallback.reason = "LM Studio returned non-JSON content; heuristic fallback used."
+            self._set_decision_meta(source="lmstudio_non_json_fallback", detail=text[:500])
+            self._set_decision_context(source="lmstudio_non_json_fallback", prompt=prompt, response_text=text, response_payload=raw)
+            return fallback
+        self._set_decision_meta(source="lmstudio_model")
+        self._set_decision_context(source="lmstudio_model", prompt=prompt, response_text=text, response_payload=raw)
+        return self._coerce_decision(decision_payload)
+
+    def _set_decision_meta(self, *, source: str, **extra: Any) -> None:
+        self.last_decision_meta = {
+            "provider": self.provider,
+            "model": self.model,
+            "source": source,
+            **extra,
+        }
+
+    def _set_decision_context(
+        self,
+        *,
+        source: str,
+        prompt: str | None = None,
+        response_text: str | None = None,
+        response_payload: dict[str, Any] | None = None,
+    ) -> None:
+        self.last_decision_context = {
+            "provider": self.provider,
+            "model": self.model,
+            "source": source,
+            "prompt": prompt,
+            "response_text": response_text,
+            "response_payload": response_payload,
+        }
+
+    def _lmstudio_request_payloads(self, *, prompt: str, state: ScreenState) -> list[dict[str, Any]]:
+        payloads: list[dict[str, Any]] = []
+        screenshot_path = Path(state.screenshot_path)
+        if screenshot_path.exists():
+            image_data_url = "data:image/png;base64," + base64.b64encode(screenshot_path.read_bytes()).decode("utf-8")
+            payloads.append(
+                {
+                    "model": self.model,
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": prompt},
+                                {"type": "image_url", "image_url": {"url": image_data_url}},
+                            ],
+                        }
+                    ],
+                    "temperature": 0.1,
+                    "response_format": {"type": "text"},
+                }
+            )
+        text_payload = {
+            "model": self.model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.1,
+            "response_format": {"type": "text"},
+        }
+        bare_text_payload = {
+            "model": self.model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.1,
+        }
+        payloads.extend([text_payload, bare_text_payload])
+        return payloads
 
     def _heuristic_decision(
         self,
@@ -919,6 +1142,33 @@ If you cannot proceed safely, return next_action="stop".
         if not parts:
             raise ValueError("Gemini response contained no parts.")
         return parts[0].get("text", "")
+
+    def _extract_lmstudio_text(self, payload: dict[str, Any]) -> str:
+        choices = payload.get("choices", [])
+        if not choices:
+            raise ValueError("LM Studio response contained no choices.")
+        message = choices[0].get("message", {})
+        content = message.get("content", "")
+        if isinstance(content, str):
+            return content
+        if isinstance(content, list):
+            parts: list[str] = []
+            for item in content:
+                if isinstance(item, dict) and item.get("type") == "text":
+                    parts.append(str(item.get("text", "")))
+            return "\n".join(part for part in parts if part)
+        return str(content)
+
+    def _extract_json_object(self, text: str) -> str:
+        stripped = text.strip()
+        if stripped.startswith("```"):
+            stripped = re.sub(r"^```(?:json)?\s*", "", stripped)
+            stripped = re.sub(r"\s*```$", "", stripped)
+        start = stripped.find("{")
+        end = stripped.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            return stripped[start : end + 1]
+        return stripped
 
     def _coerce_decision(self, payload: dict[str, Any]) -> VisionDecision:
         box = BoundingBox.from_dict(payload.get("target_box"))

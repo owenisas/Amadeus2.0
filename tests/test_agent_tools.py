@@ -141,6 +141,27 @@ def test_tool_executor_writes_skill_json(tmp_path: Path) -> None:
     ).read_text(encoding="utf-8")
 
 
+def test_tool_executor_type_accepts_input_text_alias(tmp_path: Path) -> None:
+    adapter = FakeAdapter()
+    executor = AgentToolExecutor(
+        android_adapter=adapter,
+        skill_manager=SkillManager(tmp_path / "skills"),
+    )
+
+    result = executor.execute(
+        tool_name="type",
+        arguments={"input_text": "1990", "submit_after_input": False},
+        run_dir=tmp_path / "runs",
+        current_state=None,
+        app=APP_REGISTRY["settings"],
+        skill=None,
+    )
+
+    assert result.ok is True
+    assert result.output["text"] == "1990"
+    assert adapter.performed_actions == ["type"]
+
+
 def _make_state(
     run_dir: Path,
     *,

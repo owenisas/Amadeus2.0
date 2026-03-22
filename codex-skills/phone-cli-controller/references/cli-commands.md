@@ -12,8 +12,13 @@ The `doctor` output is the source of truth for:
 
 - `appium_url`
 - `device_serial`
+- `model_provider`
+- `vision_model`
 - `gemini_model`
 - `gemini_api_key_present`
+- `lmstudio_model`
+- `lmstudio_base_url`
+- `lmstudio_api_key_present`
 - `skills_dir`
 - `system_skill_file`
 - `runs_dir`
@@ -63,6 +68,33 @@ Useful flags:
 - `--app <registry key>`
 - `--goal "<plain language goal>"`
 - `--max-steps <n>`
+
+## Persistent task workflow
+
+Start a resumable task:
+
+```bash
+/Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner task start --app settings --goal "Open Settings and navigate to Wi-Fi." --max-steps 2
+```
+
+Resume a task:
+
+```bash
+/Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner task resume --task-id <task-id> --max-steps 2
+```
+
+Inspect or cancel a task:
+
+```bash
+/Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner task show --task-id <task-id>
+/Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner task list --json
+/Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner task cancel --task-id <task-id>
+```
+
+Notes:
+
+- Tasks persist checkpoints under the runs directory and can be resumed later.
+- Only one unfinished task may own a given device at a time.
 
 ## List tools
 

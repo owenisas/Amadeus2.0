@@ -83,6 +83,30 @@
         "x": 0.5,
         "y": 0.34
       }
+    },
+    {
+      "activity_name": ".MainSettings",
+      "anchor_text": [
+        "Settings",
+        "Search settings",
+        "Login to Black Shark Account",
+        "Manage Black Shark Account, and more",
+        "My device",
+        "JOYUI 13 22.10.21"
+      ],
+      "component_type": "search_action",
+      "label": "Search settings",
+      "package_name": "com.android.settings",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.android.settings:id/header_view",
+      "screen_id": "com-android-settings-mainsettings-a0f341f464427f29",
+      "search_related": true,
+      "target_box": {
+        "height": 0.06666666666666667,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.16666666666666666
+      }
     }
   ]
 }

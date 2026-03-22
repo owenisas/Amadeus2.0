@@ -131,6 +131,285 @@
         "x": 0.375,
         "y": 0.90875
       }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the first available Five Surveys survey without answering it.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-bc3fee91536acc71",
+      "target_box": {
+        "height": 0.03916666666666667,
+        "width": 0.4101851851851852,
+        "x": 0.05555555555555555,
+        "y": 0.6725
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the first available Five Surveys survey without answering it.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-650175995e61701c",
+      "target_box": {
+        "height": 0.03916666666666667,
+        "width": 0.4101851851851852,
+        "x": 0.05555555555555555,
+        "y": 0.6725
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the first available Five Surveys survey without answering it.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-effb182fe8415b71",
+      "target_box": {
+        "height": 0.03916666666666667,
+        "width": 0.4101851851851852,
+        "x": 0.05555555555555555,
+        "y": 0.6725
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the first available Five Surveys survey without answering it.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-94e020f5cd096a4f",
+      "target_box": {
+        "height": 0.03916666666666667,
+        "width": 0.4101851851851852,
+        "x": 0.05555555555555555,
+        "y": 0.6620833333333334
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the first available Five Surveys survey without answering it.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-90e131aab77eb51c",
+      "target_box": {
+        "height": 0.03916666666666667,
+        "width": 0.4101851851851852,
+        "x": 0.05555555555555555,
+        "y": 0.6725
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Surveys",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the Five Surveys survey list before selecting an offer.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-ebb95de11513a06d",
+      "target_box": {
+        "height": 0.09125,
+        "width": 0.2518518518518518,
+        "x": 0.2490740740740741,
+        "y": 0.90875
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the first available Five Surveys survey without answering it.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-5590a7cd42520613",
+      "target_box": {
+        "height": 0.0375,
+        "width": 0.37222222222222223,
+        "x": 0.09351851851851851,
+        "y": 0.30375
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the first available Five Surveys survey without answering it.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-203b948f228381ad",
+      "target_box": {
+        "height": 0.0375,
+        "width": 0.37222222222222223,
+        "x": 0.09351851851851851,
+        "y": 0.30375
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Open the first available Five Surveys survey without answering it.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-a9bc00b59836b4df",
+      "target_box": {
+        "height": 0.0375,
+        "width": 0.37222222222222223,
+        "x": 0.09351851851851851,
+        "y": 0.30375
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "0.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-bc2a4550ce4698e7",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Qualification",
+        "Just a few questions before the survey",
+        "Enter your birthday",
+        "0.0",
+        "Select Month",
+        "Select Day"
+      ],
+      "label": "Select Month",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Birthday qualification overlay is active after opening the first featured survey.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-bc2a4550ce4698e7",
+      "target_box": {
+        "height": 0.05291666666666667,
+        "width": 0.42777777777777776,
+        "x": 0.05555555555555555,
+        "y": 0.26
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Qualification",
+        "Just a few questions before the survey",
+        "Enter your birthday",
+        "0.0",
+        "Select Month",
+        "Select Day"
+      ],
+      "label": "Select Day",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Birthday qualification overlay is active after opening the first featured survey.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-bc2a4550ce4698e7",
+      "target_box": {
+        "height": 0.05291666666666667,
+        "width": 0.42777777777777776,
+        "x": 0.5166666666666667,
+        "y": 0.26
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "0.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-0ee47b1be60d9b2d",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
     }
   ]
 }

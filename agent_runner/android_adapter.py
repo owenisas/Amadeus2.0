@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 import time
 
-from agent_runner.models import DeviceInfo, ScreenState, VisionDecision
+from agent_runner.models import BoundingBox, DeviceInfo, ScreenState, VisionDecision
 from agent_runner.utils import (
     denormalize_box,
     ensure_directory,
@@ -218,7 +218,8 @@ class AndroidAdapter:
         if decision.next_action == "tap":
             if not decision.target_box:
                 raise RuntimeError("Tap action requires a target box.")
-            pixel_box = denormalize_box(decision.target_box, state.device.width, state.device.height)
+            resolved_box = self._resolve_tap_box(decision.target_box, state)
+            pixel_box = denormalize_box(resolved_box, state.device.width, state.device.height)
             center_x = pixel_box.x + (pixel_box.width / 2.0)
             center_y = pixel_box.y + (pixel_box.height / 2.0)
             self._driver.execute_script(
@@ -255,6 +256,80 @@ class AndroidAdapter:
         else:
             raise RuntimeError(f"Unsupported action '{decision.next_action}'.")
         self.wait_for_stable_ui(1.0)
+
+    def _resolve_tap_box(self, requested_box: BoundingBox, state: ScreenState) -> BoundingBox:
+        candidates: list[BoundingBox] = []
+        for component in state.components:
+            if component.get("enabled") is False:
+                continue
+            if not component.get("clickable"):
+                continue
+            candidate = BoundingBox.from_dict(component.get("target_box"))
+            if candidate is None:
+                continue
+            candidates.append(candidate.clamp())
+        if not candidates:
+            return requested_box.clamp()
+
+        requested = requested_box.clamp()
+        request_center = requested.center()
+        request_anchor = (requested.x, requested.y)
+        scored: list[tuple[int, float, float, int, float, BoundingBox]] = []
+        for candidate in candidates:
+            raw_anchor_contains = self._point_in_box(request_anchor, candidate)
+            center_contains = self._point_in_box(request_center, candidate)
+            overlap = self._box_iou(requested, candidate)
+            anchor_distance = self._center_distance(request_anchor, candidate.center())
+            center_distance = self._center_distance(request_center, candidate.center())
+            area = candidate.width * candidate.height
+            scored.append(
+                (
+                    1 if raw_anchor_contains else 0,
+                    anchor_distance,
+                    area,
+                    1 if center_contains else 0,
+                    center_distance,
+                    candidate,
+                )
+            )
+
+        scored.sort(key=lambda item: (-item[0], item[1], item[2], -item[3], item[4]))
+        best_raw_anchor_contains, best_anchor_distance, _, best_center_contains, best_center_distance, best_box = scored[0]
+
+        if best_raw_anchor_contains or best_center_contains:
+            return best_box
+        if best_anchor_distance <= 0.12 or best_center_distance <= 0.12:
+            return best_box
+        return requested
+
+    @staticmethod
+    def _point_in_box(point: tuple[float, float], box: BoundingBox) -> bool:
+        px, py = point
+        return box.x <= px <= (box.x + box.width) and box.y <= py <= (box.y + box.height)
+
+    @staticmethod
+    def _center_distance(a: tuple[float, float], b: tuple[float, float]) -> float:
+        return ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** 0.5
+
+    @staticmethod
+    def _box_iou(a: BoundingBox, b: BoundingBox) -> float:
+        ax1, ay1 = a.x, a.y
+        ax2, ay2 = a.x + a.width, a.y + a.height
+        bx1, by1 = b.x, b.y
+        bx2, by2 = b.x + b.width, b.y + b.height
+        inter_left = max(ax1, bx1)
+        inter_top = max(ay1, by1)
+        inter_right = min(ax2, bx2)
+        inter_bottom = min(ay2, by2)
+        inter_width = max(0.0, inter_right - inter_left)
+        inter_height = max(0.0, inter_bottom - inter_top)
+        inter_area = inter_width * inter_height
+        if inter_area <= 0:
+            return 0.0
+        union = (a.width * a.height) + (b.width * b.height) - inter_area
+        if union <= 0:
+            return 0.0
+        return inter_area / union
 
     def wait_for_stable_ui(self, seconds: float) -> None:
         wait_budget = max(0.0, seconds)
