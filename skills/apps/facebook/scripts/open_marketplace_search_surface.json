@@ -1,0 +1,38 @@
+{
+  "description": "Reset Facebook to a clean state, dismiss backup or recovery prompts if they appear, open Marketplace, and open the Marketplace search surface.",
+  "name": "open_marketplace_search_surface",
+  "steps": [
+    {
+      "action": "reset_app",
+      "package_name": "com.facebook.katana"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 5
+    },
+    {
+      "action": "back",
+      "only_if_visible_text": "backup"
+    },
+    {
+      "action": "back",
+      "only_if_visible_text": "recovery"
+    },
+    {
+      "action": "tap",
+      "target_label": "Marketplace, tab 4 of 6"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 3
+    },
+    {
+      "action": "tap",
+      "target_label": "What do you want to buy?"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 2
+    }
+  ]
+}

@@ -379,6 +379,159 @@ def test_facebook_send_stays_blocked_without_marketplace_goal() -> None:
     assert verdict.allowed is False
 
 
+def test_high_risk_surface_allows_safe_navigation_target_tap() -> None:
+    facebook = AppConfig(
+        name="facebook",
+        package_name="com.facebook.katana",
+        launch_activity=None,
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=["buy now", "message seller"],
+        high_risk_signatures=["buy now", "message seller"],
+        manual_login_tokens=[],
+        default_goal_hint="inspect marketplace",
+    )
+    state = make_state(visible_text=["Message seller", "Navigate to Search", "Share"])
+    state.package_name = "com.facebook.katana"
+    state.activity_name = ".activity.react.ImmersiveReactActivity"
+
+    verdict = evaluate_decision(
+        facebook,
+        state,
+        VisionDecision(
+            screen_classification="listing_detail",
+            goal_progress="opening_search",
+            next_action="tap",
+            target_box=BoundingBox(0.1, 0.1, 0.2, 0.1),
+            confidence=0.9,
+            reason="Open Marketplace search from the current listing detail.",
+            risk_level="low",
+            target_label="Navigate to Search",
+        ),
+    )
+
+    assert verdict.allowed is True
+
+
+def test_buy_now_surface_allows_safe_description_expander_tap() -> None:
+    facebook = AppConfig(
+        name="facebook",
+        package_name="com.facebook.katana",
+        launch_activity=None,
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=["buy now", "message seller"],
+        high_risk_signatures=["buy now", "message seller"],
+        manual_login_tokens=[],
+        default_goal_hint="inspect marketplace",
+    )
+    state = make_state(
+        visible_text=[
+            "Apple MacBook Air Space Gray",
+            "$450",
+            "Buy now",
+            "Payments are processed securely",
+        ]
+    )
+    state.package_name = "com.facebook.katana"
+    state.activity_name = ".activity.react.ImmersiveReactActivity"
+
+    verdict = evaluate_decision(
+        facebook,
+        state,
+        VisionDecision(
+            screen_classification="listing_detail",
+            goal_progress="inspecting_listing",
+            next_action="tap",
+            target_box=BoundingBox(0.03, 0.9, 0.94, 0.07),
+            confidence=0.95,
+            reason="Expand the description so the listing can be inspected read-only.",
+            risk_level="low",
+            target_label="See more",
+        ),
+    )
+
+    assert verdict.allowed is True
+
+
+def test_buy_now_surface_allows_read_only_swipe_inspection() -> None:
+    facebook = AppConfig(
+        name="facebook",
+        package_name="com.facebook.katana",
+        launch_activity=None,
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=["buy now", "message seller"],
+        high_risk_signatures=["buy now", "message seller"],
+        manual_login_tokens=[],
+        default_goal_hint="inspect marketplace",
+    )
+    state = make_state(
+        visible_text=[
+            "Apple MacBook Air Space Gray",
+            "$450",
+            "Buy now",
+            "Payments are processed securely",
+        ]
+    )
+    state.package_name = "com.facebook.katana"
+    state.activity_name = ".activity.react.ImmersiveReactActivity"
+
+    verdict = evaluate_decision(
+        facebook,
+        state,
+        VisionDecision(
+            screen_classification="listing_detail",
+            goal_progress="inspecting_listing",
+            next_action="swipe",
+            target_box=None,
+            confidence=1.0,
+            reason="Scroll down to inspect seller-visible details on the listing read-only.",
+            risk_level="low",
+        ),
+    )
+
+    assert verdict.allowed is True
+
+
+def test_buy_now_surface_allows_read_only_tool_swipe_inspection() -> None:
+    facebook = AppConfig(
+        name="facebook",
+        package_name="com.facebook.katana",
+        launch_activity=None,
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=["buy now", "message seller"],
+        high_risk_signatures=["buy now", "message seller"],
+        manual_login_tokens=[],
+        default_goal_hint="inspect marketplace",
+    )
+    state = make_state(
+        visible_text=[
+            "Apple MacBook Air Space Gray",
+            "$450",
+            "Buy now",
+            "Payments are processed securely",
+        ]
+    )
+    state.package_name = "com.facebook.katana"
+    state.activity_name = ".activity.react.ImmersiveReactActivity"
+
+    verdict = evaluate_decision(
+        facebook,
+        state,
+        VisionDecision(
+            screen_classification="listing_detail",
+            goal_progress="inspecting_listing",
+            next_action="tool",
+            target_box=None,
+            confidence=1.0,
+            reason="Scroll down to inspect seller-visible details on the listing read-only.",
+            risk_level="low",
+            tool_name="swipe",
+            tool_arguments={"direction": "up"},
+        ),
+    )
+
+    assert verdict.allowed is True
+
+
 def test_low_confidence_structurally_valid_tap_is_allowed() -> None:
     verdict = evaluate_decision(
         amazon_app(),

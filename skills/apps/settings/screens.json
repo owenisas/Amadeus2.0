@@ -1,5 +1,275 @@
 {
   "screens": {
+    "com-android-settings-mainsettings-8a898ab847ea3b7c": {
+      "activity_name": ".MainSettings",
+      "anchors": [
+        "Settings",
+        "Fingerprints, face data, and screen lock",
+        "Security",
+        "Privacy protection",
+        "Performance Manager",
+        "Apps",
+        "Additional settings",
+        "Mi AI",
+        "Wallet & payments",
+        "Screen time",
+        "Special features",
+        "Accounts & sync"
+      ],
+      "clickable_text": [
+        "Settings",
+        "Fingerprints, face data, and screen lock",
+        "Security",
+        "Privacy protection",
+        "Performance Manager",
+        "Apps",
+        "Additional settings",
+        "Mi AI",
+        "Wallet & payments",
+        "Screen time",
+        "Special features",
+        "Accounts & sync"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": false,
+          "focused": false,
+          "label": "Settings",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06666666666666667,
+            "width": 0.2064814814814815,
+            "x": 0.3962962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Fingerprints, face data, and screen lock",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.10875
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Security",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.19916666666666666
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Privacy protection",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.2654166666666667
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Performance Manager",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.33166666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Apps",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.39791666666666664
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Additional settings",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.46416666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Mi AI",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.58125
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Wallet & payments",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.6475
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Screen time",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.71375
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Special features",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.78
+          }
+        },
+        {
+          "class_name": "android.widget.LinearLayout",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Accounts & sync",
+          "package_name": "com.android.settings",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06625,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.8970833333333333
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.android.settings",
+      "screen_id": "com-android-settings-mainsettings-8a898ab847ea3b7c",
+      "signature": {
+        "activity_name": ".MainSettings",
+        "clickable_text": [
+          "Settings",
+          "Fingerprints, face data, and screen lock",
+          "Security",
+          "Privacy protection",
+          "Performance Manager",
+          "Apps",
+          "Additional settings",
+          "Mi AI",
+          "Wallet & payments",
+          "Screen time"
+        ],
+        "package_name": "com.android.settings",
+        "screenshot_sha256": "ac00efb6e28e8211",
+        "text_digest": "8a898ab847ea3b7c",
+        "top_visible_text": [
+          "Settings",
+          "Fingerprints, face data, and screen lock",
+          "Security",
+          "Privacy protection",
+          "Performance Manager",
+          "Apps",
+          "Additional settings",
+          "Mi AI",
+          "Wallet & payments",
+          "Screen time"
+        ]
+      }
+    },
     "com-android-settings-mainsettings-a0f341f464427f29": {
       "activity_name": ".MainSettings",
       "anchors": [

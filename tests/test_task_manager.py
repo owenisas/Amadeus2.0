@@ -91,3 +91,27 @@ def test_task_manager_cancel_releases_device(tmp_path: Path) -> None:
         step_budget=5,
     )
     assert follow_up.task_id != task.task_id
+
+
+def test_task_manager_maps_canceled_run_result_to_canceled(tmp_path: Path) -> None:
+    manager = TaskManager(tmp_path / "tasks")
+    task = manager.create_task(
+        app=APP_REGISTRY["settings"],
+        device_serial="device-1",
+        goal="Task A",
+        yolo_mode=False,
+        step_budget=3,
+    )
+
+    updated = manager.record_run_result(
+        task,
+        RunResult(
+            status="canceled",
+            reason="Run interrupted by user.",
+            steps=1,
+            run_dir=tmp_path / "runs" / "r2",
+        ),
+    )
+
+    assert updated.status == "canceled"
+    assert updated.last_reason == "Run interrupted by user."

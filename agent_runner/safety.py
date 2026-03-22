@@ -28,6 +28,24 @@ PLAYSTORE_PURCHASE_TOKENS = [
 
 SAFE_ESCAPE_ACTIONS = {"back", "home", "stop", "wait"}
 SAFE_ESCAPE_TOOLS = {"reset_app", "launch_app", "capture_state", "list_scripts", "read_skill"}
+SAFE_READONLY_ACTIONS = {"swipe"}
+SAFE_NAVIGATION_TARGET_TOKENS = {
+    "search",
+    "navigate",
+    "close",
+    "dismiss",
+    "menu",
+    "home",
+    "local",
+    "for you",
+    "jobs",
+    "categories",
+    "back",
+    "see more",
+    "read more",
+    "description",
+    "details",
+}
 KNOWN_TOOL_ACTIONS = {
     "capture_state",
     "launch_app",
@@ -132,9 +150,14 @@ def evaluate_decision(
 
     if _is_safe_escape(decision):
         return SafetyVerdict(True, "Escape action allowed on high-risk surface.")
+    if _is_safe_readonly_action(decision):
+        return SafetyVerdict(True, "Read-only navigation action allowed on high-risk surface.")
 
     for token in high_risk_signatures:
-        if token.casefold() in combined:
+        token_lower = token.casefold()
+        if token_lower in decision_text:
+            return SafetyVerdict(False, f"Blocked by risk token '{token}'.")
+        if token_lower in screen_text and not _is_safe_navigation_target(decision):
             return SafetyVerdict(False, f"Blocked by risk token '{token}'.")
 
     if decision.risk_level.casefold() in {"high", "critical"}:
@@ -185,6 +208,14 @@ def _is_safe_escape(decision: VisionDecision) -> bool:
     return (decision.tool_name or "").casefold() in SAFE_ESCAPE_TOOLS
 
 
+def _is_safe_readonly_action(decision: VisionDecision) -> bool:
+    if decision.risk_level.casefold() in {"high", "critical"}:
+        return False
+    if decision.next_action in SAFE_READONLY_ACTIONS:
+        return True
+    return decision.next_action == "tool" and (decision.tool_name or "").casefold() in SAFE_READONLY_ACTIONS
+
+
 def _facebook_goal_allows_marketplace_messaging(goal: str | None) -> bool:
     if not goal:
         return False
@@ -193,6 +224,16 @@ def _facebook_goal_allows_marketplace_messaging(goal: str | None) -> bool:
         token in lowered
         for token in ["message ", "messages", "reply", "respond", "conversation", "chat", "inbox", "seller"]
     )
+
+
+def _is_safe_navigation_target(decision: VisionDecision) -> bool:
+    if decision.next_action == "tap":
+        label = (decision.target_label or "").casefold()
+        return any(token in label for token in SAFE_NAVIGATION_TARGET_TOKENS)
+    if decision.next_action == "tool" and (decision.tool_name or "").casefold() == "tap":
+        label = str(decision.tool_arguments.get("target_label") or "").casefold()
+        return any(token in label for token in SAFE_NAVIGATION_TARGET_TOKENS)
+    return False
 
 
 def _flatten_tool_argument_values(value) -> list[str]:

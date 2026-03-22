@@ -12,6 +12,7 @@ import time
 
 from agent_runner.models import BoundingBox, DeviceInfo, ScreenState, VisionDecision
 from agent_runner.utils import (
+    describe_state_signature,
     denormalize_box,
     ensure_directory,
     extract_ui_components,
@@ -236,22 +237,55 @@ class AndroidAdapter:
                 {"x": int(center_x), "y": int(center_y)},
             )
         elif decision.next_action == "swipe":
+            if decision.target_box:
+                swipe_box = decision.target_box.clamp()
+                percent = max(0.24, min(0.45, swipe_box.height * 0.9))
+            else:
+                swipe_box = BoundingBox(x=0.1, y=0.25, width=0.8, height=0.45)
+                percent = 0.35
+            pixel_box = denormalize_box(swipe_box, state.device.width, state.device.height)
             self._driver.execute_script(
                 "mobile: swipeGesture",
                 {
-                    "left": int(state.device.width * 0.1),
-                    "top": int(state.device.height * 0.2),
-                    "width": int(state.device.width * 0.8),
-                    "height": int(state.device.height * 0.6),
+                    "left": int(pixel_box.x),
+                    "top": int(pixel_box.y),
+                    "width": max(1, int(pixel_box.width)),
+                    "height": max(1, int(pixel_box.height)),
                     "direction": "up",
-                    "percent": 0.7,
+                    "percent": percent,
                 },
             )
         elif decision.next_action == "type":
             if not decision.input_text:
                 raise RuntimeError("Type action requires input_text.")
-            safe_text = decision.input_text.replace(" ", "%s")
-            self._adb(["shell", "input", "text", safe_text], check=True)
+            typed_with_active_element = False
+            if decision.target_box:
+                focus_box = self._resolve_tap_box(decision.target_box, state).clamp()
+                if self._driver is not None:
+                    self._execute_tap_method("appium_raw", focus_box, state)
+                else:
+                    self._execute_tap_method("adb_raw", focus_box, state)
+                time.sleep(0.25)
+            if self._driver is not None:
+                try:
+                    active_element = self._driver.switch_to.active_element
+                    clear_succeeded = False
+                    with suppress(Exception):
+                        active_element.clear()
+                        clear_succeeded = True
+                    if not clear_succeeded and hasattr(active_element, "set_value"):
+                        active_element.set_value("")
+                        clear_succeeded = True
+                    if hasattr(active_element, "set_value"):
+                        active_element.set_value(decision.input_text)
+                    else:
+                        active_element.send_keys(decision.input_text)
+                    typed_with_active_element = True
+                except Exception:
+                    typed_with_active_element = False
+            if not typed_with_active_element:
+                safe_text = decision.input_text.replace(" ", "%s")
+                self._adb(["shell", "input", "text", safe_text], check=True)
             if decision.submit_after_input:
                 self._adb(["shell", "input", "keyevent", "66"], check=True)
         elif decision.next_action == "back":
@@ -265,6 +299,39 @@ class AndroidAdapter:
         else:
             raise RuntimeError(f"Unsupported action '{decision.next_action}'.")
         self.wait_for_stable_ui(1.0)
+
+    def retry_tap_alternatives(
+        self,
+        requested_box: BoundingBox,
+        state: ScreenState,
+        run_dir: Path,
+    ) -> tuple[ScreenState, list[dict[str, object]]]:
+        resolved_box = self._resolve_tap_box(requested_box, state).clamp()
+        requested_box = requested_box.clamp()
+        attempts: list[dict[str, object]] = []
+        before_signature = describe_state_signature(state)
+
+        for method_name, tap_box in self._tap_retry_plan(requested_box, resolved_box):
+            attempt: dict[str, object] = {
+                "method": method_name,
+                "target_box": tap_box.to_dict(),
+                "changed": False,
+            }
+            try:
+                self._execute_tap_method(method_name, tap_box, state)
+                self.wait_for_stable_ui(1.0)
+                next_state = self.capture_state(run_dir)
+                attempt["screenshot_path"] = str(next_state.screenshot_path)
+                attempt["hierarchy_path"] = str(next_state.hierarchy_path)
+                if describe_state_signature(next_state) != before_signature:
+                    attempt["changed"] = True
+                    attempts.append(attempt)
+                    return next_state, attempts
+                attempts.append(attempt)
+            except Exception as exc:
+                attempt["error"] = str(exc)
+                attempts.append(attempt)
+        return state, attempts
 
     def _resolve_tap_box(self, requested_box: BoundingBox, state: ScreenState) -> BoundingBox:
         candidates: list[BoundingBox] = []
@@ -310,6 +377,53 @@ class AndroidAdapter:
         if best_anchor_distance <= 0.12 or best_center_distance <= 0.12:
             return best_box
         return requested
+
+    def _tap_retry_plan(
+        self,
+        requested_box: BoundingBox,
+        resolved_box: BoundingBox,
+    ) -> list[tuple[str, BoundingBox]]:
+        plan: list[tuple[str, BoundingBox]] = []
+        seen: set[tuple[str, tuple[float, float, float, float]]] = set()
+
+        def add(method_name: str, box: BoundingBox) -> None:
+            key = (
+                method_name,
+                (
+                    round(box.x, 4),
+                    round(box.y, 4),
+                    round(box.width, 4),
+                    round(box.height, 4),
+                ),
+            )
+            if key in seen:
+                return
+            seen.add(key)
+            plan.append((method_name, box))
+
+        add("appium_raw", requested_box)
+        add("adb_resolved", resolved_box)
+        add("adb_raw", requested_box)
+        return plan
+
+    def _execute_tap_method(self, method_name: str, tap_box: BoundingBox, state: ScreenState) -> None:
+        if method_name.startswith("appium_"):
+            assert self._driver is not None
+            pixel_box = denormalize_box(tap_box, state.device.width, state.device.height)
+            center_x = pixel_box.x + (pixel_box.width / 2.0)
+            center_y = pixel_box.y + (pixel_box.height / 2.0)
+            self._driver.execute_script(
+                "mobile: clickGesture",
+                {"x": int(center_x), "y": int(center_y)},
+            )
+            return
+        if method_name.startswith("adb_"):
+            pixel_box = denormalize_box(tap_box, state.device.width, state.device.height)
+            center_x = int(pixel_box.x + (pixel_box.width / 2.0))
+            center_y = int(pixel_box.y + (pixel_box.height / 2.0))
+            self._adb(["shell", "input", "tap", str(center_x), str(center_y)], check=True)
+            return
+        raise RuntimeError(f"Unsupported tap retry method '{method_name}'.")
 
     @staticmethod
     def _point_in_box(point: tuple[float, float], box: BoundingBox) -> bool:

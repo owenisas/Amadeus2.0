@@ -64,6 +64,30 @@ def simplify_events(events: list[dict[str, Any]], *, limit: int = 20) -> list[di
                 entry["screenshot_path"] = state.get("screenshot_path")
             if state.get("hierarchy_path"):
                 entry["hierarchy_path"] = state.get("hierarchy_path")
+        elif event_type in {"skill_loaded", "system_skill_loaded", "skill_auto_updated", "skill_state_updated", "memory_updated", "backup_updated"}:
+            for key in (
+                "app_name",
+                "path",
+                "screen_id",
+                "new_screen",
+                "selectors_added",
+                "screen_count",
+                "selector_count",
+                "status",
+                "reason",
+                "summary_path",
+                "thread_count",
+                "contacted_item_count",
+                "inspected_item_count",
+            ):
+                if event.get(key) is not None:
+                    entry[key] = event.get(key)
+            if event.get("sections") is not None:
+                entry["sections"] = list(event.get("sections") or [])
+        elif event_type == "tap_retry_attempted":
+            for key in ("method", "changed", "target_label", "error", "screenshot_path", "hierarchy_path"):
+                if event.get(key) is not None:
+                    entry[key] = event.get(key)
         else:
             for key in ("reason", "status", "run_dir", "app_name", "goal", "target_label", "tool_name"):
                 if event.get(key) is not None:

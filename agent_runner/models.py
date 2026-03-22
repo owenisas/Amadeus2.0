@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 
 @dataclass(slots=True)
@@ -260,6 +260,8 @@ class SkillBundle:
     selectors: dict[str, Any]
     state: dict[str, Any]
     memory: str
+    backup_data: dict[str, Any]
+    backup_summary: str
 
 
 @dataclass(slots=True)
@@ -271,6 +273,7 @@ class RunContext:
     max_steps: int
     yolo_mode: bool = False
     action_history: list[ActionRecord] = field(default_factory=list)
+    should_stop: Callable[[], bool] | None = None
 
 
 @dataclass(slots=True)

@@ -1,0 +1,133 @@
+{
+  "app_name": "facebook",
+  "facebook_marketplace": {
+    "contacted_items": [
+      {
+        "image_label": "Product Image,1 of 5",
+        "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+        "last_inbound_message": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+        "last_outbound_message": "Hi, I\u2019m interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?",
+        "last_updated": "2026-03-22T12:36:23-07:00",
+        "location_hint": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+        "message_status": "seller_confirmed_available",
+        "price": "$325",
+        "seen_status": "Seen by Joshua Carlin",
+        "seller_name": "Joshua",
+        "seller_rating": "5.0 (13 reviews of Joshua)",
+        "thread_key": "joshua-canon-rf-35mm-f-1-8-macro-is-stm-lens"
+      }
+    ],
+    "inspected_items": [
+      {
+        "description_excerpt": null,
+        "draft_or_message": null,
+        "image_label": "Product Image,1 of 5",
+        "item_key": "canon-rf-35mm-f-1-8-macro-is-stm-lens",
+        "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+        "last_updated": "2026-03-22T12:36:23-07:00",
+        "location_hint": null,
+        "message_status": "sent",
+        "price": "$325",
+        "seller_name": null,
+        "seller_rating": null
+      }
+    ],
+    "threads": [
+      {
+        "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+        "last_inbound_message": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+        "last_outbound_message": "Hi, I\u2019m interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?",
+        "last_updated": "2026-03-22T12:36:23-07:00",
+        "location_hint": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+        "messages": [
+          {
+            "direction": "outbound",
+            "speaker": "Owen",
+            "text": "Hi, I\u2019m interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?"
+          },
+          {
+            "direction": "inbound",
+            "speaker": "Joshua",
+            "text": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau"
+          }
+        ],
+        "seen_status": "Seen by Joshua Carlin",
+        "seller_name": "Joshua",
+        "seller_rating": "5.0 (13 reviews of Joshua)",
+        "thread_key": "joshua-canon-rf-35mm-f-1-8-macro-is-stm-lens",
+        "thread_title": "Joshua \u00b7 Canon RF 35mm f/1.8 Macro IS STM Lens"
+      }
+    ]
+  },
+  "last_updated": "2026-03-22T12:36:23-07:00",
+  "package_name": "com.facebook.katana",
+  "recent_screens": [
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Like",
+        "Comment",
+        "Save",
+        "Share",
+        "See conversation"
+      ],
+      "last_seen_at": "2026-03-22T12:36:23-07:00",
+      "package_name": "com.facebook.katana",
+      "screen_id": "com-facebook-katana-mainactivity-70828fb72c6a224f",
+      "seen_count": 1,
+      "visible_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Canon RF 35mm f/1.8 Macro IS STM Lens",
+        "$325",
+        "Like",
+        "Comment",
+        "Save",
+        "Share",
+        "Message sent to seller",
+        "See conversation"
+      ]
+    },
+    {
+      "activity_name": ".ThreadActivity",
+      "clickable_text": [
+        "Back | Joshua \u00b7 Canon RF 35mm f/1.8 Macro IS STM Lens | Marketplace listing | Chat profile",
+        "Back",
+        "Joshua \u00b7 Canon RF 35mm f/1.8 Macro IS STM Lens",
+        "Marketplace listing",
+        "Chat profile | Joshua \u00b7 Canon RF 35mm f/1.8 Macro IS STM Lens | 5.0 (13 reviews of Joshua) | Marketplace chats and your privacy",
+        "Chat profile",
+        "View seller profile",
+        "Owen, Hi, I\u2019m interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?",
+        "Profile Picture",
+        "Joshua, Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+        "Open camera.",
+        "Open photo gallery."
+      ],
+      "last_seen_at": "2026-03-22T12:36:23-07:00",
+      "package_name": "com.facebook.katana",
+      "screen_id": "com-facebook-katana-threadactivity-11554f9a5edca174",
+      "seen_count": 1,
+      "visible_text": [
+        "Back",
+        "Joshua \u00b7 Canon RF 35mm f/1.8 Macro IS STM Lens",
+        "Marketplace listing",
+        "Chat profile",
+        "5.0 (13 reviews of Joshua)",
+        "Marketplace chats and your privacy",
+        "You started this chat.\u00a0View seller profile",
+        "View seller profile",
+        "Owen, Hi, I\u2019m interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?",
+        "Joshua",
+        "Profile Picture",
+        "Joshua, Yes, available for pickup in West Seattle off 49th Ave SW near Juneau"
+      ]
+    }
+  ]
+}

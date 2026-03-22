@@ -133,6 +133,8 @@ class TaskManager:
     def _map_run_status(self, run_status: str) -> str:
         if run_status == "completed":
             return "completed"
+        if run_status == "canceled":
+            return "canceled"
         if run_status == "manual_login_required":
             return "waiting_for_login"
         if run_status == "manual_verification_required":

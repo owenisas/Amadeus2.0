@@ -1,23 +1,60 @@
 {
   "failure_count": 0,
-  "last_detected_inputs": [],
+  "last_detected_inputs": [
+    {
+      "class_name": "android.widget.EditText",
+      "clickable": true,
+      "component_type": "text_input",
+      "enabled": true,
+      "focused": false,
+      "label": "1990.0",
+      "package_name": "com.fivesurveys.mobile",
+      "resource_id": "",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    }
+  ],
+  "last_detected_overlay_controls": [
+    {
+      "class_name": "android.widget.Button",
+      "clickable": true,
+      "component_type": "button",
+      "enabled": true,
+      "focused": false,
+      "label": "Qualification Continue Button",
+      "package_name": "com.fivesurveys.mobile",
+      "resource_id": "",
+      "search_related": false,
+      "target_box": {
+        "height": 0.06291666666666666,
+        "width": 0.14074074074074075,
+        "x": 0.42962962962962964,
+        "y": 0.9225
+      }
+    }
+  ],
   "last_screen_signature": {
     "activity_name": ".MainActivity",
     "clickable_text": [
       "Claim Reward",
+      "5 | (110) | Take Survey | Start your first survey",
       "Take Survey",
-      "4 | (110) | Take Survey",
+      "5 | (110) | Take Survey",
+      "4.5 | (38) | Take Survey",
       "New | Take Survey",
-      "5 | (86) | Take Survey",
-      "4 | (19) | Take Survey",
-      "5 | (45) | Take Survey",
-      "4 | (74) | Take Survey",
-      "4.5 | (21) | Take Survey",
-      "5 | (110) | Take Survey"
+      "5 | (51) | Take Survey",
+      "4 | (55) | Take Survey",
+      "4.5 | (90)",
+      "5 | (110)"
     ],
     "package_name": "com.fivesurveys.mobile",
-    "screenshot_sha256": "81c02046f455fc7b",
-    "text_digest": "2b26e2c26b98766c",
+    "screenshot_sha256": "6b850c2ef200a0ed",
+    "text_digest": "8babfd17ff281cbc",
     "top_visible_text": [
       "Five Surveys",
       "Current Balance",
@@ -25,17 +62,348 @@
       "Claim Reward",
       "Complete 5 surveys and get $ 5.00 USD",
       "$ 5.00 USD",
-      "Take Survey",
-      "4",
+      "5",
       "(110)",
-      "New"
+      "Take Survey",
+      "Start your first survey"
     ]
   },
-  "last_successful_screen": null,
-  "last_working_action_chain": [],
-  "reason": "App is not installed on the emulator.",
+  "last_successful_screen": "com-fivesurveys-mobile-mainactivity-8babfd17ff281cbc",
+  "last_working_action_chain": [
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 25,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 26,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 27,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 28,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 29,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 30,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 31,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 32,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 33,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    },
+    {
+      "action": "tool",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 34,
+      "target_box": {
+        "height": 0.12,
+        "width": 0.12,
+        "x": 0.5,
+        "y": 0.94
+      },
+      "target_label": null,
+      "tool_arguments": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        }
+      },
+      "tool_name": "tap",
+      "tool_output": {
+        "target_box": {
+          "height": 0.12,
+          "width": 0.12,
+          "x": 0.5,
+          "y": 0.94
+        },
+        "target_label": null
+      }
+    }
+  ],
+  "reason": "Run interrupted by user.",
   "screen_transition_confidence": 1.0,
   "scripts": [],
-  "status": "error",
+  "status": "canceled",
   "transitions": []
 }

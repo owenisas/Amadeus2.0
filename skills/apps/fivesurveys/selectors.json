@@ -554,6 +554,198 @@
         "x": 0.05277777777777778,
         "y": 0.19458333333333333
       }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "0.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-c01cc2ba6fe2d20d",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "1990.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-f5f1f681ea414c3b",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "1990.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-f30ca13e415ce7d8",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "1990.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-5759d70beb3b378a",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "1990.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-3c1621361d014510",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "1990.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-c912525ae2b48250",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "1990.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-8babfd17ff281cbc",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "button",
+      "label": "Qualification Continue Button",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Exact bottom-centered continue button from the birthday qualification overlay, observed in the latest XML at bounds [464,2214][616,2365].",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-8babfd17ff281cbc",
+      "search_related": false,
+      "target_box": {
+        "height": 0.06291666666666666,
+        "width": 0.14074074074074075,
+        "x": 0.42962962962962964,
+        "y": 0.9225
+      }
     }
   ]
 }

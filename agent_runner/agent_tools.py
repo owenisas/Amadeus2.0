@@ -111,14 +111,14 @@ class AgentToolExecutor:
             ),
             AgentToolSpec(
                 name="read_skill",
-                description="Read a skill file such as SKILL.md, screens.json, selectors.json, state.json, or memory.md.",
+                description="Read a skill file such as SKILL.md, screens.json, selectors.json, state.json, memory.md, data/backup.json, or data/backup.md.",
                 requires_state=False,
                 mutates_device=False,
                 mutates_skills=False,
             ),
             AgentToolSpec(
                 name="write_skill_file",
-                description="Create or edit a skill file under skills/apps/<app>/ for SKILL.md, screens.json, selectors.json, state.json, or memory.md.",
+                description="Create or edit a skill file under skills/apps/<app>/ for SKILL.md, screens.json, selectors.json, state.json, memory.md, data/backup.json, or data/backup.md.",
                 requires_state=False,
                 mutates_device=False,
                 mutates_skills=True,
@@ -306,12 +306,13 @@ class AgentToolExecutor:
         if not text:
             raise ValueError("type requires text or input_text.")
         submit = bool(arguments.get("submit_after_input", False))
+        target_box = BoundingBox.from_dict(arguments.get("target_box"))
         self.android_adapter.perform(
             VisionDecision(
                 screen_classification="tool_type",
                 goal_progress="acting",
                 next_action="type",
-                target_box=None,
+                target_box=target_box,
                 confidence=1.0,
                 reason="Agent tool type.",
                 risk_level="low",
@@ -337,19 +338,23 @@ class AgentToolExecutor:
         skill: SkillBundle | None,
     ) -> ToolExecutionResult:
         state = current_state or self.android_adapter.capture_state(run_dir)
+        swipe_box = BoundingBox.from_dict(arguments.get("target_box"))
         self.android_adapter.perform(
             VisionDecision(
                 screen_classification="tool_swipe",
                 goal_progress="acting",
                 next_action="swipe",
-                target_box=None,
+                target_box=swipe_box,
                 confidence=1.0,
                 reason="Agent tool swipe.",
                 risk_level="low",
             ),
             state,
         )
-        return ToolExecutionResult(tool_name="swipe", ok=True, output={}, refresh_state=True)
+        output: dict[str, Any] = {}
+        if swipe_box is not None:
+            output["target_box"] = swipe_box.to_dict()
+        return ToolExecutionResult(tool_name="swipe", ok=True, output=output, refresh_state=True)
 
     def _back(
         self,

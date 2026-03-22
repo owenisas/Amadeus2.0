@@ -1,0 +1,30 @@
+{
+  "description": "Reset Facebook to a clean state, dismiss any backup or recovery prompts, and navigate to Marketplace using the direct tab.",
+  "name": "open_marketplace_direct",
+  "steps": [
+    {
+      "action": "reset_app",
+      "package_name": "com.facebook.katana"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 5
+    },
+    {
+      "action": "back",
+      "only_if_visible_text": "backup"
+    },
+    {
+      "action": "back",
+      "only_if_visible_text": "recovery"
+    },
+    {
+      "action": "tap",
+      "target_label": "Marketplace, tab 4 of 6"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 3
+    }
+  ]
+}

@@ -19,6 +19,7 @@ description: App-specific navigation guidance for the Five Surveys Android workf
 - On the logged-in main feed, the first featured survey is reachable from the left-side `Take Survey` button near `x=0.09, y=0.30`.
 - After entering a survey, a qualification overlay can appear on top of the feed; the overlay is the active surface even if the underlying survey cards remain in the hierarchy.
 - The birthday qualification step exposes a focused year `text_input` labeled `0.0`, plus `Select Month` and `Select Day`. Use those overlay controls instead of tapping through the obscured feed beneath.
+- The birthday qualification overlay also exposes a bottom-centered unlabeled continue button. On the latest captured screen it was the exact XML button at bounds `[464,2214][616,2365]`; treat that overlay button as the primary next-step control on this screen.
 
 ## Stable visual anchors
 
@@ -37,3 +38,4 @@ description: App-specific navigation guidance for the Five Surveys Android workf
 
 - `inspect onboarding`: launch the app, capture state, and stop when the landing page or login gate is visible.
 - `open first featured survey`: from the logged-in feed, tap the left `Take Survey` CTA, then use the overlay controls from the qualification screen rather than the feed components that remain visible underneath.
+- `birthday qualification`: use the year input plus month/day pickers when needed, then target the bottom-centered overlay continue button instead of any similarly placed feed card beneath it.

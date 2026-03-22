@@ -4,7 +4,7 @@ from pathlib import Path
 
 from agent_runner.android_adapter import AndroidAdapter
 from agent_runner.agent_tools import AgentToolExecutor
-from agent_runner.models import ActionRecord, RunContext, RunResult, ScreenState, SkillBundle, VisionDecision
+from agent_runner.models import ActionRecord, BoundingBox, RunContext, RunResult, ScreenState, SkillBundle, VisionDecision
 from agent_runner.safety import detect_manual_intervention_reason, evaluate_decision
 from agent_runner.skill_manager import SkillManager
 from agent_runner.utils import append_jsonl, describe_state_signature, ensure_directory, timestamp_slug
@@ -74,7 +74,9 @@ class Orchestrator:
                 context_log_path = run_dir / "agent_context.jsonl"
                 context.run_dir = run_dir
                 bundle = self.skill_manager.load_skill(context.app)
+                self._flush_skill_events(context_log_path=context_log_path)
                 system_instruction = self.skill_manager.load_system_skill()
+                self._flush_skill_events(context_log_path=context_log_path)
                 notice = self.YOLO_NOTICE if context.yolo_mode else None
 
                 if not self.android_adapter.is_package_installed(context.app.package_name):
@@ -118,9 +120,37 @@ class Orchestrator:
                         "state": self._serialize_state(state),
                     },
                 )
+                self.skill_manager.update_backup(bundle, state)
+                self._flush_skill_events(context_log_path=context_log_path, step=0)
+                interrupted = self._interrupt_result(
+                    context=context,
+                    bundle=bundle,
+                    run_dir=run_dir,
+                    state=state,
+                    steps=0,
+                    notice=notice,
+                    last_screen_id=last_screen_id,
+                    failure_count=failure_count,
+                    context_log_path=context_log_path,
+                )
+                if interrupted is not None:
+                    return interrupted
 
                 step = 0
                 while context.max_steps == 0 or step < context.max_steps:
+                    interrupted = self._interrupt_result(
+                        context=context,
+                        bundle=bundle,
+                        run_dir=run_dir,
+                        state=state,
+                        steps=step,
+                        notice=notice,
+                        last_screen_id=last_screen_id,
+                        failure_count=failure_count,
+                        context_log_path=context_log_path,
+                    )
+                    if interrupted is not None:
+                        return interrupted
                     step += 1
                     last_state = state
 
@@ -148,6 +178,7 @@ class Orchestrator:
                             action_history=[item.to_dict() for item in context.action_history],
                             failure_count=failure_count,
                         )
+                        self._flush_skill_events(context_log_path=context_log_path, step=step)
                         return RunResult(
                             status=status,
                             reason=intervention_reason,
@@ -186,6 +217,20 @@ class Orchestrator:
                         },
                     )
                     last_screen_id = self.skill_manager.update_after_observation(bundle, state, decision)
+                    self._flush_skill_events(context_log_path=context_log_path, step=step)
+                    interrupted = self._interrupt_result(
+                        context=context,
+                        bundle=bundle,
+                        run_dir=run_dir,
+                        state=state,
+                        steps=step - 1,
+                        notice=notice,
+                        last_screen_id=last_screen_id,
+                        failure_count=failure_count,
+                        context_log_path=context_log_path,
+                    )
+                    if interrupted is not None:
+                        return interrupted
 
                     # --- Approval gate: prompt user and resume if approved ---
                     if decision.requires_user_approval and decision.next_action == "stop":
@@ -244,6 +289,20 @@ class Orchestrator:
                             state = self.android_adapter.capture_state(run_dir)
                             continue
 
+                    interrupted = self._interrupt_result(
+                        context=context,
+                        bundle=bundle,
+                        run_dir=run_dir,
+                        state=state,
+                        steps=step - 1,
+                        notice=notice,
+                        last_screen_id=last_screen_id,
+                        failure_count=failure_count,
+                        context_log_path=context_log_path,
+                    )
+                    if interrupted is not None:
+                        return interrupted
+
                     verdict = evaluate_decision(context.app, state, decision, goal=context.goal)
                     if not verdict.allowed:
                         context.action_history.append(
@@ -274,6 +333,7 @@ class Orchestrator:
                             action_history=[item.to_dict() for item in context.action_history],
                             failure_count=failure_count,
                         )
+                        self._flush_skill_events(context_log_path=context_log_path, step=step)
                         return RunResult(
                             status="blocked",
                             reason=verdict.reason,
@@ -316,6 +376,7 @@ class Orchestrator:
                             action_history=[item.to_dict() for item in context.action_history],
                             failure_count=failure_count,
                         )
+                        self._flush_skill_events(context_log_path=context_log_path, step=step)
                         return RunResult(
                             status="completed",
                             reason=decision.reason,
@@ -355,6 +416,7 @@ class Orchestrator:
                                 action_history=[item.to_dict() for item in context.action_history],
                                 failure_count=failure_count,
                             )
+                            self._flush_skill_events(context_log_path=context_log_path, step=step)
                             return RunResult(
                                 status="blocked",
                                 reason=str(exc),
@@ -398,6 +460,7 @@ class Orchestrator:
                                 action_history=[item.to_dict() for item in context.action_history],
                                 failure_count=failure_count,
                             )
+                            self._flush_skill_events(context_log_path=context_log_path, step=step)
                             return RunResult(
                                 status="error",
                                 reason=reason,
@@ -434,6 +497,15 @@ class Orchestrator:
                                 "target_label": decision.target_label,
                             },
                         )
+                    retry_state, retry_attempts = self._retry_tap_if_needed(
+                        decision=decision,
+                        state=state,
+                        next_state=next_state,
+                        run_dir=run_dir,
+                        step=step,
+                        context_log_path=context_log_path,
+                    )
+                    next_state = retry_state
                     self._emit_event("state_captured", {"step": step, "state": self._serialize_state(next_state)})
                     self._append_context_log(
                         context_log_path,
@@ -443,12 +515,14 @@ class Orchestrator:
                             "state": self._serialize_state(next_state),
                         },
                     )
+                    self.skill_manager.update_backup(bundle, next_state)
                     self.skill_manager.update_after_transition(
                         bundle,
                         before_state=state,
                         decision=decision,
                         after_state=next_state,
                     )
+                    self._flush_skill_events(context_log_path=context_log_path, step=step)
                     before_signature = describe_state_signature(state)
                     current_signature = describe_state_signature(next_state)
                     if before_signature == current_signature and decision.next_action != "wait":
@@ -468,6 +542,7 @@ class Orchestrator:
                             action_history=[item.to_dict() for item in context.action_history],
                             failure_count=failure_count,
                         )
+                        self._flush_skill_events(context_log_path=context_log_path, step=step)
                         return RunResult(
                             status="stalled",
                             reason=reason,
@@ -487,6 +562,7 @@ class Orchestrator:
                     action_history=[item.to_dict() for item in context.action_history],
                     failure_count=failure_count,
                 )
+                self._flush_skill_events(context_log_path=context_log_path, step=context.max_steps)
                 return RunResult(
                     status="max_steps_reached",
                     reason=reason,
@@ -509,6 +585,63 @@ class Orchestrator:
     @staticmethod
     def _append_context_log(path: Path, payload: dict[str, object]) -> None:
         append_jsonl(path, payload)
+
+    def _flush_skill_events(
+        self,
+        *,
+        context_log_path: Path,
+        step: int | None = None,
+    ) -> None:
+        for event in self.skill_manager.consume_events():
+            event_type = str(event.get("type") or "skill_event")
+            payload = {key: value for key, value in event.items() if key != "type"}
+            if step is not None and payload.get("step") is None:
+                payload["step"] = step
+            self._emit_event(event_type, payload)
+            self._append_context_log(context_log_path, {"type": event_type, **payload})
+
+    def _interrupt_result(
+        self,
+        *,
+        context: RunContext,
+        bundle: SkillBundle,
+        run_dir: Path,
+        state: ScreenState,
+        steps: int,
+        notice: str | None,
+        last_screen_id: str | None,
+        failure_count: int,
+        context_log_path: Path,
+    ) -> RunResult | None:
+        if context.should_stop is None or not context.should_stop():
+            return None
+        reason = "Run interrupted by user."
+        self._emit_event("run_interrupted", {"step": steps, "reason": reason})
+        self._append_context_log(
+            context_log_path,
+            {
+                "type": "run_interrupted",
+                "step": steps,
+                "reason": reason,
+            },
+        )
+        self.skill_manager.update_run_state(
+            bundle,
+            status="canceled",
+            reason=reason,
+            last_screen_id=last_screen_id,
+            action_history=[item.to_dict() for item in context.action_history],
+            failure_count=failure_count,
+        )
+        self._flush_skill_events(context_log_path=context_log_path, step=steps)
+        return RunResult(
+            status="canceled",
+            reason=reason,
+            steps=steps,
+            run_dir=run_dir,
+            last_state=state,
+            notice=notice,
+        )
 
     @staticmethod
     def _state_has_reload(state: ScreenState) -> bool:
@@ -554,6 +687,53 @@ class Orchestrator:
         summary["hierarchy_path"] = str(state.hierarchy_path)
         return summary
 
+    def _retry_tap_if_needed(
+        self,
+        *,
+        decision: VisionDecision,
+        state: ScreenState,
+        next_state: ScreenState,
+        run_dir: Path,
+        step: int,
+        context_log_path: Path,
+    ) -> tuple[ScreenState, list[dict[str, object]]]:
+        tap_box = self._decision_tap_box(decision)
+        if tap_box is None:
+            return next_state, []
+        if describe_state_signature(state) != describe_state_signature(next_state):
+            return next_state, []
+        retry_tap = getattr(self.android_adapter, "retry_tap_alternatives", None)
+        if not callable(retry_tap):
+            return next_state, []
+        retry_state, attempts = retry_tap(tap_box, state, run_dir)
+        if not attempts:
+            return next_state, []
+        for attempt in attempts:
+            payload = {
+                "step": step,
+                "method": attempt.get("method"),
+                "target_box": attempt.get("target_box"),
+                "changed": attempt.get("changed", False),
+                "target_label": decision.target_label or decision.tool_arguments.get("target_label"),
+            }
+            if attempt.get("error"):
+                payload["error"] = attempt.get("error")
+            if attempt.get("screenshot_path"):
+                payload["screenshot_path"] = attempt.get("screenshot_path")
+            if attempt.get("hierarchy_path"):
+                payload["hierarchy_path"] = attempt.get("hierarchy_path")
+            self._emit_event("tap_retry_attempted", payload)
+            self._append_context_log(context_log_path, {"type": "tap_retry_attempted", **payload})
+        return retry_state, attempts
+
+    @staticmethod
+    def _decision_tap_box(decision: VisionDecision):
+        if decision.next_action == "tap":
+            return decision.target_box
+        if decision.next_action == "tool" and decision.tool_name == "tap":
+            return decision.tool_arguments.get("target_box") and BoundingBox.from_dict(decision.tool_arguments.get("target_box"))
+        return None
+
     def _request_approval(
         self,
         *,
@@ -575,4 +755,5 @@ class Orchestrator:
             action_history=[item.to_dict() for item in context.action_history],
             failure_count=failure_count,
         )
+        self._flush_skill_events(context_log_path=run_dir / "agent_context.jsonl", step=step)
         return self.approval_handler(decision, state)

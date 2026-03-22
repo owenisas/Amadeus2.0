@@ -47,3 +47,7 @@
 - Status: max_steps_reached
 - Reason: Max steps reached.
 - Last screen: com-android-settings-mainsettings-a0f341f464427f29
+
+- Status: completed
+- Reason: Settings screen is open and no stronger heuristic was found.
+- Last screen: com-android-settings-mainsettings-8a898ab847ea3b7c

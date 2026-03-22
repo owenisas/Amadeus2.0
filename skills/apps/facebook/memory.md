@@ -1,73 +1,82 @@
 # Facebook memory
 
 - Logged-in phone flow is working on `com.facebook.katana`.
-- The reliable Marketplace route on this phone is `reset_app`, `Back` once if the Messenger backup prompt appears, then `Marketplace, tab 4 of 6` from the home shell.
-- The `Back` step must stay conditional on the Messenger backup prompt; sending `Back` from the clean home shell is the wrong path.
-- `Menu` -> `Marketplace` is still available as a fallback, but it is slower than the direct Marketplace tab after clean reset.
-- Marketplace feed confirms local context with `Location: Bothell, Washington`.
-- Facebook home feed exposes a top-right `Messaging` button with bounds roughly `[948,80][1069,201]`.
-- Entering Facebook messaging currently triggers a recovery dialog on this phone: `Are you sure?` / `Some of your end-to-end encrypted messages may be missing.` with `CANCEL` and `YES`.
-- Treat `Message seller`, `Buy now`, `Contact seller`, `Sell`, and publish/listing flows as blocked surfaces unless the user explicitly asks.
-- Marketplace messaging only: reading inboxes, seller reply composers, and `Send` are in scope only when the goal explicitly references Facebook Marketplace; otherwise Marketplace remains read-only.
-- In YOLO mode, the Marketplace messaging recovery dialog should be auto-continued without asking the user.
-- Do not restrict Marketplace hunting to seeded categories; any local item with strong resale spread and reasonable liquidity is in scope.
-- Useful first-pass listing anchors seen in Marketplace feed:
-  - `Just listed, $100 · Two 32" LG monitors from costco`
-  - `Just listed, $150 · MSI 34 inch curved monitor`
-  - `Just listed, $620 · Apple Mac Mini M4 16GB 256GB`
 
-- Status: blocked
-- Reason: Blocked by risk token 'buy'.
-- Last screen: com-facebook-katana-immersiveactivity-immersiveactivity-ece948708ebeaa90
-
-- Status: blocked
-- Reason: Blocked by risk token 'buy'.
-- Last screen: com-facebook-katana-immersiveactivity-immersiveactivity-ece948708ebeaa90
-
-- Status: blocked
+<!-- older entries pruned -->
 - Reason: Blocked by risk token 'message seller'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-13f979b0dbaa301b
-
-- Status: blocked
-- Reason: Tap actions require a target_box.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-13f979b0dbaa301b
-
-- Status: blocked
-- Reason: Blocked by risk token 'purchase'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-3ad1ecd1172d581f
-
-- Status: blocked
-- Reason: Blocked by risk token 'message seller'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-3ad1ecd1172d581f
-
-- Status: blocked
-- Reason: Blocked by risk token 'message seller'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-3ad1ecd1172d581f
-
-- Status: blocked
-- Reason: Blocked by risk token 'message seller'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-3ad1ecd1172d581f
-
-- Status: completed
-- Reason: Facebook Marketplace listing detail is visible for read-only inspection.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-3ad1ecd1172d581f
-
-- Status: blocked
-- Reason: Tap actions require a target_box.
-- Last screen: com-facebook-katana-loginactivity-c16645d9323bd8cc
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-eff36f66a200ec31
 
 - Status: max_steps_reached
 - Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-b1a87975dece3063
+- Last screen: com-facebook-katana-immersiveactivity-immersiveactivity-ec62106dc81a4447
 
 - Status: completed
-- Reason: Facebook message inbox is visible for read-only inspection.
-- Last screen: com-facebook-katana-com-facebook-messaginginblue-inbox-activities-inboxactivity-59a173fa71ac548b
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-immersiveactivity-immersiveactivity-ec62106dc81a4447
 
 - Status: completed
-- Reason: Facebook message inbox is visible for read-only inspection.
-- Last screen: com-facebook-katana-com-facebook-messaginginblue-diode-activity-inboxinterstitialactivity-d22697c9437d3449
+- Reason: Target 'What do you want to buy?' matched the goal, but no stable target box was available on the current screen.
+- Last screen: com-facebook-katana-loginactivity-c9d5167b73120fc4
 
 - Status: completed
-- Reason: Target 'Marketplace, tab 4 of 6' matched the goal, but no stable target box was available on the current screen.
-- Last screen: com-facebook-katana-loginactivity-cef7d0208059cf64
+- Reason: Facebook Marketplace search surface is visible.
+- Last screen: com-facebook-katana-immersiveactivity-immersiveactivity-ec62106dc81a4447
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-8360afff127e14e0
+
+- Status: completed
+- Reason: Facebook Marketplace feed has been scanned and no stronger next listing heuristic was found.
+- Last screen: com-facebook-katana-loginactivity-4538ccbca69c81cf
+
+- Status: completed
+- Reason: Facebook Marketplace feed has been scanned and no stronger next listing heuristic was found.
+- Last screen: com-facebook-katana-loginactivity-1a4143c23e563b52
+
+- Status: blocked
+- Reason: Tap actions require a target_box.
+- Last screen: com-facebook-katana-loginactivity-fbc4a2d495378594
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-b6bb0489920dfd43
+
+- Status: completed
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-584837daf88fcc96
+
+- Status: blocked
+- Reason: Blocked by risk token 'buy now'.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-584837daf88fcc96
+
+- Status: blocked
+- Reason: Blocked by risk token 'buy now'.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-f94db2a5d767b55c
+
+- Status: blocked
+- Reason: Blocked by risk token 'buy now'.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-f94db2a5d767b55c
+
+- Status: completed
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-c7f9c8239f3d833c
+
+- Marketplace value-scan runs now prefer Gemini `gemini-3.1-pro-preview` decisions on feed/detail surfaces instead of heuristic bypass.
+- Label-only listing taps can now hydrate their target box from the current Marketplace screen state.
+- Buy-now listing detail pages are treated as read-only inspection surfaces, not automatic stop points.
+- Detail-page inspection should proceed in stages: image/title/price, `See more`, one short in-listing swipe for seller/location/condition, then back out.
+- Feed scrolling should stay shallow; large full-screen Marketplace swipes tend to skip too many listings.
+- Marketplace seller messaging should no longer rely on the default `Hi, is this available?` opener when the goal asks to contact the seller. Prefer a short custom opener that references the listing title, then send it from the inline composer.
+
+- Status: completed
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-c7f9c8239f3d833c
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-908153ea0ac53092
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-75f491c819218952

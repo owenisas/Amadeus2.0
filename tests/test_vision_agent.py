@@ -234,6 +234,283 @@ def test_goal_requesting_screenshot_uses_capture_tool(tmp_path: Path) -> None:
     assert decision.tool_name == "capture_state"
 
 
+def test_selector_lookup_prefers_matching_screen_and_anchor_text(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["settings"])
+    bundle.selectors["selectors"] = [
+        {
+            "screen_id": "com-android-settings-settings-correct",
+            "label": "Continue",
+            "target_box": {"x": 0.42, "y": 0.92, "width": 0.14, "height": 0.06},
+            "activity_name": ".Settings",
+            "package_name": "com.android.settings",
+            "anchor_text": ["Enter your birthday", "Qualification"],
+        },
+        {
+            "screen_id": "com-android-settings-settings-wrong",
+            "label": "Continue",
+            "target_box": {"x": 0.05, "y": 0.2, "width": 0.2, "height": 0.05},
+            "activity_name": ".Settings",
+            "package_name": "com.android.settings",
+            "anchor_text": ["Battery", "Storage"],
+        },
+    ]
+    state = make_amazon_state(
+        visible_text=["Qualification", "Enter your birthday", "January", "15"],
+        clickable_text=["Continue"],
+        components=[{"label": "Continue", "component_type": "button", "target_box": {"x": 0.42, "y": 0.92, "width": 0.14, "height": 0.06}}],
+    )
+    state.package_name = "com.android.settings"
+    state.activity_name = ".Settings"
+
+    result = agent._lookup_selector_box(bundle, state, "Continue")
+
+    assert result is not None
+    assert round(result.x, 2) == 0.42
+
+
+def test_model_decision_hydrates_missing_target_box_from_current_screen(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Marketplace",
+            "Just listed, $500 · Samsung M8 Smart Monitor",
+        ],
+        clickable_text=["Just listed, $500 · Samsung M8 Smart Monitor"],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Just listed, $500 · Samsung M8 Smart Monitor",
+                "enabled": True,
+                "target_box": {"x": 0.0, "y": 0.49, "width": 0.49, "height": 0.26},
+            }
+        ],
+    )
+
+    decision = agent._coerce_decision(
+        {
+            "screen_classification": "facebook_marketplace_feed",
+            "goal_progress": "opening_listing",
+            "next_action": "tap",
+            "target_box": None,
+            "confidence": 0.95,
+            "reason": "Open the high-value listing.",
+            "risk_level": "low",
+            "target_label": "Just listed, $500 · Samsung M8 Smart Monitor",
+        },
+        state=state,
+        skill=bundle,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_box is not None
+    assert decision.target_box.to_dict() == {"x": 0.0, "y": 0.49, "width": 0.49, "height": 0.26}
+
+
+def test_facebook_marketplace_search_goal_opens_search_from_feed(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Marketplace",
+            "Sell",
+            "For you, Tab, 1 of 3",
+            "Local, Tab, 2 of 3",
+            "What do you want to buy?",
+        ],
+        clickable_text=["Sell", "For you", "Local", "What do you want to buy?"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "What do you want to buy?",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.88, "y": 0.08, "width": 0.11, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Marketplace search and confirm the search surface is visible.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "What do you want to buy?"
+
+
+def test_facebook_marketplace_search_goal_prefers_search_from_listing_detail(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Navigate to Search",
+            "More actions",
+            "Message seller",
+            "Marketplace",
+        ],
+        clickable_text=["Close", "Navigate to Search", "More actions", "Message seller"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Navigate to Search",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.14, "y": 0.04, "width": 0.14, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace search for laptops and stop on the search UI.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Navigate to Search"
+
+
+def test_facebook_marketplace_search_surface_saves_reusable_script_when_requested(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".immersiveactivity.ImmersiveActivity",
+        visible_text=[
+            "Recent, tab 1 of 2",
+            "Recent",
+            "Saved searches, tab 2 of 2",
+            "Saved searches",
+            "Recent searches",
+            "rtx 3080",
+            "What do you want to buy?",
+        ],
+        clickable_text=[
+            "Recent, tab 1 of 2",
+            "Saved searches, tab 2 of 2",
+            "rtx 3080",
+            "Back",
+            "What do you want to buy?",
+        ],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "What do you want to buy?",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.15, "y": 0.03, "width": 0.7, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace search, confirm it is visible, save a reusable script only if you discover a new stable path, and stop read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "save_script"
+    assert decision.tool_arguments["script_name"] == "open_marketplace_search_surface"
+
+
+def test_facebook_marketplace_search_surface_stops_when_script_already_exists(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    scripts_dir = bundle.app_dir / "scripts"
+    scripts_dir.mkdir(parents=True, exist_ok=True)
+    (scripts_dir / "open_marketplace_search_surface.json").write_text(
+        json.dumps({"name": "open_marketplace_search_surface", "description": "", "steps": []}),
+        encoding="utf-8",
+    )
+    state = make_facebook_state(
+        activity_name=".immersiveactivity.ImmersiveActivity",
+        visible_text=[
+            "Recent, tab 1 of 2",
+            "Saved searches, tab 2 of 2",
+            "Recent searches",
+            "What do you want to buy?",
+        ],
+        clickable_text=["Back", "What do you want to buy?"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "What do you want to buy?",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.15, "y": 0.03, "width": 0.7, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace search, confirm it is visible, save a reusable script only if you discover a new stable path, and stop read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "stop"
+    assert "search surface is visible" in decision.reason.casefold()
+
+
+def test_facebook_home_feed_with_marketplace_tab_is_not_misclassified_as_marketplace_feed(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Go to profile",
+            "What's on your mind?",
+            "Select photos or videos for your post",
+            "Menu",
+            "Search",
+            "Messaging",
+            "Home, tab 1 of 6",
+            "Marketplace, tab 4 of 6",
+        ],
+        clickable_text=[
+            "Go to profile",
+            "What's on your mind?",
+            "Select photos or videos for your post",
+            "Menu",
+            "Search",
+            "Messaging",
+            "Home, tab 1 of 6",
+            "Marketplace, tab 4 of 6",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Marketplace, tab 4 of 6",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.5, "y": 0.08, "width": 0.16, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Reset Facebook to a clean main view, open Marketplace, open the Marketplace search surface, confirm the search UI is visible, and stop read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Marketplace, tab 4 of 6"
+
+
 def test_lmstudio_decision_parses_openai_style_json_response(tmp_path: Path, monkeypatch) -> None:
     agent = VisionAgent(
         None,
@@ -602,6 +879,193 @@ def test_facebook_marketplace_feed_opens_listing(tmp_path: Path) -> None:
     assert "Surface Laptop" in (decision.target_label or "")
 
 
+def test_facebook_marketplace_feed_prefers_high_value_listing_over_cheap_accessory(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Marketplace",
+            "$5 · Pixel 9 Pro XL phone case",
+            "$1,450 · Powerful Gaming PC — Intel Core Ultra 7 + RTX 5060 Ti — Like New",
+        ],
+        clickable_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "$5 · Pixel 9 Pro XL phone case",
+            "$1,450 · Powerful Gaming PC — Intel Core Ultra 7 + RTX 5060 Ti — Like New",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "$5 · Pixel 9 Pro XL phone case",
+                "enabled": True,
+                "target_box": {"x": 0.0, "y": 0.48, "width": 0.49, "height": 0.25},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "$1,450 · Powerful Gaming PC — Intel Core Ultra 7 + RTX 5060 Ti — Like New",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.48, "width": 0.49, "height": 0.25},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect valuable resellable listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert "Gaming PC" in (decision.target_label or "")
+
+
+def test_facebook_marketplace_feed_prefers_higher_price_among_similar_monitors(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Marketplace",
+            "Just listed, $120 · Samsung c32hg70 32” monitor",
+            "Just listed, $500 · Samsung M8 Smart Monitor",
+        ],
+        clickable_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Just listed, $120 · Samsung c32hg70 32” monitor",
+            "Just listed, $500 · Samsung M8 Smart Monitor",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Just listed, $120 · Samsung c32hg70 32” monitor",
+                "enabled": True,
+                "resource_id": "mp_top_picks_clickable_item",
+                "target_box": {"x": 0.0, "y": 0.23, "width": 0.49, "height": 0.26},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "Just listed, $500 · Samsung M8 Smart Monitor",
+                "enabled": True,
+                "resource_id": "mp_top_picks_clickable_item",
+                "target_box": {"x": 0.0, "y": 0.49, "width": 0.49, "height": 0.26},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect valuable resellable listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert "Samsung M8 Smart Monitor" in (decision.target_label or "")
+
+
+def test_facebook_value_scan_goal_does_not_bypass_gemini_on_marketplace_feed(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent("fake-api-key", "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Marketplace",
+            "For you",
+            "Local",
+            "Just listed, $500 · Samsung M8 Smart Monitor",
+        ],
+        clickable_text=[
+            "For you",
+            "Local",
+            "Just listed, $500 · Samsung M8 Smart Monitor",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Just listed, $500 · Samsung M8 Smart Monitor",
+                "enabled": True,
+                "target_box": {"x": 0.0, "y": 0.49, "width": 0.49, "height": 0.26},
+            }
+        ],
+    )
+
+    called = {"gemini": False}
+
+    def fake_gemini_decision(**kwargs):
+        called["gemini"] = True
+        return agent._coerce_decision(
+            {
+                "screen_classification": "facebook_marketplace_feed",
+                "goal_progress": "opening_listing",
+                "next_action": "tap",
+                "target_box": None,
+                "confidence": 0.95,
+                "reason": "Use the Gemini model decision on a value scan goal.",
+                "risk_level": "low",
+                "target_label": "Just listed, $500 · Samsung M8 Smart Monitor",
+            },
+            state=kwargs["state"],
+            skill=kwargs["skill"],
+        )
+
+    monkeypatch.setattr(agent, "_gemini_decision", fake_gemini_decision)
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace and inspect valuable resellable listings read-only, checking images and descriptions.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert called["gemini"] is True
+    assert decision.next_action == "tap"
+    assert decision.target_box is not None
+    assert "Samsung M8" in (decision.target_label or "")
+
+
+def test_facebook_weird_visible_state_resets_when_goal_requests_clean_start(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Navigate to Search",
+            "Subscribe to Email Alerts",
+            "From groups",
+        ],
+        clickable_text=[
+            "Close",
+            "Navigate to Search",
+            "Subscribe to Email Alerts",
+        ],
+        components=[],
+    )
+
+    decision = agent.decide(
+        goal="Reset Facebook to a clean main view, open Marketplace, and inspect valuable resellable listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "reset_app"
+    assert decision.tool_arguments["package_name"] == "com.facebook.katana"
+
+
 def test_facebook_marketplace_feed_swipes_after_returning_from_listing(tmp_path: Path) -> None:
     agent = VisionAgent(None, "gemini-3.1-pro-preview")
     bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
@@ -640,6 +1104,158 @@ def test_facebook_marketplace_feed_swipes_after_returning_from_listing(tmp_path:
     )
 
     assert decision.next_action == "swipe"
+    assert decision.target_box is not None
+    assert decision.target_box.to_dict() == {"x": 0.08, "y": 0.28, "width": 0.84, "height": 0.34}
+
+
+def test_facebook_listing_detail_expands_description_before_backing_out(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Navigate to Search",
+            "Product Image,1 of 3",
+            "MacBook Pro M2 Max 14",
+            "$4000",
+            "Description",
+            "Amazing condition ... See more",
+            "Message seller",
+        ],
+        clickable_text=["Close", "Navigate to Search", "Amazing condition ... See more", "Message seller"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Amazing condition\nSlightly used\nComes with the original box ... See more",
+                "enabled": True,
+                "target_box": {"x": 0.03, "y": 0.89, "width": 0.94, "height": 0.07},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect valuable resellable listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[{"action": "tap", "target_label": "$4000 · MacBook Pro M2 Max 14"}],
+    )
+
+    assert decision.next_action == "tap"
+    assert "see more" in (decision.target_label or "").casefold()
+
+
+def test_facebook_buy_now_listing_detail_expands_description_before_backing_out(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Navigate to Search",
+            "More actions",
+            "Product Image,1 of 6",
+            "Apple MacBook Air Space Gray",
+            "$450",
+            "Ships for $11.74 + taxes",
+            "Buy now",
+            "Payments are processed securely",
+        ],
+        clickable_text=[
+            "Close",
+            "Navigate to Search",
+            "More actions",
+            "Product Image,1 of 6",
+            "Buy now",
+            "Sleek Apple MacBook Air. Space Gray color. Laptop is in really great shape. I’m only selling because I was gifted a newer version. It has a | See more",
+        ],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Sleek Apple MacBook Air. Space Gray color. Laptop is in really great shape. I’m only selling because I was gifted a newer version. It has a | See more",
+                "enabled": True,
+                "target_box": {"x": 0.03, "y": 0.9, "width": 0.94, "height": 0.07},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect valuable resellable listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[{"action": "tap", "target_label": "$450 · Apple MacBook Air Space Gray"}],
+    )
+
+    assert decision.next_action == "tap"
+    assert "see more" in (decision.target_label or "").casefold()
+
+
+def test_facebook_listing_detail_swipes_once_to_reveal_seller_details(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Navigate to Search",
+            "More actions",
+            "Product Image,1 of 6",
+            "Apple MacBook Air Space Gray",
+            "$450",
+            "Ships for $11.74 + taxes",
+            "Buy now",
+            "Payments are processed securely",
+            "Description",
+        ],
+        clickable_text=[
+            "Close",
+            "Navigate to Search",
+            "More actions",
+            "Buy now",
+            "See less",
+        ],
+        components=[],
+    )
+
+    decision = agent.decide(
+        goal="Inspect the current Facebook Marketplace listing read-only: inspect the product image, expand the description when available, read seller-visible details, then stop.",
+        state=state,
+        skill=bundle,
+        action_history=[{"action": "tap", "target_label": "See more"}],
+    )
+
+    assert decision.next_action == "swipe"
+    assert decision.target_box is not None
+    assert decision.target_box.to_dict() == {"x": 0.08, "y": 0.62, "width": 0.84, "height": 0.22}
+
+
+def test_model_swipe_decision_hydrates_default_facebook_swipe_region(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=["Marketplace", "For you", "Local", "$450 · Apple MacBook Air Space Gray"],
+        clickable_text=["For you", "Local", "$450 · Apple MacBook Air Space Gray"],
+        components=[],
+    )
+
+    decision = agent._coerce_decision(
+        {
+            "screen_classification": "facebook_marketplace_feed",
+            "goal_progress": "advancing_feed",
+            "next_action": "swipe",
+            "target_box": None,
+            "confidence": 1.0,
+            "reason": "Scroll slightly to inspect more listings.",
+            "risk_level": "low",
+        },
+        state=state,
+        skill=bundle,
+    )
+
+    assert decision.next_action == "swipe"
+    assert decision.target_box is not None
+    assert decision.target_box.to_dict() == {"x": 0.08, "y": 0.28, "width": 0.84, "height": 0.34}
 
 
 def test_facebook_home_feed_opens_messaging_for_inbox_goal(tmp_path: Path) -> None:
@@ -764,6 +1380,49 @@ def test_facebook_message_composer_types_requested_reply(tmp_path: Path) -> None
 
     assert decision.next_action == "type"
     assert decision.input_text == "Yes, it is still available."
+
+
+def test_facebook_message_composer_replaces_default_with_custom_listing_message(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Canon RF 35mm f/1.8 Macro IS STM Lens",
+            "$325",
+            "Message seller",
+            "Hi, is this available?",
+            "Send",
+        ],
+        clickable_text=["Hi, is this available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hi, is this available?",
+                "enabled": True,
+                "resource_id": "marketplace_pdp_message_cta_input",
+                "target_box": {"x": 0.09, "y": 0.72, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.78, "y": 0.715, "width": 0.15, "height": 0.036},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, find a good resale listing, and send the seller a message asking if it is available.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "type"
+    assert decision.input_text == "Hi, I'm interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?"
+    assert decision.target_box is not None
 
 
 def test_facebook_message_recovery_prompt_auto_continues_in_yolo_mode(tmp_path: Path) -> None:

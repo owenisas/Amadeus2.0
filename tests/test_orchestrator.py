@@ -6,7 +6,7 @@ import pytest
 
 from agent_runner.agent_tools import AgentToolExecutor
 from agent_runner.config import APP_REGISTRY
-from agent_runner.models import DeviceInfo, RunContext, ScreenState, VisionDecision
+from agent_runner.models import BoundingBox, DeviceInfo, RunContext, ScreenState, VisionDecision
 from agent_runner.orchestrator import Orchestrator
 from agent_runner.skill_manager import SkillManager
 from agent_runner.vision_agent import VisionAgent
@@ -279,6 +279,37 @@ def test_orchestrator_blocks_when_tool_executor_validation_fails(tmp_path: Path)
     assert "target_box" in result.reason
 
 
+class ShouldNotRunVisionAgent:
+    def decide(self, **kwargs):
+        raise AssertionError("vision agent should not be called after interruption")
+
+
+def test_orchestrator_returns_canceled_when_interrupted_before_step(tmp_path: Path) -> None:
+    adapter = StableSettingsAdapter()
+    skill_manager = SkillManager(tmp_path / "skills")
+    orchestrator = Orchestrator(
+        android_adapter=adapter,
+        tool_executor=AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager),
+        vision_agent=ShouldNotRunVisionAgent(),
+        skill_manager=skill_manager,
+        runs_dir=tmp_path / "runs",
+    )
+    context = RunContext(
+        app=APP_REGISTRY["settings"],
+        goal="open settings",
+        run_dir=tmp_path / "runs",
+        exploration_enabled=True,
+        max_steps=3,
+        should_stop=lambda: True,
+    )
+
+    result = orchestrator.run(context)
+
+    assert result.status == "canceled"
+    assert result.reason == "Run interrupted by user."
+    assert result.steps == 0
+
+
 def test_orchestrator_resumes_after_user_approval(tmp_path: Path) -> None:
     """When the user approves a popup, the orchestrator should continue the run rather than stopping."""
     adapter = PopupAdapter()
@@ -400,8 +431,114 @@ def test_orchestrator_emits_progress_events(tmp_path: Path) -> None:
     event_types = [str(item["type"]) for item in events]
     assert result.status in {"stalled", "max_steps_reached"}
     assert "run_started" in event_types
+    assert "skill_loaded" in event_types
+    assert "system_skill_loaded" in event_types
+    assert "skill_auto_updated" in event_types
     assert "state_captured" in event_types
     assert "decision_made" in event_types
+
+
+class RetryAdapter(StableSettingsAdapter):
+    def __init__(self) -> None:
+        super().__init__()
+        self.perform_calls = 0
+        self.capture_calls = 0
+
+    def capture_state(self, run_dir: Path):
+        self.capture_calls += 1
+        device = DeviceInfo(
+            serial="emulator-5554",
+            width=1080,
+            height=2400,
+            density=420,
+            orientation="portrait",
+            package_name="com.android.settings",
+            activity_name=".Settings",
+        )
+        if self.capture_calls < 3:
+            return ScreenState(
+                screenshot_path=run_dir / "same.png",
+                hierarchy_path=run_dir / "same.xml",
+                screenshot_sha256="abc",
+                xml_source="<hierarchy><node text='Settings' /></hierarchy>",
+                visible_text=["Settings", "Network & internet"],
+                clickable_text=["Network & internet"],
+                package_name=device.package_name,
+                activity_name=device.activity_name,
+                device=device,
+                components=[],
+            )
+        return ScreenState(
+            screenshot_path=run_dir / "changed.png",
+            hierarchy_path=run_dir / "changed.xml",
+            screenshot_sha256="def",
+            xml_source="<hierarchy><node text='Internet' /></hierarchy>",
+            visible_text=["Internet"],
+            clickable_text=["Wi-Fi"],
+            package_name=device.package_name,
+            activity_name=device.activity_name,
+            device=device,
+            components=[],
+        )
+
+    def perform(self, decision, state):
+        self.perform_calls += 1
+        return None
+
+    def retry_tap_alternatives(self, requested_box, state, run_dir):
+        next_state = self.capture_state(run_dir)
+        return next_state, [
+            {
+                "method": "adb_resolved",
+                "target_box": requested_box.to_dict(),
+                "changed": True,
+                "screenshot_path": str(next_state.screenshot_path),
+                "hierarchy_path": str(next_state.hierarchy_path),
+            }
+        ]
+
+
+class TapVisionAgent:
+    last_decision_meta = {}
+    last_decision_context = {}
+
+    def decide(self, **kwargs):
+        return VisionDecision(
+            screen_classification="settings",
+            goal_progress="acting",
+            next_action="tap",
+            target_box=BoundingBox(0.5, 0.5, 0.2, 0.1),
+            confidence=0.8,
+            reason="Open internet settings.",
+            risk_level="low",
+            target_label="Network & internet",
+        )
+
+
+def test_orchestrator_emits_tap_retry_event(tmp_path: Path) -> None:
+    adapter = RetryAdapter()
+    skill_manager = SkillManager(tmp_path / "skills")
+    events: list[dict[str, object]] = []
+    orchestrator = Orchestrator(
+        android_adapter=adapter,
+        tool_executor=AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager),
+        vision_agent=TapVisionAgent(),
+        skill_manager=skill_manager,
+        runs_dir=tmp_path / "runs",
+        event_callback=events.append,
+    )
+    context = RunContext(
+        app=APP_REGISTRY["settings"],
+        goal="Open internet settings",
+        run_dir=tmp_path / "runs",
+        exploration_enabled=True,
+        max_steps=1,
+    )
+
+    result = orchestrator.run(context)
+
+    assert result.status == "max_steps_reached"
+    assert any(event["type"] == "tap_retry_attempted" for event in events)
 
 
 class ContextLoggingAdapter:

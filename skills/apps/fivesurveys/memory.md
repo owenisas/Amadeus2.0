@@ -4,10 +4,6 @@
 
 <!-- older entries pruned -->
 
-- Status: blocked
-- Reason: Tap actions require a target_box.
-- Last screen: com-fivesurveys-mobile-mainactivity-8395859c0220a598
-
 - Status: completed
 - Reason: The goal requests answering a survey question, which violates the safety policy against survey submission, answer selection, or any step that claims completion credit.
 - Last screen: com-fivesurveys-mobile-mainactivity-24b2ac8e6f21546d
@@ -79,3 +75,10 @@
 
 - Status: error
 - Reason: App is not installed on the emulator.
+
+- Status: canceled
+- Reason: Run interrupted by user.
+- Last screen: com-fivesurveys-mobile-mainactivity-8babfd17ff281cbc
+
+- Saved the exact birthday-overlay continue selector from the latest run: XML bounds `[464,2214][616,2365]`, normalized box `x=0.42962962962962964`, `y=0.9225`, `width=0.14074074074074075`, `height=0.06291666666666666`.
+- The last autonomous run kept hitting that exact overlay button without changing screens, so the selector is now precise and reusable; the remaining issue is app progression after the tap, not button discovery.

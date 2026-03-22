@@ -48,6 +48,7 @@ class SessionJob:
     latest_state: dict[str, Any] | None = None
     payload: dict[str, Any] | None = None
     events: list[dict[str, Any]] = field(default_factory=list)
+    interrupt_requested: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -66,6 +67,7 @@ class SessionJob:
             "latest_state": self.latest_state,
             "payload": self.payload,
             "events": self.events[-100:],
+            "interrupt_requested": self.interrupt_requested,
         }
 
 
@@ -104,6 +106,7 @@ class SessionController:
         self._scheduler_stop = threading.Event()
         self._appium_process: subprocess.Popen[bytes] | None = None
         self._last_appium_start_attempt_at: float = 0.0
+        self._active_cancel_event: threading.Event | None = None
 
     def close(self) -> None:
         self.stop_background_services()
@@ -219,6 +222,25 @@ class SessionController:
             for app in list_app_configs()
         ]
 
+    def infer_app_name(self) -> str | None:
+        with self._lock:
+            if self._active_job and self._active_job.app_name:
+                return self._active_job.app_name
+            if self._last_job and self._last_job.app_name:
+                return self._last_job.app_name
+        try:
+            payload = self.device_state_payload()
+        except Exception:
+            return None
+        screen = payload.get("screen") or {}
+        package_name = str(screen.get("package_name") or "").strip()
+        if not package_name:
+            return None
+        for app in list_app_configs():
+            if app.package_name == package_name:
+                return app.name
+        return None
+
     def tools_payload(self) -> list[dict[str, Any]]:
         return [tool.to_dict() for tool in self.tool_executor.list_tools()]
 
@@ -278,6 +300,7 @@ class SessionController:
                 yolo_mode=yolo_mode,
             )
             self._last_job = self._active_job
+            self._active_cancel_event = threading.Event()
         thread = threading.Thread(target=self._run_session, args=(app.name, goal, max_steps, yolo_mode), daemon=True)
         thread.start()
         return {"accepted": True, "session": self.active_job_payload()}
@@ -307,10 +330,42 @@ class SessionController:
     def cancel_task(self, *, task_id: str) -> dict[str, Any]:
         with self._lock:
             if self._active_job and self._active_job.task_id == task_id and self._active_job.status == "running":
-                raise RuntimeError("Cannot cancel a task while it is actively executing in the current session.")
+                if self._active_cancel_event is None:
+                    raise RuntimeError(f"Task '{task_id}' is actively executing and cannot be canceled.")
+                response = self.interrupt_active_job()
+                return {
+                    "interrupt_requested": True,
+                    "task": self.task_manager.load_task(task_id).to_dict(),
+                    "active_job": response["active_job"],
+                }
         task = self.task_manager.cancel_task(task_id)
         self.event_queue.append("task_finished", {"task_id": task.task_id, "status": task.status, "reason": task.last_reason})
         return {"task": task.to_dict()}
+
+    def interrupt_active_job(self) -> dict[str, Any]:
+        with self._lock:
+            active = self._active_job
+            cancel_event = self._active_cancel_event
+            if active is None or active.status != "running" or cancel_event is None:
+                raise RuntimeError("No active run is available to interrupt.")
+            already_requested = cancel_event.is_set()
+            if not already_requested:
+                cancel_event.set()
+                active.interrupt_requested = True
+                active.events.append(
+                    {
+                        "type": "interrupt_requested",
+                        "timestamp": time.time(),
+                        "reason": "User requested interruption.",
+                    }
+                )
+            payload = active.to_dict()
+        return {
+            "accepted": True,
+            "interrupt_requested": True,
+            "already_requested": already_requested,
+            "active_job": payload,
+        }
 
     def create_job(
         self,
@@ -438,6 +493,7 @@ class SessionController:
                 yolo_mode=task.yolo_mode,
             )
             self._last_job = self._active_job
+            self._active_cancel_event = threading.Event()
         thread = threading.Thread(target=self._run_task, args=(task.task_id,), daemon=True)
         thread.start()
 
@@ -456,7 +512,7 @@ class SessionController:
             "goal": task.goal,
             "completion_criteria": task.completion_criteria,
         })
-        event_type = "task_finished" if task.status == "completed" else "task_blocked"
+        event_type = "task_finished" if task.status in {"completed", "canceled"} else "task_blocked"
         self.event_queue.append(
             event_type,
             {"task_id": task.task_id, "status": task.status, "reason": result.reason, "run_dir": str(result.run_dir)},
@@ -469,6 +525,7 @@ class SessionController:
                 self._active_job.payload = payload
                 self._last_job = self._active_job
                 self._active_job = None
+                self._active_cancel_event = None
 
     def _run_session(self, app_name: str, goal: str, max_steps: int, yolo_mode: bool) -> None:
         context = self._build_context(app_name, goal, max_steps=max_steps, yolo_mode=yolo_mode)
@@ -482,6 +539,7 @@ class SessionController:
                 self._active_job.payload = payload
                 self._last_job = self._active_job
                 self._active_job = None
+                self._active_cancel_event = None
 
     def _run_scheduled_job(self, job_id: str) -> None:
         job = self.job_manager.load_job(job_id)
@@ -497,6 +555,7 @@ class SessionController:
                 yolo_mode=job.yolo_mode,
             )
             self._last_job = self._active_job
+            self._active_cancel_event = threading.Event()
         self.event_queue.append(
             "job_started",
             {"job_id": job.job_id, "name": job.name, "app_name": job.app_name, "goal": job.goal, "device_serial": job.device_serial},
@@ -523,6 +582,7 @@ class SessionController:
                 self._active_job.payload = payload
                 self._last_job = self._active_job
                 self._active_job = None
+                self._active_cancel_event = None
 
     def _execute_run(self, context: RunContext) -> RunResult:
         orchestrator = Orchestrator(
@@ -548,6 +608,8 @@ class SessionController:
             self.adapter.close()
 
     def _build_context(self, app_name: str, goal: str, *, max_steps: int, yolo_mode: bool) -> RunContext:
+        with self._lock:
+            cancel_event = self._active_cancel_event
         return RunContext(
             app=get_app_config(app_name),
             goal=goal,
@@ -555,6 +617,7 @@ class SessionController:
             exploration_enabled=True,
             max_steps=max_steps,
             yolo_mode=yolo_mode,
+            should_stop=cancel_event.is_set if cancel_event else None,
         )
 
     def _build_payload(self, result: RunResult, context: RunContext, extra: dict[str, Any] | None = None) -> dict[str, Any]:

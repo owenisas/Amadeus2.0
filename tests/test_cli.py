@@ -211,6 +211,67 @@ def test_cli_formats_skill_write_tool_event() -> None:
     assert "facebook/memory.md" in line
 
 
+def test_cli_formats_skill_lifecycle_events() -> None:
+    loaded = _format_live_event(
+        {
+            "type": "skill_loaded",
+            "app_name": "fivesurveys",
+            "path": "/Users/user/Documents/Amadeus2.0/skills/apps/fivesurveys/SKILL.md",
+            "screen_count": 4,
+            "selector_count": 12,
+        }
+    )
+    updated = _format_live_event(
+        {
+            "type": "memory_updated",
+            "step": 4,
+            "app_name": "fivesurveys",
+            "status": "stalled",
+            "path": "/Users/user/Documents/Amadeus2.0/skills/apps/fivesurveys/memory.md",
+        }
+    )
+
+    assert loaded is not None
+    assert "skill_loaded" in loaded
+    assert "selectors=12" in loaded
+    assert updated is not None
+    assert "memory_updated" in updated
+    assert "stalled" in updated
+
+
+def test_cli_formats_backup_update_event() -> None:
+    line = _format_live_event(
+        {
+            "type": "backup_updated",
+            "step": 5,
+            "app_name": "facebook",
+            "path": "/Users/user/Documents/Amadeus2.0/skills/apps/facebook/data/backup.json",
+            "sections": ["threads", "contacted_items"],
+        }
+    )
+
+    assert line is not None
+    assert "backup_updated" in line
+    assert "threads,contacted_items" in line
+
+
+def test_cli_formats_tap_retry_event() -> None:
+    line = _format_live_event(
+        {
+            "type": "tap_retry_attempted",
+            "step": 7,
+            "method": "adb_resolved",
+            "changed": True,
+            "target_label": "Next",
+        }
+    )
+
+    assert line is not None
+    assert "tap_retry" in line
+    assert "adb_resolved" in line
+    assert "changed=True" in line
+
+
 def test_cli_parser_supports_tui_command() -> None:
     parser = build_parser()
 

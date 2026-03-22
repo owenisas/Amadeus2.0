@@ -159,12 +159,42 @@ def _format_live_event(event: dict[str, Any]) -> str | None:
     prefix = f"[step {step}]" if step is not None else "[run]"
     if event_type == "run_started":
         return f"{prefix} started app={event.get('app_name')} yolo={event.get('yolo_mode')} run_dir={event.get('run_dir')}"
+    if event_type == "interrupt_requested":
+        return f"{prefix} interrupt_requested reason={_clip(event.get('reason'), 180)}"
     if event_type == "state_captured":
         state = dict(event.get("state") or {})
         visible = ", ".join(list(state.get("visible_text") or [])[:4])
         return (
             f"{prefix} state {state.get('package_name')}/{state.get('activity_name')} "
             f"visible=[{_clip(visible, 160)}]"
+        )
+    if event_type == "skill_loaded":
+        return (
+            f"{prefix} skill_loaded app={event.get('app_name')} "
+            f"path={event.get('path')} screens={event.get('screen_count')} selectors={event.get('selector_count')}"
+        )
+    if event_type == "system_skill_loaded":
+        return f"{prefix} system_skill_loaded path={event.get('path')}"
+    if event_type == "skill_auto_updated":
+        return (
+            f"{prefix} skill_auto_updated app={event.get('app_name')} screen_id={event.get('screen_id')} "
+            f"new_screen={event.get('new_screen')} selectors_added={event.get('selectors_added')}"
+        )
+    if event_type == "skill_state_updated":
+        return (
+            f"{prefix} skill_state_updated app={event.get('app_name')} "
+            f"status={event.get('status')} reason={_clip(event.get('reason'), 140)}"
+        )
+    if event_type == "memory_updated":
+        return (
+            f"{prefix} memory_updated app={event.get('app_name')} "
+            f"status={event.get('status')} path={event.get('path')}"
+        )
+    if event_type == "backup_updated":
+        sections = ",".join(list(event.get("sections") or []))
+        return (
+            f"{prefix} backup_updated app={event.get('app_name')} "
+            f"sections={sections} path={event.get('path')}"
         )
     if event_type == "decision_made":
         decision = dict(event.get("decision") or {})
@@ -182,6 +212,14 @@ def _format_live_event(event: dict[str, Any]) -> str | None:
         return line
     if event_type == "action_performed":
         return f"{prefix} performed action={event.get('action')} target={event.get('target_label')} reason={_clip(event.get('reason'), 180)}"
+    if event_type == "tap_retry_attempted":
+        line = (
+            f"{prefix} tap_retry method={event.get('method')} changed={event.get('changed')} "
+            f"target={event.get('target_label')}"
+        )
+        if event.get("error"):
+            line += f" error={_clip(event.get('error'), 140)}"
+        return line
     if event_type == "tool_executed":
         tool_name = str(event.get("tool_name") or "")
         output = dict(event.get("output") or {})
@@ -212,7 +250,7 @@ def _format_live_event(event: dict[str, Any]) -> str | None:
                 f"executed={output.get('steps_executed')} skipped={output.get('steps_skipped')}"
             )
         return f"{prefix} tool={tool_name} ok={event.get('ok')} args={_clip(event.get('tool_arguments'), 120)}"
-    if event_type in {"run_completed", "run_stalled", "max_steps_reached", "manual_intervention_required", "action_blocked"}:
+    if event_type in {"run_completed", "run_stalled", "max_steps_reached", "manual_intervention_required", "action_blocked", "run_interrupted"}:
         return f"{prefix} {event_type} reason={_clip(event.get('reason'), 180)}"
     return None
 

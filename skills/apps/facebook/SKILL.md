@@ -23,6 +23,7 @@ description: App-specific navigation guidance for the Facebook Android workflow.
 
 - Note the Menu tab target, the `Marketplace` shortcut tile, the Marketplace search button, sub-tabs, and listing cards in `selectors.json`.
 - Persist Menu-to-Marketplace transitions and Bothell-area listing feed signatures in `state.json`.
+- Persist contacted listings, Marketplace thread summaries, latest seller replies, and reusable listing detail context in `data/backup.json` and the concise operator summary in `data/backup.md`.
 
 ## Risk surfaces to avoid
 
@@ -38,7 +39,14 @@ description: App-specific navigation guidance for the Facebook Android workflow.
 - If the direct Marketplace tab is unavailable, fall back to `Menu` -> `Marketplace`.
 - Confirm the Marketplace shell by looking for `Sell`, `For you`, `Local`, `Location: Bothell, Washington`, and the search button labeled `What do you want to buy?`.
 - Build candidates from the Marketplace feed first before doing any targeted searches.
-- Keep the workflow read-only: open listings, inspect price, condition text, and images, then stop short of `Message seller`, `Buy now`, `Contact seller`, or any save/publish action.
+- Keep the workflow read-only: open listings, inspect price, title, condition text, seller details, and the product image already visible in the listing screenshot, then stop short of `Message seller`, `Buy now`, `Contact seller`, or any save/publish action.
+- If the listing detail exposes a `See more` description expander, use it once before leaving so the full description and condition notes are captured.
+- Do not back out of a listing immediately after the image loads. Inspect detail in order:
+  1. visible product image, title, and price
+  2. description expander such as `See more`
+  3. one short in-listing swipe to reveal seller, location, condition, pickup, or shipping details if they are not already visible
+  4. back out only after those read-only details have been inspected
+- On Marketplace feed screens, prefer short swipes that advance about one row of cards instead of large feed jumps that skip multiple listings.
 
 ## Marketplace messaging workflow
 
@@ -47,6 +55,8 @@ description: App-specific navigation guidance for the Facebook Android workflow.
 - From the Facebook home feed, the top-right `Messaging` button is the entry point into Marketplace-related message surfaces when the goal explicitly references Marketplace.
 - Marketplace listing detail can expose a reply composer via the `Hello, is this still available?` text input and nearby `Send` button.
 - Prefer reading inboxes and threads first. Only type or send when the goal includes the exact Marketplace reply intent.
+- Before rereading a long Marketplace thread from the beginning, consult `data/backup.md` and `data/backup.json` for the latest known thread summary, seller reply, and contacted-item context.
+- When the goal asks to contact a Marketplace seller but does not provide exact message text, replace the default prefilled opener with a short custom message that references the listing title and asks whether the item is still available.
 - If Facebook shows the recovery dialog `Are you sure?` with the warning about end-to-end encrypted messages being missing, treat it as a recoverable gating surface.
 - In YOLO mode, auto-continue through that Marketplace messaging recovery prompt instead of asking the user.
 - Save reusable scripts for `open_messages_from_home`, `open_marketplace_message_composer`, and stable Marketplace reply flows once selectors are confirmed.
@@ -58,6 +68,8 @@ description: App-specific navigation guidance for the Facebook Android workflow.
 - Prefer items with strong liquidity, clear brand/model identification, and visible condition that can be assessed from photos.
 - Favor local pickup or meetup listings over shipping-only offers.
 - Record image-based condition notes before deciding whether a listing looks cheap relative to comps.
+- Bias strongly toward higher-value electronics and premium furniture with obvious resale demand: iPhone, MacBook, iMac, Mac mini, gaming PCs, RTX GPUs, cameras, ultrawide/OLED monitors, Herman Miller, Steelcase, and similar items.
+- De-prioritize cheap accessories and low-value filler such as phone cases, screen protectors, cables, chargers, and vague small add-ons unless the listing is bundled unusually well.
 
 ## Value heuristics
 

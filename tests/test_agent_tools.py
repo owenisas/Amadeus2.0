@@ -162,6 +162,27 @@ def test_tool_executor_type_accepts_input_text_alias(tmp_path: Path) -> None:
     assert adapter.performed_actions == ["type"]
 
 
+def test_tool_executor_swipe_accepts_target_box(tmp_path: Path) -> None:
+    adapter = FakeAdapter()
+    executor = AgentToolExecutor(
+        android_adapter=adapter,
+        skill_manager=SkillManager(tmp_path / "skills"),
+    )
+
+    result = executor.execute(
+        tool_name="swipe",
+        arguments={"target_box": {"x": 0.08, "y": 0.28, "width": 0.84, "height": 0.34}},
+        run_dir=tmp_path / "runs",
+        current_state=None,
+        app=APP_REGISTRY["settings"],
+        skill=None,
+    )
+
+    assert result.ok is True
+    assert result.output["target_box"] == {"x": 0.08, "y": 0.28, "width": 0.84, "height": 0.34}
+    assert adapter.performed_actions == ["swipe"]
+
+
 def _make_state(
     run_dir: Path,
     *,

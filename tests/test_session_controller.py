@@ -1,8 +1,10 @@
 import time
+import threading
 from pathlib import Path
 from types import MethodType, SimpleNamespace
 
 from agent_runner.config import APP_REGISTRY
+from agent_runner.models import RunResult
 from agent_runner.session_controller import SessionController
 
 
@@ -93,3 +95,42 @@ def test_ensure_appium_running_starts_process_when_unavailable(tmp_path: Path, m
 
     assert payload["started"] is True
     assert spawned == [["/opt/homebrew/bin/appium"]]
+
+
+def test_interrupt_active_session_requests_stop(tmp_path: Path) -> None:
+    controller = SessionController(_runtime(tmp_path))
+    started = threading.Event()
+    finished = threading.Event()
+
+    def fake_execute_run(self, context):
+        started.set()
+        deadline = time.time() + 1.0
+        while context.should_stop is None or not context.should_stop():
+            if time.time() > deadline:
+                raise AssertionError("session was not interrupted")
+            time.sleep(0.01)
+        finished.set()
+        return RunResult(
+            status="canceled",
+            reason="Run interrupted by user.",
+            steps=0,
+            run_dir=tmp_path / "runs" / "session-1",
+        )
+
+    controller._execute_run = MethodType(fake_execute_run, controller)
+
+    controller.start_session(app_name="settings", goal="Open Wi-Fi", max_steps=12, yolo_mode=False)
+    assert started.wait(1.0) is True
+
+    payload = controller.interrupt_active_job()
+
+    assert payload["interrupt_requested"] is True
+    assert finished.wait(1.0) is True
+
+    deadline = time.time() + 1.0
+    while time.time() < deadline:
+        active = controller.active_job_payload()
+        if active and active["status"] == "canceled":
+            break
+        time.sleep(0.01)
+    assert controller.active_job_payload()["status"] == "canceled"
