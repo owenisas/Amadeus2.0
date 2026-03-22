@@ -84,6 +84,36 @@ def make_gmail_state(
     )
 
 
+def make_facebook_state(
+    *,
+    activity_name: str,
+    visible_text: list[str],
+    clickable_text: list[str],
+    components: list[dict],
+) -> ScreenState:
+    device = DeviceInfo(
+        serial="emulator-5554",
+        width=1080,
+        height=2400,
+        density=420,
+        orientation="portrait",
+        package_name="com.facebook.katana",
+        activity_name=activity_name,
+    )
+    return ScreenState(
+        screenshot_path=Path("/tmp/fake.png"),
+        hierarchy_path=Path("/tmp/fake.xml"),
+        screenshot_sha256="abc",
+        xml_source="<hierarchy />",
+        visible_text=visible_text,
+        clickable_text=clickable_text,
+        package_name=device.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=components,
+    )
+
+
 def test_playstore_interstitial_is_dismissed(tmp_path: Path) -> None:
     agent = VisionAgent(None, "gemini-3.1-pro-preview")
     bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["playstore"])
@@ -305,6 +335,265 @@ def test_gmail_welcome_requires_user_approval(tmp_path: Path) -> None:
 
     assert decision.next_action == "stop"
     assert decision.requires_user_approval is True
+
+
+def test_facebook_stale_listing_detail_backs_out(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=["Back", "Apple Mac Mini M4 16GB 256GB", "$620", "Message seller", "Send offer"],
+        clickable_text=["Back", "Message seller", "Send offer"],
+        components=[],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "back"
+
+
+def test_facebook_marketplace_feed_opens_listing(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Location: Bothell, WA",
+            "Just listed, $325 · Microsoft Surface Laptop 5 16GB 512GB SSD Fantastic Condition.",
+            "Marketplace",
+        ],
+        clickable_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Just listed, $325 · Microsoft Surface Laptop 5 16GB 512GB SSD Fantastic Condition.",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Just listed, $325 · Microsoft Surface Laptop 5 16GB 512GB SSD Fantastic Condition.",
+                "enabled": True,
+                "resource_id": "mp_top_picks_clickable_item",
+                "target_box": {"x": 0.0, "y": 0.49, "width": 0.49, "height": 0.26},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert "Surface Laptop" in (decision.target_label or "")
+
+
+def test_facebook_marketplace_feed_swipes_after_returning_from_listing(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Location: Bothell, WA",
+            "Just listed, $325 · Microsoft Surface Laptop 5 16GB 512GB SSD Fantastic Condition.",
+            "Marketplace",
+        ],
+        clickable_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Just listed, $325 · Microsoft Surface Laptop 5 16GB 512GB SSD Fantastic Condition.",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Just listed, $325 · Microsoft Surface Laptop 5 16GB 512GB SSD Fantastic Condition.",
+                "enabled": True,
+                "resource_id": "mp_top_picks_clickable_item",
+                "target_box": {"x": 0.0, "y": 0.49, "width": 0.49, "height": 0.26},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[{"action": "tap"}, {"action": "back"}],
+    )
+
+    assert decision.next_action == "swipe"
+
+
+def test_facebook_home_feed_opens_messaging_for_inbox_goal(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=["What's on your mind?", "Menu", "Search", "Messaging"],
+        clickable_text=["Menu", "Search", "Messaging"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Messaging",
+                "enabled": True,
+                "target_box": {"x": 0.8777777777777778, "y": 0.03333333333333333, "width": 0.11203703703703703, "height": 0.050416666666666665},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages and read the inbox.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Messaging"
+
+
+def test_facebook_home_feed_prefers_marketplace_for_seller_message_goal(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=["What's on your mind?", "Menu", "Search", "Messaging", "Marketplace, tab 4 of 6"],
+        clickable_text=["Menu", "Search", "Messaging", "Marketplace, tab 4 of 6"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Messaging",
+                "enabled": True,
+                "target_box": {"x": 0.8777777777777778, "y": 0.03333333333333333, "width": 0.11203703703703703, "height": 0.050416666666666665},
+            },
+            {
+                "component_type": "button",
+                "label": "Marketplace, tab 4 of 6",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.08375, "width": 0.16666666666666666, "height": 0.055},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, pick a listing, and send 'Hi, is this still available?' to the seller.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Marketplace, tab 4 of 6"
+
+
+def test_facebook_listing_detail_opens_message_seller_for_send_goal(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=["Back", "Apple Mac Mini M4 16GB 256GB", "$620", "Message seller", "Send offer"],
+        clickable_text=["Back", "Message seller", "Send offer"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Message seller",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.84, "width": 0.36, "height": 0.06},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, pick a listing, and send 'Hi, is this still available?' to the seller.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Message seller"
+
+
+def test_facebook_message_composer_types_requested_reply(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=["Message seller", "Hello, is this still available?", "Send"],
+        clickable_text=["Hello, is this still available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hello, is this still available?",
+                "enabled": True,
+                "target_box": {"x": 0.10462962962962963, "y": 0.6754166666666667, "width": 0.6166666666666667, "height": 0.03666666666666667},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.7712962962962963, "y": 0.6754166666666667, "width": 0.15555555555555556, "height": 0.03666666666666667},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Reply to the Marketplace seller with 'Yes, it is still available.'",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "type"
+    assert decision.input_text == "Yes, it is still available."
+
+
+def test_facebook_message_recovery_prompt_auto_continues_in_yolo_mode(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Are you sure?",
+            "Some of your end-to-end encrypted messages may be missing.",
+            "CANCEL",
+            "YES",
+        ],
+        clickable_text=["CANCEL", "YES"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "YES",
+                "enabled": True,
+                "target_box": {"x": 0.7759259259259259, "y": 0.5470833333333334, "width": 0.12685185185185185, "height": 0.055},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages and read the inbox.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "YES"
 
 
 def test_gmail_setup_addresses_requires_user_approval(tmp_path: Path) -> None:

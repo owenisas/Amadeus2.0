@@ -164,4 +164,4 @@ def main(argv: list[str] | None = None) -> int:
         indent=2,
         sort_keys=True,
     ))
-    return 0 if result.status in {"completed", "manual_login_required", "approval_required"} else 1
+    return 0 if result.status in {"completed", "manual_login_required", "manual_verification_required", "approval_required"} else 1

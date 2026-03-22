@@ -62,6 +62,12 @@ class AgentToolExecutor:
                 mutates_device=True,
             ),
             AgentToolSpec(
+                name="reset_app",
+                description="Force-stop an app and relaunch it to a clean state using an optional activity.",
+                requires_state=False,
+                mutates_device=True,
+            ),
+            AgentToolSpec(
                 name="tap",
                 description="Tap a normalized target box on the current screen.",
                 requires_state=True,
@@ -129,9 +135,11 @@ class AgentToolExecutor:
                 description=(
                     "Save a reusable automation script under the app skill. "
                     "A script is a JSON object with 'name', 'description', and 'steps' (list of actions). "
-                    "Each step has 'action' (tap/type/swipe/back/home/wait/launch_app/run_script), "
+                    "Each step has 'action' (tap/type/swipe/back/home/wait/launch_app/reset_app/run_script), "
                     "and optional 'target_label', 'input_text', 'submit_after_input', 'package_name', "
-                    "'wait_seconds', 'script_name'. Use this to record repetitive navigation or search sequences."
+                    "'wait_seconds', 'script_name', 'only_if_activity_name', and 'only_if_visible_text'. "
+                    "Use conditional fields for prompts that only appear sometimes so scripts can normalize to "
+                    "a clean start state before continuing."
                 ),
                 requires_state=False,
                 mutates_device=False,
@@ -169,6 +177,7 @@ class AgentToolExecutor:
         handlers = {
             "capture_state": self._capture_state,
             "launch_app": self._launch_app,
+            "reset_app": self._reset_app,
             "tap": self._tap,
             "type": self._type,
             "swipe": self._swipe,
@@ -260,6 +269,27 @@ class AgentToolExecutor:
             tool_name="tap",
             ok=True,
             output={"target_box": box.to_dict(), "target_label": label},
+            refresh_state=True,
+        )
+
+    def _reset_app(
+        self,
+        arguments: dict[str, Any],
+        *,
+        run_dir: Path,
+        current_state: ScreenState | None,
+        app: AppConfig | None,
+        skill: SkillBundle | None,
+    ) -> ToolExecutionResult:
+        package_name = str(arguments.get("package_name") or (app.package_name if app else ""))
+        if not package_name:
+            raise ValueError("reset_app requires package_name.")
+        activity = arguments.get("activity")
+        self.android_adapter.reset_app(package_name, str(activity) if activity else None)
+        return ToolExecutionResult(
+            tool_name="reset_app",
+            ok=True,
+            output={"package_name": package_name, "activity": activity},
             refresh_state=True,
         )
 
@@ -544,15 +574,27 @@ class AgentToolExecutor:
                 output={"app_name": app_name, "script_name": script_name, "steps_executed": 0, "message": "Script has no steps."},
             )
         executed = 0
+        skipped = 0
         last_state = current_state
+        previous_action = ""
         for step in steps:
             action = str(step.get("action", "")).strip()
             if not action:
+                continue
+            if previous_action == "wait" or self._script_step_needs_fresh_state(step) or last_state is None:
+                last_state = self.android_adapter.capture_state(run_dir)
+            if not self._script_step_matches(step, last_state):
+                skipped += 1
+                previous_action = action
                 continue
             if action == "launch_app":
                 pkg = str(step.get("package_name") or (app.package_name if app else ""))
                 if pkg:
                     self.android_adapter.launch_app(pkg, step.get("activity"))
+            elif action == "reset_app":
+                pkg = str(step.get("package_name") or (app.package_name if app else ""))
+                if pkg:
+                    self.android_adapter.reset_app(pkg, step.get("activity"))
             elif action == "tap":
                 label = step.get("target_label")
                 target_box = BoundingBox.from_dict(step.get("target_box"))
@@ -562,20 +604,23 @@ class AgentToolExecutor:
                         if str(component.get("label", "")).casefold() == label.casefold():
                             target_box = BoundingBox.from_dict(component.get("target_box"))
                             break
-                if target_box:
-                    self.android_adapter.perform(
-                        VisionDecision(
-                            screen_classification="script_tap",
-                            goal_progress="scripted",
-                            next_action="tap",
-                            target_box=target_box,
-                            confidence=1.0,
-                            reason=f"Script step: tap {label or 'target'}",
-                            risk_level="low",
-                            target_label=label,
-                        ),
-                        last_state or self.android_adapter.capture_state(run_dir),
+                if target_box is None:
+                    raise ValueError(
+                        f"Script step 'tap' requires target_box or a resolvable target_label. Step: {json.dumps(step)}"
                     )
+                self.android_adapter.perform(
+                    VisionDecision(
+                        screen_classification="script_tap",
+                        goal_progress="scripted",
+                        next_action="tap",
+                        target_box=target_box,
+                        confidence=1.0,
+                        reason=f"Script step: tap {label or 'target'}",
+                        risk_level="low",
+                        target_label=label,
+                    ),
+                    last_state or self.android_adapter.capture_state(run_dir),
+                )
             elif action == "type":
                 text = str(step.get("input_text") or step.get("text") or "")
                 submit = bool(step.get("submit_after_input", False))
@@ -651,6 +696,7 @@ class AgentToolExecutor:
             # Recapture state after each mutating action
             if action not in {"wait"}:
                 last_state = self.android_adapter.capture_state(run_dir)
+            previous_action = action
         return ToolExecutionResult(
             tool_name="run_script",
             ok=True,
@@ -658,6 +704,7 @@ class AgentToolExecutor:
                 "app_name": app_name,
                 "script_name": script_name,
                 "steps_executed": executed,
+                "steps_skipped": skipped,
                 "total_steps": len(steps),
             },
             refresh_state=True,
@@ -698,4 +745,41 @@ class AgentToolExecutor:
                 ("shell", "am", "start"),
                 ("shell", "monkey"),
             ]
+        )
+
+    def _script_step_needs_fresh_state(self, step: dict[str, Any]) -> bool:
+        action = str(step.get("action", "")).strip()
+        return action in {"tap", "type", "swipe", "back", "home", "run_script"} or any(
+            key in step for key in ("only_if_activity_name", "only_if_visible_text")
+        )
+
+    def _script_step_matches(self, step: dict[str, Any], state: ScreenState | None) -> bool:
+        if state is None:
+            return True
+        expected_activity = str(step.get("only_if_activity_name") or "").strip()
+        if expected_activity and state.activity_name != expected_activity:
+            return False
+        text_filters = step.get("only_if_visible_text")
+        if not text_filters:
+            return True
+        if isinstance(text_filters, str):
+            needles = [text_filters]
+        else:
+            needles = [str(value) for value in text_filters if str(value).strip()]
+        if not needles:
+            return True
+        haystacks = [
+            *state.visible_text,
+            *state.clickable_text,
+            *[
+                str(component.get("label", ""))
+                for component in state.components
+                if str(component.get("label", "")).strip()
+            ],
+        ]
+        lowered_haystacks = [entry.casefold() for entry in haystacks]
+        return any(
+            needle.casefold() in haystack
+            for needle in needles
+            for haystack in lowered_haystacks
         )

@@ -1,0 +1,61 @@
+{
+  "failure_count": 0,
+  "last_detected_inputs": [],
+  "last_screen_signature": {
+    "activity_name": ".MainActivity",
+    "clickable_text": [
+      "Claim Reward",
+      "Best Games",
+      "My Games0",
+      "Home",
+      "Surveys",
+      "Games",
+      "More"
+    ],
+    "package_name": "com.fivesurveys.mobile",
+    "screenshot_sha256": "8aa9ba818713f753",
+    "text_digest": "922cb7682477ba30",
+    "top_visible_text": [
+      "Five Surveys",
+      "Current Balance",
+      "$ 0.00 USD",
+      "Claim Reward",
+      "Complete 5 surveys and get $ 5.00 USD",
+      "$ 5.00 USD",
+      "Best Games",
+      "My Games0",
+      "Home",
+      "Surveys"
+    ]
+  },
+  "last_successful_screen": "com-fivesurveys-mobile-mainactivity-922cb7682477ba30",
+  "last_working_action_chain": [
+    {
+      "action": "tap",
+      "activity_name": ".MainActivity",
+      "allowed": true,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Decision passed local safety checks.",
+      "step": 1,
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    },
+    {
+      "action": "tap",
+      "activity_name": ".MainActivity",
+      "allowed": false,
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Tap actions require a target_box.",
+      "step": 2,
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    }
+  ],
+  "reason": "Tap actions require a target_box.",
+  "screen_transition_confidence": 1.0,
+  "scripts": [],
+  "status": "blocked",
+  "transitions": []
+}

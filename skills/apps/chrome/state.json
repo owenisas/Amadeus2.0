@@ -9,18 +9,9 @@
     "text_digest": "e3b0c44298fc1c14",
     "top_visible_text": []
   },
-  "last_successful_screen": "com-android-chrome-org-chromium-chrome-browser-firstrun-firstrunactivity-e3b0c44298fc1c14",
-  "last_working_action_chain": [
-    {
-      "action": "stop",
-      "activity_name": "org.chromium.chrome.browser.firstrun.FirstRunActivity",
-      "allowed": true,
-      "package_name": "com.android.chrome",
-      "reason": "Stop actions are always allowed.",
-      "step": 1
-    }
-  ],
-  "reason": "The goal is to open Chrome and stop when it is visible. The current screen shows the Chrome app loading, so the goal is achieved.",
+  "last_successful_screen": null,
+  "last_working_action_chain": [],
+  "reason": "App is not installed on the emulator.",
   "screen_transition_confidence": 1.0,
-  "status": "completed"
+  "status": "error"
 }

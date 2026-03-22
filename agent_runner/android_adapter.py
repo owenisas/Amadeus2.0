@@ -25,6 +25,11 @@ class AndroidAdapter:
     ADB_TIMEOUT_SECONDS = 20.0
     UI_STABLE_FOR_SECONDS = 0.75
     UI_POLL_INTERVAL_SECONDS = 0.25
+    PLACEHOLDER_PNG = (
+        b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01"
+        b"\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\rIDATx\x9cc`\x00\x00"
+        b"\x00\x02\x00\x01\xe2!\xbc3\x00\x00\x00\x00IEND\xaeB`\x82"
+    )
 
     def __init__(
         self,
@@ -143,6 +148,11 @@ class AndroidAdapter:
                 ) from exc
         self.wait_for_stable_ui(1.5)
 
+    def reset_app(self, package_name: str, activity: str | None = None) -> None:
+        self._adb(["shell", "am", "force-stop", package_name], check=False)
+        time.sleep(0.75)
+        self.launch_app(package_name, activity)
+
     def capture_state(self, run_dir: Path) -> ScreenState:
         self.connect()
         assert self._driver is not None
@@ -161,13 +171,19 @@ class AndroidAdapter:
         stamp = timestamp_slug()
         screenshot_path = run_dir / f"{stamp}.png"
         hierarchy_path = run_dir / f"{stamp}.xml"
-        self._driver.get_screenshot_as_file(str(screenshot_path))
-        xml_source = self._driver.page_source
-        hierarchy_path.write_text(xml_source, encoding="utf-8")
-        size = self._driver.get_window_size()
+        size = self._window_size()
         package_name, activity_name = self.current_focus()
+        orientation = self._orientation()
+        try:
+            self._driver.get_screenshot_as_file(str(screenshot_path))
+            xml_source = self._driver.page_source
+        except Exception as exc:
+            if not self._is_secure_surface_error(str(exc)):
+                raise
+            screenshot_path.write_bytes(self.PLACEHOLDER_PNG)
+            xml_source = self._uiautomator_dump_xml()
+        hierarchy_path.write_text(xml_source, encoding="utf-8")
         density = self._wm_density()
-        orientation = str(self._driver.orientation).lower()
         visible_text, clickable_text = extract_visible_text(xml_source)
         components = extract_ui_components(
             xml_source,
@@ -296,6 +312,39 @@ class AndroidAdapter:
                 return int(chunk)
         return None
 
+    def _window_size(self) -> dict[str, int]:
+        if self._driver is not None:
+            with suppress(Exception):
+                size = self._driver.get_window_size()
+                return {"width": int(size["width"]), "height": int(size["height"])}
+        result = self._adb(["shell", "wm", "size"], check=False)
+        match = re.search(r"Physical size:\s*(\d+)x(\d+)", result.stdout)
+        if match:
+            width, height = match.groups()
+            return {"width": int(width), "height": int(height)}
+        return {"width": 1080, "height": 2400}
+
+    def _orientation(self) -> str:
+        if self._driver is not None:
+            with suppress(Exception):
+                return str(self._driver.orientation).lower()
+        return "portrait"
+
+    def _uiautomator_dump_xml(self) -> str:
+        remote_path = "/sdcard/agent_runner_window_dump.xml"
+        self._adb(["shell", "uiautomator", "dump", remote_path], check=False, timeout=30.0)
+        result = self._adb(["shell", "cat", remote_path], check=False, timeout=30.0)
+        if result.stdout.strip().startswith("<?xml"):
+            return result.stdout
+        local_dir = ensure_directory(Path(tempfile.gettempdir()) / "agent_runner-secure-dumps")
+        local_path = local_dir / f"{self.device_serial.replace(':', '_')}-window_dump.xml"
+        pull_result = self._adb(["pull", remote_path, str(local_path)], check=False, timeout=30.0)
+        if pull_result.returncode == 0 and local_path.exists():
+            xml_source = local_path.read_text(encoding="utf-8", errors="replace")
+            if xml_source.strip().startswith("<?xml"):
+                return xml_source
+        raise RuntimeError("Failed to capture UI hierarchy from secure surface.")
+
     def _reset_uiautomator2_services(self) -> None:
         for package_name in [
             "io.appium.uiautomator2.server",
@@ -314,6 +363,11 @@ class AndroidAdapter:
                 "could not proxy command",
             ]
         )
+
+    @staticmethod
+    def _is_secure_surface_error(message: str) -> bool:
+        lowered = message.casefold()
+        return "secure" in lowered and "screenshot" in lowered
 
     def _ui_stability_signature(self) -> str | None:
         if self._driver is None:

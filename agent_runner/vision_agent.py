@@ -272,6 +272,8 @@ class VisionAgent:
 
         if "password" in text or "verification" in text or (not yolo_mode and "sign in" in text):
             return VisionDecision.stop("Manual login required before automation can proceed.")
+        if self._manual_verification_or_restriction_visible(state):
+            return VisionDecision.stop("Manual account verification or restriction handling is required before automation can proceed.")
 
         if "latest order" in goal.casefold() or "delivery" in goal.casefold():
             for label in clickable:
@@ -458,6 +460,192 @@ class VisionAgent:
                 target_box=None,
                 confidence=0.4,
                 reason="Gmail is open but the inbox has not stabilized yet.",
+                risk_level="low",
+            )
+
+        if state.package_name == "com.facebook.katana":
+            messaging_goal = self._facebook_goal_allows_marketplace_messaging(goal)
+            listing_message_goal = self._facebook_goal_targets_listing_message(goal)
+            reply_text = self._extract_message_text(goal)
+            send_requested = self._facebook_send_requested(goal)
+            if self._facebook_message_recovery_prompt_visible(state):
+                if yolo_mode:
+                    return self._tap_decision_for_label(
+                        state=state,
+                        skill=skill,
+                        label="YES",
+                        screen_classification="facebook_message_recovery_prompt",
+                        goal_progress="recovering_messages",
+                        confidence=0.9,
+                        reason="YOLO mode auto-continues through the Marketplace message recovery prompt.",
+                        risk_level="low",
+                    )
+                return VisionDecision.stop(
+                    "Facebook Marketplace messaging recovery prompt is visible and needs approval outside YOLO mode.",
+                    goal_progress="awaiting_user_approval",
+                    requires_user_approval=True,
+                )
+            if messaging_goal:
+                message_input = self._find_facebook_message_input(components)
+                send_button = self._find_facebook_send_button(components)
+                if message_input and reply_text and not any(item.get("action") == "type" for item in action_history[-2:]):
+                    return VisionDecision(
+                        screen_classification="facebook_message_composer",
+                        goal_progress="drafting_reply",
+                        next_action="type",
+                        target_box=BoundingBox.from_dict(message_input.get("target_box")),
+                        confidence=0.86,
+                        reason="Type the requested Facebook message into the current reply field.",
+                        risk_level="low",
+                        input_text=reply_text,
+                        submit_after_input=False,
+                        target_label=message_input.get("label") or "message input",
+                    )
+                if send_requested and send_button and any(item.get("action") == "type" for item in action_history[-2:]):
+                    return self._tap_decision(
+                        target_box=BoundingBox.from_dict(send_button.get("target_box")),
+                        screen_classification="facebook_message_composer",
+                        goal_progress="sending_reply",
+                        confidence=0.88,
+                        reason="Send the explicitly requested Facebook reply.",
+                        risk_level="low",
+                        target_label=send_button.get("label") or "Send",
+                    )
+                if self._facebook_message_inbox_visible(state) and listing_message_goal:
+                    return VisionDecision(
+                        screen_classification="facebook_message_inbox",
+                        goal_progress="recovering_to_marketplace",
+                        next_action="back",
+                        target_box=None,
+                        confidence=0.8,
+                        reason="Back out of the generic Facebook inbox and return to Marketplace listing flow.",
+                        risk_level="low",
+                    )
+                if self._facebook_listing_detail_visible(state) and listing_message_goal:
+                    seller_button = self._find_facebook_seller_contact_button(components)
+                    if seller_button and not any(item.get("action") == "tap" for item in action_history[-2:]):
+                        return self._tap_decision(
+                            target_box=BoundingBox.from_dict(seller_button.get("target_box")),
+                            screen_classification="facebook_listing_detail",
+                            goal_progress="opening_seller_chat",
+                            confidence=0.87,
+                            reason="Open the Marketplace seller composer from the current listing detail.",
+                            risk_level="low",
+                            target_label=seller_button.get("label") or "Message seller",
+                        )
+                if self._facebook_home_feed_visible(state):
+                    if listing_message_goal:
+                        return self._tap_decision_for_label(
+                            state=state,
+                            skill=skill,
+                            label="Marketplace, tab 4 of 6",
+                            screen_classification="facebook_home_feed",
+                            goal_progress="navigating_to_marketplace",
+                            confidence=0.86,
+                            reason="Seller-message goals should enter Marketplace first before opening any message thread.",
+                            risk_level="low",
+                        )
+                    return self._tap_decision_for_label(
+                        state=state,
+                        skill=skill,
+                        label="Messaging",
+                        screen_classification="facebook_home_feed",
+                        goal_progress="opening_messages",
+                        confidence=0.87,
+                        reason="Open Facebook messages from the home feed.",
+                        risk_level="low",
+                    )
+                if self._facebook_message_thread_visible(state):
+                    if reply_text and message_input:
+                        return VisionDecision(
+                            screen_classification="facebook_message_thread",
+                            goal_progress="drafting_reply",
+                            next_action="type",
+                            target_box=BoundingBox.from_dict(message_input.get("target_box")),
+                            confidence=0.84,
+                            reason="Type the requested reply into the open Facebook message thread.",
+                            risk_level="low",
+                            input_text=reply_text,
+                            submit_after_input=False,
+                            target_label=message_input.get("label") or "message input",
+                        )
+                    return VisionDecision.stop("Facebook message thread is visible for reading or replying.")
+                if self._facebook_message_inbox_visible(state):
+                    return VisionDecision.stop("Facebook message inbox is visible for read-only inspection.")
+            if self._facebook_backup_prompt_visible(state):
+                return VisionDecision(
+                    screen_classification="facebook_backup_prompt",
+                    goal_progress="recovering",
+                    next_action="back",
+                    target_box=None,
+                    confidence=0.94,
+                    reason="Dismiss the transient Facebook backup or recovery prompt to return to the main app shell.",
+                    risk_level="low",
+                )
+            if self._facebook_listing_detail_visible(state):
+                return VisionDecision(
+                    screen_classification="facebook_listing_detail",
+                    goal_progress="continuing_scan",
+                    next_action="back",
+                    target_box=None,
+                    confidence=0.91,
+                    reason="Back out of the Marketplace listing detail after inspection and continue scanning the feed.",
+                    risk_level="low",
+                )
+            if self._facebook_marketplace_feed_visible(state):
+                if action_history and action_history[-1].get("action") == "back":
+                    return VisionDecision(
+                        screen_classification="facebook_marketplace_feed",
+                        goal_progress="advancing_feed",
+                        next_action="swipe",
+                        target_box=None,
+                        confidence=0.82,
+                        reason="Advance the Marketplace feed so the next read-only listing inspection reaches a new item.",
+                        risk_level="low",
+                    )
+                listing_component = self._find_facebook_listing_component(components)
+                if listing_component and not any(item.get("action") == "tap" for item in action_history[-2:]):
+                    label = str(listing_component.get("label") or "Marketplace listing")
+                    return self._tap_decision(
+                        target_box=BoundingBox.from_dict(listing_component.get("target_box")),
+                        screen_classification="facebook_marketplace_feed",
+                        goal_progress="opening_listing",
+                        confidence=0.84,
+                        reason="Open a Marketplace listing to inspect its price and condition read-only.",
+                        risk_level="low",
+                        target_label=label,
+                    )
+                if not any(item.get("action") == "swipe" for item in action_history[-2:]):
+                    return VisionDecision(
+                        screen_classification="facebook_marketplace_feed",
+                        goal_progress="advancing_feed",
+                        next_action="swipe",
+                        target_box=None,
+                        confidence=0.74,
+                        reason="Scroll the Marketplace feed to inspect additional local listings.",
+                        risk_level="low",
+                    )
+                return VisionDecision.stop("Facebook Marketplace feed has been scanned and no stronger next listing heuristic was found.")
+            if self._facebook_home_shell_visible(state):
+                return self._tap_decision_for_label(
+                    state=state,
+                    skill=skill,
+                    label="Marketplace, tab 4 of 6",
+                    screen_classification="facebook_home_shell",
+                    goal_progress="navigating",
+                    confidence=0.86,
+                    reason="Open Marketplace from the clean Facebook home shell.",
+                    risk_level="low",
+                )
+            if state.visible_text or state.clickable_text or components:
+                return VisionDecision.stop("Facebook is visible but no stronger Marketplace heuristic was found.")
+            return VisionDecision(
+                screen_classification="facebook_unknown",
+                goal_progress="researching",
+                next_action="wait",
+                target_box=None,
+                confidence=0.4,
+                reason="Facebook is open but the UI is still stabilizing.",
                 risk_level="low",
             )
 
@@ -716,6 +904,7 @@ Return a single JSON object only.
 Use normalized coordinates in target_box with values in the 0..1 range.
 If you type into a search box and the query should be submitted immediately, set submit_after_input=true.
 If you need an explicit tool, return next_action="tool", set tool_name, and set tool_arguments_json to a JSON object string.
+Before replaying or saving a reusable script, prefer normalizing the app to a clean main view. If the app can resume stale or deep-linked screens, use tool_name="reset_app" with tool_arguments_json containing package_name and optional activity. If reset reveals a transient onboarding, backup, or recovery prompt, use back navigation until the main app view is visible before continuing.
 To save a reusable automation script, use tool_name="save_script" with tool_arguments_json containing script_name, description, and steps.
 To replay a saved script, use tool_name="run_script" with tool_arguments_json containing script_name.
 To list available scripts, use tool_name="list_scripts".
@@ -777,7 +966,9 @@ If you cannot proceed safely, return next_action="stop".
         if yolo_mode and heuristic.next_action == "stop" and "manual login required" in heuristic.reason.casefold():
             return False
         # Only bypass when the heuristic has a concrete, high-confidence action
-        if heuristic.confidence >= 0.80 and heuristic.next_action in {"tap", "type", "back"}:
+        if heuristic.confidence >= 0.80 and heuristic.next_action in {"tap", "type", "back", "swipe"}:
+            return True
+        if heuristic.confidence >= 0.85 and heuristic.next_action == "stop":
             return True
         return False
 
@@ -1040,6 +1231,116 @@ If you cannot proceed safely, return next_action="stop".
         text = " ".join(state.visible_text[:60]).casefold()
         return any(token in text for token in ["打开", "open", "开始游戏", "play", "卸载"])
 
+    def _manual_verification_or_restriction_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:100]).casefold()
+        if not text:
+            return False
+        restriction_tokens = [
+            "confirm your identity",
+            "verify your identity",
+            "identity verification",
+            "unusual activity",
+            "suspicious activity",
+            "limited the number",
+            "try again tomorrow",
+            "temporarily restricted",
+            "temporarily locked",
+            "account restricted",
+            "your account has been restricted",
+            "appeal this decision",
+        ]
+        return any(token in text for token in restriction_tokens)
+
+    def _facebook_backup_prompt_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:60]).casefold()
+        activity = state.activity_name.casefold()
+        return (
+            "cloudbackup" in activity
+            or "restore chat history on this device" in text
+            or "restore now" in text
+        )
+
+    def _facebook_listing_detail_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:60]).casefold()
+        return any(
+            token in text
+            for token in ["message seller", "contact seller", "send offer", "hello, is this still available?"]
+        )
+
+    def _facebook_marketplace_feed_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:60]).casefold()
+        return "marketplace" in text and any(
+            token in text for token in ["for you", "local", "location:", "what do you want to buy?"]
+        )
+
+    def _facebook_home_feed_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:60]).casefold()
+        clickable = " ".join(state.clickable_text[:30]).casefold()
+        return "what's on your mind?" in text and "messaging" in clickable
+
+    def _facebook_home_shell_visible(self, state: ScreenState) -> bool:
+        clickable = " ".join(state.clickable_text[:20]).casefold()
+        return "marketplace, tab 4 of 6" in clickable and not self._facebook_marketplace_feed_visible(state)
+
+    def _facebook_message_recovery_prompt_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:60]).casefold()
+        return "are you sure?" in text and "end-to-end encrypted messages" in text
+
+    def _facebook_message_thread_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:60]).casefold()
+        return any(token in text for token in ["type a message", "write a message", "reply"]) and "send" in text
+
+    def _facebook_message_inbox_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:60]).casefold()
+        return any(token in text for token in ["messenger", "messages", "chats", "search messenger"])
+
+    def _find_facebook_message_input(self, components: list[dict[str, Any]]) -> dict[str, Any] | None:
+        for component in components:
+            if component.get("component_type") != "text_input":
+                continue
+            label = str(component.get("label", "")).casefold()
+            if any(token in label for token in ["still available", "type a message", "write a message", "reply"]):
+                return component
+        return None
+
+    def _find_facebook_send_button(self, components: list[dict[str, Any]]) -> dict[str, Any] | None:
+        for component in components:
+            label = str(component.get("label", "")).strip().casefold()
+            if label == "send":
+                return component
+        return None
+
+    def _find_facebook_seller_contact_button(self, components: list[dict[str, Any]]) -> dict[str, Any] | None:
+        best: dict[str, Any] | None = None
+        for component in components:
+            if component.get("enabled") is False:
+                continue
+            label = str(component.get("label", "")).strip().casefold()
+            if not label:
+                continue
+            if label in {"message seller", "contact seller"}:
+                return component
+            if label == "hello, is this still available?":
+                best = component
+        return best
+
+    def _find_facebook_listing_component(self, components: list[dict[str, Any]]) -> dict[str, Any] | None:
+        best: dict[str, Any] | None = None
+        for component in components:
+            label = str(component.get("label", ""))
+            lowered = label.casefold()
+            if not label.strip():
+                continue
+            if component.get("enabled") is False:
+                continue
+            if component.get("component_type") not in {"touch_target", "button"}:
+                continue
+            if component.get("resource_id") == "mp_top_picks_clickable_item":
+                return component
+            if "just listed" in lowered or "$" in label or "£" in label:
+                best = component
+        return best
+
     def _repeated_label_taps(self, action_history: list[dict[str, Any]], label: str) -> bool:
         if len(action_history) < 2:
             return False
@@ -1048,3 +1349,37 @@ If you cannot proceed safely, return next_action="stop".
             item.get("action") == "tap" and label.casefold() in item.get("reason", "").casefold()
             for item in recent
         )
+
+    def _facebook_goal_allows_marketplace_messaging(self, goal: str) -> bool:
+        lowered = goal.casefold()
+        return "marketplace" in lowered and any(
+            token in lowered
+            for token in ["message ", "messages", "reply", "respond", "conversation", "chat", "inbox", "seller"]
+        )
+
+    def _facebook_goal_targets_listing_message(self, goal: str) -> bool:
+        lowered = goal.casefold()
+        return self._facebook_goal_allows_marketplace_messaging(goal) and any(
+            token in lowered
+            for token in ["seller", "listing", "item", "still available", "send", "reply", "respond"]
+        )
+
+    def _facebook_send_requested(self, goal: str) -> bool:
+        lowered = goal.casefold()
+        return any(token in lowered for token in ["send", "reply", "respond"])
+
+    def _extract_message_text(self, goal: str) -> str | None:
+        cleaned = goal.strip()
+        patterns = [
+            r"(?:send|reply|respond)(?:\s+to\s+.+?)?(?:\s+with)?\s+['\"](?P<message>[^'\"]+)['\"]",
+            r"(?:send|reply|respond)(?:\s+with)?\s+['\"](?P<message>[^'\"]+)['\"]",
+            r"(?:send|reply|respond)(?:\s+with)?\s+(?P<message>.+)$",
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, cleaned, flags=re.IGNORECASE)
+            if not match:
+                continue
+            message = match.group("message").strip()
+            if message:
+                return message
+        return None

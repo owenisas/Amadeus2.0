@@ -52,6 +52,17 @@ Use the smallest control surface that can solve the task.
 - If the requested app is unknown, inspect `/Users/user/Documents/Amadeus2.0/agent_runner/config.py` and either add a registry entry or use `bootstrap_skill` if the repo already supports that path.
 - If the user references a specific emulator, set `ANDROID_DEVICE_SERIAL` explicitly for the command you run.
 
+### 1a. Connect over wireless debugging when needed
+
+- If `adb devices -l` does not show the target phone, use the `adb_path` from `doctor --json`.
+- On the phone, open `Developer options > Wireless debugging`.
+- Use `Pair device with pairing code` when there is no existing ADB session.
+- Run `adb pair <ip:pair-port>` with the pairing code shown on the phone.
+- Then read the main `IP address & Port` value from the Wireless debugging screen and run `adb connect <ip:connect-port>`.
+- Verify with `adb devices -l` before running the CLI.
+- For all CLI commands that should target the wireless phone, set `ANDROID_DEVICE_SERIAL=<ip:connect-port>`.
+- Appium does not need separate wireless setup beyond using the correct `ANDROID_DEVICE_SERIAL`.
+
 ### 2. Inspect before acting
 
 - Capture state first unless the task is only to print config or list tools.

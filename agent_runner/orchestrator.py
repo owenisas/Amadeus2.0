@@ -5,7 +5,7 @@ from pathlib import Path
 from agent_runner.android_adapter import AndroidAdapter
 from agent_runner.agent_tools import AgentToolExecutor
 from agent_runner.models import ActionRecord, RunContext, RunResult, ScreenState, SkillBundle, VisionDecision
-from agent_runner.safety import detect_manual_login_required, evaluate_decision
+from agent_runner.safety import detect_manual_intervention_reason, evaluate_decision
 from agent_runner.skill_manager import SkillManager
 from agent_runner.utils import describe_state_signature, ensure_directory, timestamp_slug
 from agent_runner.vision_agent import VisionAgent
@@ -101,20 +101,29 @@ class Orchestrator:
                 for step in range(1, context.max_steps + 1):
                     last_state = state
 
-                    if not context.yolo_mode and detect_manual_login_required(context.app, state):
-                        reason = "Manual login required before automation can continue."
+                    intervention_reason = detect_manual_intervention_reason(
+                        context.app,
+                        state,
+                        yolo_mode=context.yolo_mode,
+                    )
+                    if intervention_reason:
+                        status = (
+                            "manual_login_required"
+                            if "login" in intervention_reason.casefold()
+                            else "manual_verification_required"
+                        )
                         self.skill_manager.update_after_observation(bundle, state, None)
                         self.skill_manager.update_run_state(
                             bundle,
-                            status="manual_login_required",
-                            reason=reason,
+                            status=status,
+                            reason=intervention_reason,
                             last_screen_id=last_screen_id,
                             action_history=[item.to_dict() for item in context.action_history],
                             failure_count=failure_count,
                         )
                         return RunResult(
-                            status="manual_login_required",
-                            reason=reason,
+                            status=status,
+                            reason=intervention_reason,
                             steps=step,
                             run_dir=run_dir,
                             last_state=state,
@@ -179,7 +188,7 @@ class Orchestrator:
                             state = self.android_adapter.capture_state(run_dir)
                             continue
 
-                    verdict = evaluate_decision(context.app, state, decision)
+                    verdict = evaluate_decision(context.app, state, decision, goal=context.goal)
                     if not verdict.allowed:
                         context.action_history.append(
                             ActionRecord(

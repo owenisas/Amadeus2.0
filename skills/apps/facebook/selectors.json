@@ -1,0 +1,659 @@
+{
+  "selectors": [
+    {
+      "activity_name": ".activity.FbMainTabActivity",
+      "anchor_text": [
+        "Marketplace",
+        "Find friends",
+        "Menu",
+        "Menu, tab 5 of 5"
+      ],
+      "label": "Menu, tab 5 of 5",
+      "package_name": "com.facebook.katana",
+      "reason": "Open the Facebook menu surface, which exposes the Marketplace tile reliably on this phone build.",
+      "screen_id": "facebook-menu-surface",
+      "target_box": {
+        "height": 0.055,
+        "width": 0.2,
+        "x": 0.8,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.FbMainTabActivity",
+      "anchor_text": [
+        "Marketplace",
+        "Find friends",
+        "Menu",
+        "Menu, tab 5 of 5"
+      ],
+      "label": "Marketplace",
+      "package_name": "com.facebook.katana",
+      "reason": "Tap the Marketplace tile from the Menu screen to enter the Marketplace feed.",
+      "screen_id": "facebook-menu-surface",
+      "target_box": {
+        "height": 0.08708333333333333,
+        "width": 0.45925925925925926,
+        "x": 0.030555555555555555,
+        "y": 0.5095833333333334
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "What's on your mind?",
+        "Menu",
+        "Search",
+        "Messaging"
+      ],
+      "label": "Messaging",
+      "package_name": "com.facebook.katana",
+      "reason": "Open Facebook messages from the home feed when the goal explicitly asks to read or send messages.",
+      "screen_id": "facebook-home-feed",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.8777777777777778,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "What's on your mind?",
+        "Home, tab 1 of 6",
+        "Marketplace, tab 4 of 6",
+        "Menu, tab 6 of 6"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Fastest clean-state route into Marketplace from the Facebook home shell after reset and dismissing transient prompts.",
+      "screen_id": "facebook-home-shell",
+      "target_box": {
+        "height": 0.055,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    },
+    {
+      "activity_name": ".immersiveactivity.ImmersiveActivity",
+      "anchor_text": [
+        "Marketplace",
+        "Location: Bothell, Washington",
+        "What do you want to buy?"
+      ],
+      "component_type": "search_action",
+      "label": "What do you want to buy?",
+      "package_name": "com.facebook.katana",
+      "reason": "Open Marketplace search for targeted deal queries after scanning the feed.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "facebook-marketplace-home",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.8777777777777778,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".immersiveactivity.ImmersiveActivity",
+      "anchor_text": [
+        "Marketplace",
+        "Location: Bothell, Washington",
+        "Today's picks"
+      ],
+      "label": "Just listed, $620 \u00b7 Apple Mac Mini M4 16GB 256GB",
+      "package_name": "com.facebook.katana",
+      "reason": "Representative Marketplace listing card selector for opening a feed item and inspecting its detail page.",
+      "resource_id": "mp_top_picks_clickable_item",
+      "screen_id": "facebook-marketplace-home",
+      "target_box": {
+        "height": 0.2633333333333333,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.55
+      }
+    },
+    {
+      "activity_name": ".immersiveactivity.ImmersiveActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 2",
+        "For you",
+        "Local, Tab, 2 of 2",
+        "Local",
+        "Tap to view categories and more"
+      ],
+      "label": "Just listed, $620 \u00b7 Apple Mac Mini M4 16GB 256GB",
+      "package_name": "com.facebook.katana",
+      "reason": "The goal is to inspect local listings, prioritizing Apple products. Tapping the Mac Mini listing to view its details.",
+      "screen_id": "com-facebook-katana-immersiveactivity-immersiveactivity-ece948708ebeaa90",
+      "target_box": {
+        "height": 0.2633333333333333,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.55
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Back",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Apple Mac Mini M4 16GB 256GB",
+        "$620"
+      ],
+      "label": "Amazing condition\nSlightly used\nComes with the original box stil... See more",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping 'See more' to expand the description and read the full condition details, which aligns with the read-only inspection goal.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-13f979b0dbaa301b",
+      "target_box": {
+        "height": 0.06875,
+        "width": 0.9388888888888889,
+        "x": 0.030555555555555555,
+        "y": 0.9233333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Back",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Apple Mac Mini M4 16GB 256GB",
+        "$620"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-13f979b0dbaa301b",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Back",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Apple Mac Mini M4 16GB 256GB",
+        "$620"
+      ],
+      "component_type": "text_input",
+      "label": "Hello, is this still available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-13f979b0dbaa301b",
+      "search_related": false,
+      "target_box": {
+        "height": 0.03666666666666667,
+        "width": 0.6166666666666667,
+        "x": 0.10462962962962963,
+        "y": 0.7091666666666666
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "$80 marked down from $1002k 180HZ Monitor Sale",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping the first listing ('$80 marked down from $1002k 180HZ Monitor Sale') to inspect its details read-only, following the goal to scan local listings.",
+      "screen_id": "com-facebook-katana-loginactivity-c16645d9323bd8cc",
+      "target_box": {
+        "height": 0.2633333333333333,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.22875
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 3",
+        "2k 180HZ Monitor Sale",
+        "$80"
+      ],
+      "label": "Close",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping the 'Close' button (X icon) to exit the listing details and return to the Marketplace feed, adhering to the read-only policy.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-3ad1ecd1172d581f",
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.030555555555555555,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": "",
+      "anchor_text": [
+        "Are you sure?",
+        "Some of your end-to-end encrypted messages may be missing.",
+        "CANCEL",
+        "YES"
+      ],
+      "label": "CANCEL",
+      "package_name": "com.facebook.katana",
+      "reason": "Dismiss the Facebook messaging recovery dialog without changing the current message recovery path.",
+      "screen_id": "facebook-messaging-recovery-dialog",
+      "target_box": {
+        "height": 0.055,
+        "width": 0.2037037037037037,
+        "x": 0.5722222222222222,
+        "y": 0.5470833333333334
+      }
+    },
+    {
+      "activity_name": "",
+      "anchor_text": [
+        "Are you sure?",
+        "Some of your end-to-end encrypted messages may be missing.",
+        "CANCEL",
+        "YES"
+      ],
+      "label": "YES",
+      "package_name": "com.facebook.katana",
+      "reason": "Accept the Facebook messaging recovery dialog when the user explicitly wants to continue into messages despite missing encrypted history.",
+      "screen_id": "facebook-messaging-recovery-dialog",
+      "target_box": {
+        "height": 0.055,
+        "width": 0.12685185185185185,
+        "x": 0.7759259259259259,
+        "y": 0.5470833333333334
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 3",
+        "2k 180HZ Monitor Sale",
+        "$80"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-3ad1ecd1172d581f",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 3",
+        "2k 180HZ Monitor Sale",
+        "$80"
+      ],
+      "component_type": "text_input",
+      "label": "Hello, is this still available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-3ad1ecd1172d581f",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.7225
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "$400\u00a0\u00b7\u00a0Samsung GS23 Ultra 5G",
+      "package_name": "com.facebook.katana",
+      "reason": "Open a Marketplace listing to inspect its price and condition read-only.",
+      "screen_id": "com-facebook-katana-loginactivity-a79042dfb0cde388",
+      "target_box": {
+        "height": 0.018333333333333333,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.18791666666666668
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Samsung GS23 Ultra 5G",
+        "$400"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-4be8d8d60f2e0441",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Samsung GS23 Ultra 5G",
+        "$400"
+      ],
+      "component_type": "text_input",
+      "label": "Hello, is this still available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-4be8d8d60f2e0441",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.78125
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "Just listed",
+      "package_name": "com.facebook.katana",
+      "reason": "Open a Marketplace listing to inspect its price and condition read-only.",
+      "screen_id": "com-facebook-katana-loginactivity-970f3fcd66f7a73c",
+      "target_box": {
+        "height": 0.14375,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.85625
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 3",
+        "MacBook Pro 13\u201d (M1, 2020) \u2013 Excellent Condition",
+        "$400"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-8c8a9d6fd7307950",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 3",
+        "MacBook Pro 13\u201d (M1, 2020) \u2013 Excellent Condition",
+        "$400"
+      ],
+      "component_type": "text_input",
+      "label": "Hello, is this still available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-8c8a9d6fd7307950",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.825
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "Just listed",
+      "package_name": "com.facebook.katana",
+      "reason": "Open a Marketplace listing to inspect its price and condition read-only.",
+      "screen_id": "com-facebook-katana-loginactivity-b1a87975dece3063",
+      "target_box": {
+        "height": 0.10375,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.89625
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaginginblue.inbox.activities.InboxActivity",
+      "anchor_text": [
+        "Back",
+        "Chats",
+        "Settings",
+        "New message",
+        "Search field",
+        "Meta AI"
+      ],
+      "component_type": "search_action",
+      "label": "Search field",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-com-facebook-messaginginblue-inbox-activities-inboxactivity-59a173fa71ac548b",
+      "search_related": true,
+      "target_box": {
+        "height": 0.04125,
+        "width": 0.8564814814814815,
+        "x": 0.030555555555555555,
+        "y": 0.10208333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "label": "Messaging",
+      "package_name": "com.facebook.katana",
+      "reason": "Open Facebook messages from the home feed.",
+      "screen_id": "com-facebook-katana-loginactivity-f24e8584ae38c553",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.8777777777777778,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-f24e8584ae38c553",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-f24e8584ae38c553",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-cef7d0208059cf64",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-cef7d0208059cf64",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Seller-message goals should enter Marketplace first before opening any message thread.",
+      "screen_id": "com-facebook-katana-loginactivity-cef7d0208059cf64",
+      "target_box": {
+        "height": 0.055,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    }
+  ]
+}

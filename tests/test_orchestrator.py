@@ -222,3 +222,57 @@ def test_orchestrator_resumes_after_user_approval(tmp_path: Path) -> None:
 
     # Approval was granted but popup keeps returning, so it should eventually stall or exhaust steps
     assert result.status in {"stalled", "max_steps_reached", "blocked"}
+
+
+class RestrictionAdapter(PopupAdapter):
+    def capture_state(self, run_dir: Path):
+        device = DeviceInfo(
+            serial="emulator-5554",
+            width=1080,
+            height=2400,
+            density=420,
+            orientation="portrait",
+            package_name="com.facebook.katana",
+            activity_name=".activity.react.ImmersiveReactActivity",
+        )
+        return ScreenState(
+            screenshot_path=run_dir / "fake.png",
+            hierarchy_path=run_dir / "fake.xml",
+            screenshot_sha256="abc",
+            xml_source="<hierarchy />",
+            visible_text=[
+                "Confirm Your Identity on Marketplace",
+                "We detected unusual activity on your account",
+                "You can try again tomorrow.",
+            ],
+            clickable_text=["Get Started"],
+            package_name=device.package_name,
+            activity_name=device.activity_name,
+            device=device,
+            components=[],
+        )
+
+
+def test_orchestrator_returns_manual_verification_required(tmp_path: Path) -> None:
+    adapter = RestrictionAdapter()
+    skill_manager = SkillManager(tmp_path / "skills")
+    orchestrator = Orchestrator(
+        android_adapter=adapter,
+        tool_executor=AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager),
+        vision_agent=VisionAgent(None, "gemini-3.1-pro-preview"),
+        skill_manager=skill_manager,
+        runs_dir=tmp_path / "runs",
+    )
+    context = RunContext(
+        app=APP_REGISTRY["facebook"],
+        goal="Send a Marketplace message to a seller.",
+        run_dir=tmp_path / "runs",
+        exploration_enabled=True,
+        max_steps=1,
+        yolo_mode=True,
+    )
+
+    result = orchestrator.run(context)
+
+    assert result.status == "manual_verification_required"
+    assert "verification" in result.reason.casefold() or "restriction" in result.reason.casefold()

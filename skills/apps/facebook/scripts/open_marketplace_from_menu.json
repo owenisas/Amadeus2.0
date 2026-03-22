@@ -1,0 +1,41 @@
+{
+  "description": "Reset Facebook, back out of the backup prompt if needed, then open Marketplace from the clean home shell.",
+  "name": "open_marketplace_from_menu",
+  "steps": [
+    {
+      "action": "reset_app",
+      "activity": ".activity.FbMainTabActivity",
+      "package_name": "com.facebook.katana"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 3
+    },
+    {
+      "action": "back",
+      "only_if_activity_name": "com.facebook.messaginginblue.e2ee.cloudbackup.ui.activities.onboardingnux.MibCloudBackupNuxActivity",
+      "only_if_visible_text": [
+        "Restore now",
+        "Restore chat history on this device"
+      ]
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 2
+    },
+    {
+      "action": "tap",
+      "target_box": {
+        "height": 0.055,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      },
+      "target_label": "Marketplace, tab 4 of 6"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 2
+    }
+  ]
+}

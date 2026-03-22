@@ -1,0 +1,41 @@
+{
+  "description": "Reset Facebook to the home feed, dismiss the backup prompt if needed, and open the top-right Messaging entry point.",
+  "name": "open_messages_from_home",
+  "steps": [
+    {
+      "action": "reset_app",
+      "activity": ".activity.FbMainTabActivity",
+      "package_name": "com.facebook.katana"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 3
+    },
+    {
+      "action": "back",
+      "only_if_activity_name": "com.facebook.messaginginblue.e2ee.cloudbackup.ui.activities.onboardingnux.MibCloudBackupNuxActivity",
+      "only_if_visible_text": [
+        "Restore now",
+        "Restore chat history on this device"
+      ]
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 2
+    },
+    {
+      "action": "tap",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.8777777777777778,
+        "y": 0.03333333333333333
+      },
+      "target_label": "Messaging"
+    },
+    {
+      "action": "wait",
+      "wait_seconds": 2
+    }
+  ]
+}

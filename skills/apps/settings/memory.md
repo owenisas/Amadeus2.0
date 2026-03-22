@@ -25,3 +25,6 @@
 - Status: completed
 - Reason: The goal is to open the network settings page and stop. The current screen is the network settings page, so the goal is achieved.
 - Last screen: com-android-settings-subsettings-c07fa0ff8a5ccf9f
+
+- Status: error
+- Reason: App is not installed on the emulator.

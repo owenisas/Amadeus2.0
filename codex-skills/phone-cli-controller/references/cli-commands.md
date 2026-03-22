@@ -19,6 +19,39 @@ The `doctor` output is the source of truth for:
 - `runs_dir`
 - `appium_start_hint`
 
+## Wireless debugging / Wi-Fi ADB
+
+Discover the advertised service when available:
+
+```bash
+/Users/user/Library/Android/sdk/platform-tools/adb mdns services
+```
+
+Pair from the phone's `Pair device with pairing code` screen:
+
+```bash
+/Users/user/Library/Android/sdk/platform-tools/adb pair <ip:pair-port>
+```
+
+Connect using the main `IP address & Port` shown on the Wireless debugging screen:
+
+```bash
+/Users/user/Library/Android/sdk/platform-tools/adb connect <ip:connect-port>
+/Users/user/Library/Android/sdk/platform-tools/adb devices -l
+```
+
+Target the wireless device explicitly for CLI runs:
+
+```bash
+ANDROID_DEVICE_SERIAL=<ip:connect-port> /Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner doctor --json
+ANDROID_DEVICE_SERIAL=<ip:connect-port> /Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner tools run --tool capture_state --args '{}'
+```
+
+Notes:
+
+- The pairing port and connect port are different.
+- If `adb mdns services` is empty, keep the phone awake on the Wireless debugging screen and use the phone-displayed IP and ports directly.
+
 ## Full autonomous run
 
 ```bash
@@ -62,7 +95,7 @@ Or override package/activity:
 First capture state, then pass a `target_box`:
 
 ```bash
-/Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner tools run --tool tap --app youtube --args '{"target_box":{"x0":0.10,"y0":0.20,"x1":0.90,"y1":0.28},"target_label":"Search"}'
+/Users/user/Documents/Amadeus2.0/.venv/bin/python -m agent_runner tools run --tool tap --app youtube --args '{"target_box":{"x":0.10,"y":0.20,"width":0.80,"height":0.08},"target_label":"Search"}'
 ```
 
 ## Type and submit

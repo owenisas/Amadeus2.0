@@ -395,11 +395,14 @@ description: System-level Android navigation guidance for dialogs, permissions, 
 
 ## Automation scripts
 
+- Before replaying or saving a reusable script, normalize the app to a clean starting surface. Prefer `reset_app` when the app can resume deep links or stale screens.
+- If `reset_app` reveals a transient onboarding, backup, or recovery prompt, use `back` until the main app view is visible before continuing.
 - When you identify a repetitive navigation sequence (e.g., search for X, dismiss popup, tap result), save it as a script using the `save_script` tool.
 - Scripts are stored per-app under `skills/apps/<app>/scripts/` and can be replayed with `run_script`.
 - Before performing a multi-step navigation you have done before, check `list_scripts` to see if a reusable script already exists.
 - A script is a JSON object with `name`, `description`, and `steps` (list of action objects).
-- Each step has `action` (tap/type/swipe/back/home/wait/launch_app/run_script) and optional fields like `target_label`, `input_text`, `submit_after_input`, `package_name`, `wait_seconds`, `script_name`.
+- Each step has `action` (tap/type/swipe/back/home/wait/launch_app/reset_app/run_script) and optional fields like `target_label`, `input_text`, `submit_after_input`, `package_name`, `wait_seconds`, `script_name`, `only_if_activity_name`, and `only_if_visible_text`.
+- Use conditional fields for intermittent prompts so a script can dismiss them only when present and otherwise keep the faster clean-state path.
 """
 
     def _screen_id(self, signature: dict[str, Any]) -> str:

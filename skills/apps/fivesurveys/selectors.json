@@ -1,0 +1,136 @@
+{
+  "selectors": [
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Five Surveys logo",
+        "English",
+        "The quickest way to earn $5",
+        "We pay out $100,000 + every day",
+        "cards"
+      ],
+      "label": "Continue",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "YOLO mode auto-continued through an approval surface.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-2edcaf402af370c9",
+      "target_box": {
+        "height": 0.0525,
+        "width": 0.9148148148148149,
+        "x": 0.04259259259259259,
+        "y": 0.5970833333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Five Surveys logo",
+        "English",
+        "The quickest way to earn $5",
+        "We pay out $100,000 + every day",
+        "cards"
+      ],
+      "component_type": "text_input",
+      "label": "text_input",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-2edcaf402af370c9",
+      "search_related": false,
+      "target_box": {
+        "height": 0.06291666666666666,
+        "width": 0.9148148148148149,
+        "x": 0.04259259259259259,
+        "y": 0.5166666666666667
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Five Surveys logo",
+        "English",
+        "The quickest way to earn $5",
+        "We pay out $100,000 + every day",
+        "cards"
+      ],
+      "label": "Continue",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "YOLO mode auto-continued through an approval surface.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-c3b80b40284fbb0d",
+      "target_box": {
+        "height": 0.05291666666666667,
+        "width": 0.9148148148148149,
+        "x": 0.04259259259259259,
+        "y": 0.6220833333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Five Surveys logo",
+        "English",
+        "The quickest way to earn $5",
+        "We pay out $100,000 + every day",
+        "cards"
+      ],
+      "component_type": "text_input",
+      "label": "text_input",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-c3b80b40284fbb0d",
+      "search_related": false,
+      "target_box": {
+        "height": 0.06291666666666666,
+        "width": 0.9148148148148149,
+        "x": 0.04259259259259259,
+        "y": 0.5166666666666667
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The goal is to open the first available survey. The 'Take Survey' button for the first featured survey is visible and clickable.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-56ab6391b9829b7a",
+      "target_box": {
+        "height": 0.03916666666666667,
+        "width": 0.4101851851851852,
+        "x": 0.05555555555555555,
+        "y": 0.6725
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Surveys",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The user requested to see a survey question, but the current screen is the Home tab. Tapping the Surveys tab in the bottom navigation bar to look for available surveys.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-0683be29156ae918",
+      "target_box": {
+        "height": 0.09125,
+        "width": 0.25,
+        "x": 0.375,
+        "y": 0.90875
+      }
+    }
+  ]
+}

@@ -31,18 +31,9 @@
       "Data Saver"
     ]
   },
-  "last_successful_screen": "com-android-settings-subsettings-c07fa0ff8a5ccf9f",
-  "last_working_action_chain": [
-    {
-      "action": "stop",
-      "activity_name": ".SubSettings",
-      "allowed": true,
-      "package_name": "com.android.settings",
-      "reason": "Stop actions are always allowed.",
-      "step": 1
-    }
-  ],
-  "reason": "The goal is to open the network settings page and stop. The current screen is the network settings page, so the goal is achieved.",
+  "last_successful_screen": null,
+  "last_working_action_chain": [],
+  "reason": "App is not installed on the emulator.",
   "screen_transition_confidence": 1.0,
-  "status": "completed"
+  "status": "error"
 }

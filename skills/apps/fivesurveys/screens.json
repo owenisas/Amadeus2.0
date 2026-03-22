@@ -1,0 +1,1940 @@
+{
+  "screens": {
+    "com-fivesurveys-mobile-mainactivity-0683be29156ae918": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Cook & Merge",
+        "+25%",
+        "$ 605.65",
+        "$ 757.07"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Best Games",
+        "My Games0",
+        "Cook & Merge | +25% | $ 605.65",
+        "Animals & Coins | +25% | $ 562.26",
+        "RAID: Shadow Legends | +25% | $ 284.00",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "New | Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (110)",
+        "Home"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Best Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06416666666666666,
+            "width": 0.21851851851851853,
+            "x": 0.030555555555555555,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "My Games0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06416666666666666,
+            "width": 0.287962962962963,
+            "x": 0.2564814814814815,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Cook & Merge | +25% | $ 605.65",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.32037037037037036,
+            "x": 0.040740740740740744,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Animals & Coins | +25% | $ 562.26",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.32314814814814813,
+            "x": 0.387037037037037,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "RAID: Shadow Legends | +25% | $ 284.00",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.2324074074074074,
+            "x": 0.7351851851851852,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.61625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03916666666666667,
+            "width": 0.4101851851851852,
+            "x": 0.05555555555555555,
+            "y": 0.6725
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.4564814814814815,
+            "x": 0.5111111111111111,
+            "y": 0.61625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10625,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.7345833333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03166666666666667,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.9683333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.90875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-0683be29156ae918",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Best Games",
+          "My Games0",
+          "Cook & Merge | +25% | $ 605.65",
+          "Animals & Coins | +25% | $ 562.26",
+          "RAID: Shadow Legends | +25% | $ 284.00",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "New | Take Survey",
+          "5 | (110) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "c53efa80d3688e80",
+        "text_digest": "0683be29156ae918",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Best Games",
+          "My Games0",
+          "Cook & Merge",
+          "+25%"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-24b2ac8e6f21546d": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Animals & Coins",
+        "+25%",
+        "$ 562.26",
+        "$ 702.82"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Best Games",
+        "My Games0",
+        "Animals & Coins | +25% | $ 562.26",
+        "Sunshine Island | +25% | $ 526.20",
+        "Dice Dreams | +25% | $ 360.14",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "New | Take Survey",
+        "5 | (110) | Take Survey",
+        "Home",
+        "Surveys"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Best Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06416666666666666,
+            "width": 0.21851851851851853,
+            "x": 0.030555555555555555,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "My Games0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06416666666666666,
+            "width": 0.287962962962963,
+            "x": 0.2564814814814815,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Animals & Coins | +25% | $ 562.26",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.2529166666666667,
+            "width": 0.32037037037037036,
+            "x": 0.040740740740740744,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Sunshine Island | +25% | $ 526.20",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.2529166666666667,
+            "width": 0.32314814814814813,
+            "x": 0.387037037037037,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Dice Dreams | +25% | $ 360.14",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.2529166666666667,
+            "width": 0.2324074074074074,
+            "x": 0.7351851851851852,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.6416666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0375,
+            "width": 0.4101851851851852,
+            "x": 0.05555555555555555,
+            "y": 0.6979166666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.4564814814814815,
+            "x": 0.5111111111111111,
+            "y": 0.6416666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.7583333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.90875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-24b2ac8e6f21546d",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Best Games",
+          "My Games0",
+          "Animals & Coins | +25% | $ 562.26",
+          "Sunshine Island | +25% | $ 526.20",
+          "Dice Dreams | +25% | $ 360.14",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "New | Take Survey",
+          "5 | (110) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "7a20ff20795089c9",
+        "text_digest": "24b2ac8e6f21546d",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Best Games",
+          "My Games0",
+          "Animals & Coins",
+          "+25%"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-2bc0dd4117736653": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Cook & Merge",
+        "+25%",
+        "$ 605.65",
+        "$ 757.07"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Best Games",
+        "My Games0",
+        "Cook & Merge | +25% | $ 605.65",
+        "Animals & Coins | +25% | $ 562.26",
+        "RAID: Shadow Legends | +25% | $ 284.00",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (110)",
+        "Qualification | Just a few questions before the survey | Which languages do you speak? | Arabic",
+        "Arabic"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Best Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06416666666666666,
+            "width": 0.21851851851851853,
+            "x": 0.030555555555555555,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "My Games0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06416666666666666,
+            "width": 0.287962962962963,
+            "x": 0.2564814814814815,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Cook & Merge | +25% | $ 605.65",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.32037037037037036,
+            "x": 0.040740740740740744,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Animals & Coins | +25% | $ 562.26",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.32314814814814813,
+            "x": 0.387037037037037,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "RAID: Shadow Legends | +25% | $ 284.00",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.2324074074074074,
+            "x": 0.7351851851851852,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.61625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": true,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03916666666666667,
+            "width": 0.4101851851851852,
+            "x": 0.05555555555555555,
+            "y": 0.6725
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.4564814814814815,
+            "x": 0.5111111111111111,
+            "y": 0.61625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03166666666666667,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.9683333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Qualification | Just a few questions before the survey | Which languages do you speak? | Arabic",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.9666666666666667,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.05648148148148148,
+            "x": 0.9009259259259259,
+            "y": 0.04708333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Arabic",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05416666666666667,
+            "width": 0.8805555555555555,
+            "x": 0.05092592592592592,
+            "y": 0.19458333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.CheckBox",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Arabic",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "ar",
+          "search_related": false,
+          "target_box": {
+            "height": 0.049166666666666664,
+            "width": 0.8740740740740741,
+            "x": 0.05277777777777778,
+            "y": 0.19708333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Chinese",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05375,
+            "width": 0.8805555555555555,
+            "x": 0.05092592592592592,
+            "y": 0.25666666666666665
+          }
+        },
+        {
+          "class_name": "android.widget.CheckBox",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Chinese",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "zh",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.8740740740740741,
+            "x": 0.05277777777777778,
+            "y": 0.25875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Danish",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05416666666666667,
+            "width": 0.8805555555555555,
+            "x": 0.05092592592592592,
+            "y": 0.31833333333333336
+          }
+        },
+        {
+          "class_name": "android.widget.CheckBox",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Danish",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "da",
+          "search_related": false,
+          "target_box": {
+            "height": 0.049166666666666664,
+            "width": 0.8740740740740741,
+            "x": 0.05277777777777778,
+            "y": 0.32083333333333336
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "English",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05375,
+            "width": 0.8805555555555555,
+            "x": 0.05092592592592592,
+            "y": 0.3804166666666667
+          }
+        },
+        {
+          "class_name": "android.widget.CheckBox",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "English",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "en",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.8740740740740741,
+            "x": 0.05277777777777778,
+            "y": 0.3825
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-2bc0dd4117736653",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Best Games",
+          "My Games0",
+          "Cook & Merge | +25% | $ 605.65",
+          "Animals & Coins | +25% | $ 562.26",
+          "RAID: Shadow Legends | +25% | $ 284.00",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (110)"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "69ad6f1a4dc51e99",
+        "text_digest": "2bc0dd4117736653",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Best Games",
+          "My Games0",
+          "Cook & Merge",
+          "+25%"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-2edcaf402af370c9": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Five Surveys logo",
+        "English",
+        "The quickest way to earn $5",
+        "We pay out $100,000 + every day",
+        "cards",
+        "Log In or Sign Up",
+        "Email",
+        "Continue",
+        "OR"
+      ],
+      "clickable_text": [
+        "English",
+        "Email",
+        "Continue"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "English",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04375,
+            "width": 0.2675925925925926,
+            "x": 0.7046296296296296,
+            "y": 0.05375
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Email",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.09166666666666666,
+            "x": 0.07592592592592592,
+            "y": 0.535
+          }
+        },
+        {
+          "class_name": "android.widget.EditText",
+          "clickable": true,
+          "component_type": "text_input",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06291666666666666,
+            "width": 0.9148148148148149,
+            "x": 0.04259259259259259,
+            "y": 0.5166666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Continue",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0525,
+            "width": 0.9148148148148149,
+            "x": 0.04259259259259259,
+            "y": 0.5970833333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05583333333333333,
+            "width": 0.44351851851851853,
+            "x": 0.04259259259259259,
+            "y": 0.68875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-2edcaf402af370c9",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "English",
+          "Email",
+          "Continue"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "87dc7f752858d830",
+        "text_digest": "2edcaf402af370c9",
+        "top_visible_text": [
+          "Five Surveys",
+          "Five Surveys logo",
+          "English",
+          "The quickest way to earn $5",
+          "We pay out $100,000 + every day",
+          "cards",
+          "Log In or Sign Up",
+          "Email",
+          "Continue",
+          "OR"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-56ab6391b9829b7a": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Cook & Merge",
+        "+25%",
+        "$ 605.65",
+        "$ 757.07"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Best Games",
+        "My Games0",
+        "Cook & Merge | +25% | $ 605.65",
+        "Animals & Coins | +25% | $ 562.26",
+        "RAID: Shadow Legends | +25% | $ 284.00",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (110)",
+        "Home",
+        "Surveys"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Best Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06416666666666666,
+            "width": 0.21851851851851853,
+            "x": 0.030555555555555555,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "My Games0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06416666666666666,
+            "width": 0.287962962962963,
+            "x": 0.2564814814814815,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Cook & Merge | +25% | $ 605.65",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.32037037037037036,
+            "x": 0.040740740740740744,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Animals & Coins | +25% | $ 562.26",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.32314814814814813,
+            "x": 0.387037037037037,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "RAID: Shadow Legends | +25% | $ 284.00",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.22916666666666666,
+            "width": 0.2324074074074074,
+            "x": 0.7351851851851852,
+            "y": 0.3129166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.61625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03916666666666667,
+            "width": 0.4101851851851852,
+            "x": 0.05555555555555555,
+            "y": 0.6725
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.4564814814814815,
+            "x": 0.5111111111111111,
+            "y": 0.61625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03166666666666667,
+            "width": 0.4564814814814815,
+            "x": 0.032407407407407406,
+            "y": 0.9683333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.90875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-56ab6391b9829b7a",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Best Games",
+          "My Games0",
+          "Cook & Merge | +25% | $ 605.65",
+          "Animals & Coins | +25% | $ 562.26",
+          "RAID: Shadow Legends | +25% | $ 284.00",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (110)"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "76d65a3af0f99ac7",
+        "text_digest": "56ab6391b9829b7a",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Best Games",
+          "My Games0",
+          "Cook & Merge",
+          "+25%"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-8395859c0220a598": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Reload",
+        "Home",
+        "Surveys",
+        "Games",
+        "More"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Reload",
+        "Home",
+        "Surveys",
+        "Games",
+        "More"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Reload",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.8685185185185185,
+            "x": 0.06574074074074074,
+            "y": 0.53375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.90875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-8395859c0220a598",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Reload",
+          "Home",
+          "Surveys",
+          "Games",
+          "More"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "a18bfd9b9eeea7d9",
+        "text_digest": "8395859c0220a598",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Reload",
+          "Home",
+          "Surveys",
+          "Games"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-922cb7682477ba30": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Home",
+        "Surveys",
+        "Games",
+        "More"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Best Games",
+        "My Games0",
+        "Home",
+        "Surveys",
+        "Games",
+        "More"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Best Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.2222222222222222,
+            "x": 0.15462962962962962,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "My Games0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.2851851851851852,
+            "x": 0.5601851851851852,
+            "y": 0.23041666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.90875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-922cb7682477ba30",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Best Games",
+          "My Games0",
+          "Home",
+          "Surveys",
+          "Games",
+          "More"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "8aa9ba818713f753",
+        "text_digest": "922cb7682477ba30",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Best Games",
+          "My Games0",
+          "Home",
+          "Surveys"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-c3b80b40284fbb0d": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Five Surveys logo",
+        "English",
+        "The quickest way to earn $5",
+        "We pay out $100,000 + every day",
+        "cards",
+        "Log In or Sign Up",
+        "Email",
+        "Email is required",
+        "Continue",
+        "OR"
+      ],
+      "clickable_text": [
+        "English",
+        "Email",
+        "Continue"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "English",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04375,
+            "width": 0.2675925925925926,
+            "x": 0.7046296296296296,
+            "y": 0.05375
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Email",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.09166666666666666,
+            "x": 0.07592592592592592,
+            "y": 0.535
+          }
+        },
+        {
+          "class_name": "android.widget.EditText",
+          "clickable": true,
+          "component_type": "text_input",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.06291666666666666,
+            "width": 0.9148148148148149,
+            "x": 0.04259259259259259,
+            "y": 0.5166666666666667
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": true,
+          "label": "Continue",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.9148148148148149,
+            "x": 0.04259259259259259,
+            "y": 0.6220833333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05625,
+            "width": 0.44351851851851853,
+            "x": 0.04259259259259259,
+            "y": 0.71375
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-c3b80b40284fbb0d",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "English",
+          "Email",
+          "Continue"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "1ff42f29ecea0653",
+        "text_digest": "c3b80b40284fbb0d",
+        "top_visible_text": [
+          "Five Surveys",
+          "Five Surveys logo",
+          "English",
+          "The quickest way to earn $5",
+          "We pay out $100,000 + every day",
+          "cards",
+          "Log In or Sign Up",
+          "Email",
+          "Email is required",
+          "Continue"
+        ]
+      }
+    }
+  }
+}
