@@ -8,6 +8,7 @@ from agent_runner.cli import (
     _simplify_events,
     _state_snapshots,
     _tools_used,
+    build_parser,
 )
 from agent_runner.models import ActionRecord, RunContext, RunResult
 from agent_runner.config import APP_REGISTRY
@@ -207,3 +208,11 @@ def test_cli_formats_skill_write_tool_event() -> None:
     assert "tool=write_skill_file" in line
     assert "file=memory.md" in line
     assert "facebook/memory.md" in line
+
+
+def test_cli_parser_supports_tui_command() -> None:
+    parser = build_parser()
+
+    args = parser.parse_args(["tui"])
+
+    assert args.command == "tui"

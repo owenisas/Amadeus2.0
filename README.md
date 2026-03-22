@@ -14,6 +14,8 @@ Vision-first Android automation framework for emulator-driven app workflows.
    `python -m agent_runner run --app settings --goal "open network settings" --yolo`
 5. To use the local desktop dashboard instead of the terminal:
    `python -m agent_runner gui --open-browser`
+6. To use the continuous terminal UI with live tasks, jobs, and notification hooks:
+   `python -m agent_runner tui`
 
 ## Notes
 
@@ -22,6 +24,10 @@ Vision-first Android automation framework for emulator-driven app workflows.
 - Gemini uses `GEMINI_API_KEY` and `GEMINI_MODEL`.
 - LM Studio uses `LMSTUDIO_BASE_URL` and `LMSTUDIO_MODEL` and keeps Gemini available as an alternative provider.
 - The built-in GUI shows the registered apps, current device screen mirror, direct control buttons, task controls, and the live event/action trace for the running job.
+- The built-in TUI is optimized for continuous operator sessions. It shows active tasks, scheduled jobs, live tool/event logs, the latest state summary, and notification events from the phone.
+- Scheduled jobs are persisted under `runs/jobs/` and only execute while the TUI is open.
+- Cross-agent hook events are appended to `runs/hooks/events.jsonl`.
+- Phone notifications are sourced from the native Android notification listener and forwarded through `adb logcat`, not from polling app UIs.
 - If the configured model backend is unavailable, the runtime falls back to conservative local heuristics for development and testability.
 - For long-running work, use `task start` and `task resume` instead of a one-shot `run`. Tasks persist checkpoints across runs and enforce one unfinished task per device because the phone screen is not headless.
 - Amazon login is treated as a manual prerequisite.

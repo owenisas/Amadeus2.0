@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.amadeus.nativeagent.runtime.NativeAgentRuntime
 import com.amadeus.nativeagent.service.AndroidControlService
+import com.amadeus.nativeagent.service.AgentNotificationListenerService
 import com.amadeus.nativeagent.service.ScreenCaptureService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -43,6 +44,7 @@ class NativeAgentViewModel(application: Application) : AndroidViewModel(applicat
             projectionGranted = ScreenCaptureService.instance?.isProjectionReady() == true,
             overlayGranted = Settings.canDrawOverlays(context),
             accessibilityGranted = isAccessibilityEnabled(context),
+            notificationListenerGranted = isNotificationListenerEnabled(context),
         )
     }
 
@@ -52,6 +54,15 @@ class NativeAgentViewModel(application: Application) : AndroidViewModel(applicat
             Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES,
         ).orEmpty()
         val component = ComponentName(context, AndroidControlService::class.java).flattenToString()
+        return enabledServices.contains(component)
+    }
+
+    private fun isNotificationListenerEnabled(context: Context): Boolean {
+        val enabledServices = Settings.Secure.getString(
+            context.contentResolver,
+            "enabled_notification_listeners",
+        ).orEmpty()
+        val component = ComponentName(context, AgentNotificationListenerService::class.java).flattenToString()
         return enabledServices.contains(component)
     }
 }

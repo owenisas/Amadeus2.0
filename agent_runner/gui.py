@@ -18,6 +18,7 @@ from agent_runner.config import get_app_config, list_app_configs
 from agent_runner.models import RunContext, ScreenState, TaskRecord
 from agent_runner.orchestrator import Orchestrator
 from agent_runner.run_payload import build_run_payload
+from agent_runner.session_controller import SessionController, SessionJob
 from agent_runner.skill_manager import SkillManager
 from agent_runner.task_manager import TaskManager
 from agent_runner.utils import ensure_directory
@@ -388,6 +389,10 @@ class DashboardRuntime:
 
     def _active_model_name(self) -> str:
         return self.lmstudio_model if self.model_provider == "lmstudio" else self.gemini_model
+
+
+GuiJob = SessionJob
+DashboardRuntime = SessionController
 
 
 def serve_gui(runtime, *, host: str, port: int, open_browser: bool) -> None:

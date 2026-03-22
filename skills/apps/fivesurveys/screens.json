@@ -727,6 +727,412 @@
         ]
       }
     },
+    "com-fivesurveys-mobile-mainactivity-08b8d3c9f581e0da": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(92)",
+        "(21)"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (92) | Take Survey",
+        "5 | (21) | Take Survey",
+        "4.5 | (57) | Take Survey",
+        "4.5 | (110) | Take Survey",
+        "3.5 | (51) | Take Survey",
+        "4.5 | (14) | Take Survey",
+        "5 | (110)",
+        "4.5 | (17)"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0375,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.30375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (92) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (57) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.48125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "3.5 | (51) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (14) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (17)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Qualification | Just a few questions before the survey | Enter your birthday | 1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.9666666666666667,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.05648148148148148,
+            "x": 0.9009259259259259,
+            "y": 0.04708333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.EditText",
+          "clickable": true,
+          "component_type": "text_input",
+          "enabled": true,
+          "focused": false,
+          "label": "1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.051666666666666666,
+            "width": 0.8944444444444445,
+            "x": 0.05277777777777778,
+            "y": 0.19458333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "January",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.05555555555555555,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Day",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.5166666666666667,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Day | 1 | 2 | 3",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.2775,
+            "width": 0.8833333333333333,
+            "x": 0.058333333333333334,
+            "y": 0.31833333333333336
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "1",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03666666666666667,
+            "width": 0.08148148148148149,
+            "x": 0.11203703703703703,
+            "y": 0.3908333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "2",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03666666666666667,
+            "width": 0.08148148148148149,
+            "x": 0.22870370370370371,
+            "y": 0.3908333333333333
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-08b8d3c9f581e0da",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (92) | Take Survey",
+          "5 | (21) | Take Survey",
+          "4.5 | (57) | Take Survey",
+          "4.5 | (110) | Take Survey",
+          "3.5 | (51) | Take Survey",
+          "4.5 | (14) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "f47a24d37b2bdc66",
+        "text_digest": "08b8d3c9f581e0da",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "5",
+          "(110)",
+          "Take Survey",
+          "Start your first survey"
+        ]
+      }
+    },
     "com-fivesurveys-mobile-mainactivity-0943e1541c94862a": {
       "activity_name": ".MainActivity",
       "anchors": [
@@ -1062,6 +1468,275 @@
           "(110)",
           "Take Survey",
           "Start your first survey"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-0d1a6d7bf0a72e0d": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Take Survey",
+        "4",
+        "(53)",
+        "5",
+        "(110)",
+        "New"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "4 | (53) | Take Survey",
+        "5 | (110) | Take Survey",
+        "4 | (110) | Take Survey",
+        "New | Take Survey",
+        "5 | (86) | Take Survey",
+        "4 | (19) | Take Survey",
+        "4 | (74) | Take Survey",
+        "5 | (26) | Take Survey",
+        "4 | (20) | Take Survey"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.015833333333333335,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0033333333333333335,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (53) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.059583333333333335
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.059583333333333335
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (86) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (19) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (74) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (26) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (20) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.87875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-0d1a6d7bf0a72e0d",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Take Survey",
+          "4 | (53) | Take Survey",
+          "5 | (110) | Take Survey",
+          "4 | (110) | Take Survey",
+          "New | Take Survey",
+          "5 | (86) | Take Survey",
+          "4 | (19) | Take Survey",
+          "4 | (74) | Take Survey",
+          "5 | (26) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "cd4b6d27240c118f",
+        "text_digest": "0d1a6d7bf0a72e0d",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Take Survey",
+          "4",
+          "(53)",
+          "5"
         ]
       }
     },
@@ -1775,6 +2450,378 @@
         ]
       }
     },
+    "com-fivesurveys-mobile-mainactivity-16b1374c2ab472c7": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(92)",
+        "(21)"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (92) | Take Survey",
+        "5 | (21) | Take Survey",
+        "4.5 | (57) | Take Survey",
+        "4.5 | (110)",
+        "5 | (110)",
+        "Qualification | Just a few questions before the survey | Enter your birthday | 1990.0",
+        "1990.0",
+        "Select Month"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0375,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.30375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (92) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (57) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.48125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05125,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05125,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Qualification | Just a few questions before the survey | Enter your birthday | 1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.6158333333333333,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.05648148148148148,
+            "x": 0.9009259259259259,
+            "y": 0.04708333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.EditText",
+          "clickable": true,
+          "component_type": "text_input",
+          "enabled": true,
+          "focused": true,
+          "label": "1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.051666666666666666,
+            "width": 0.8944444444444445,
+            "x": 0.05277777777777778,
+            "y": 0.19458333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Month",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.05555555555555555,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Day",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.5166666666666667,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0925,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.5566666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0925,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.5566666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0925,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.5566666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0925,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.5566666666666666
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-16b1374c2ab472c7",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (92) | Take Survey",
+          "5 | (21) | Take Survey",
+          "4.5 | (57) | Take Survey",
+          "4.5 | (110)",
+          "5 | (110)",
+          "Qualification | Just a few questions before the survey | Enter your birthday | 1990.0"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "dc74fe0e53143c80",
+        "text_digest": "16b1374c2ab472c7",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "5",
+          "(110)",
+          "Take Survey",
+          "Start your first survey"
+        ]
+      }
+    },
     "com-fivesurveys-mobile-mainactivity-19779b8afa22d692": {
       "activity_name": ".MainActivity",
       "anchors": [
@@ -2346,6 +3393,699 @@
           "(110)",
           "Take Survey",
           "Start your first survey"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-1da1c6bd72b03f74": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(92)",
+        "(21)"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (92) | Take Survey",
+        "5 | (21) | Take Survey",
+        "4.5 | (57) | Take Survey",
+        "4.5 | (110) | Take Survey",
+        "3.5 | (51) | Take Survey",
+        "4.5 | (14) | Take Survey",
+        "5 | (110)",
+        "4.5 | (17)"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0375,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.30375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (92) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (57) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.48125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "3.5 | (51) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (14) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (17)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Qualification | Just a few questions before the survey | Enter your birthday | 1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.9666666666666667,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.05648148148148148,
+            "x": 0.9009259259259259,
+            "y": 0.04708333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.EditText",
+          "clickable": true,
+          "component_type": "text_input",
+          "enabled": true,
+          "focused": false,
+          "label": "1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.051666666666666666,
+            "width": 0.8944444444444445,
+            "x": 0.05277777777777778,
+            "y": 0.19458333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Month",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.05555555555555555,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Month | January | February | March",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.25916666666666666,
+            "width": 0.8833333333333333,
+            "x": 0.058333333333333334,
+            "y": 0.31833333333333336
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "January",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03916666666666667,
+            "width": 0.262037037037037,
+            "x": 0.09907407407407408,
+            "y": 0.39166666666666666
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "February",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03916666666666667,
+            "width": 0.26296296296296295,
+            "x": 0.3685185185185185,
+            "y": 0.39166666666666666
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "March",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.03916666666666667,
+            "width": 0.262037037037037,
+            "x": 0.6388888888888888,
+            "y": 0.39166666666666666
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-1da1c6bd72b03f74",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (92) | Take Survey",
+          "5 | (21) | Take Survey",
+          "4.5 | (57) | Take Survey",
+          "4.5 | (110) | Take Survey",
+          "3.5 | (51) | Take Survey",
+          "4.5 | (14) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "1c33fbb41c769128",
+        "text_digest": "1da1c6bd72b03f74",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "5",
+          "(110)",
+          "Take Survey",
+          "Start your first survey"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-1f21e4058581bdfb": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Take Survey",
+        "4",
+        "(53)",
+        "5",
+        "(110)",
+        "New"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "4 | (53) | Take Survey",
+        "5 | (110) | Take Survey",
+        "4 | (110) | Take Survey",
+        "New | Take Survey",
+        "5 | (86) | Take Survey",
+        "4 | (19) | Take Survey",
+        "5 | (45) | Take Survey",
+        "4 | (74) | Take Survey",
+        "4 | (28) | Take Survey",
+        "4 | (20) | Take Survey"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.015833333333333335,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0033333333333333335,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (53) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.059583333333333335
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.059583333333333335
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (86) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (19) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (45) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (74) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (28) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10625,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.7620833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (20) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.87875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-1f21e4058581bdfb",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Take Survey",
+          "4 | (53) | Take Survey",
+          "5 | (110) | Take Survey",
+          "4 | (110) | Take Survey",
+          "New | Take Survey",
+          "5 | (86) | Take Survey",
+          "4 | (19) | Take Survey",
+          "5 | (45) | Take Survey",
+          "4 | (74) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "a7193326b211154e",
+        "text_digest": "1f21e4058581bdfb",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Take Survey",
+          "4",
+          "(53)",
+          "5"
         ]
       }
     },
@@ -3264,6 +5004,665 @@
         "package_name": "com.fivesurveys.mobile",
         "screenshot_sha256": "e56a5c1580294a4b",
         "text_digest": "28de997d6363ade2",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "5",
+          "(110)",
+          "Take Survey",
+          "Start your first survey"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-2b26e2c26b98766c": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Take Survey",
+        "4",
+        "(110)",
+        "New",
+        "5",
+        "(86)"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "4 | (110) | Take Survey",
+        "New | Take Survey",
+        "5 | (86) | Take Survey",
+        "4 | (19) | Take Survey",
+        "5 | (45) | Take Survey",
+        "4 | (74) | Take Survey",
+        "4.5 | (21) | Take Survey",
+        "5 | (110) | Take Survey",
+        "4 | (28) | Take Survey",
+        "4 | (20) | Take Survey"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.015833333333333335,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0033333333333333335,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.059583333333333335
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.059583333333333335
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (86) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (19) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (45) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (74) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.41
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.41
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (28) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.64375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (20) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.87875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-2b26e2c26b98766c",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Take Survey",
+          "4 | (110) | Take Survey",
+          "New | Take Survey",
+          "5 | (86) | Take Survey",
+          "4 | (19) | Take Survey",
+          "5 | (45) | Take Survey",
+          "4 | (74) | Take Survey",
+          "4.5 | (21) | Take Survey",
+          "5 | (110) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "695425404488906c",
+        "text_digest": "2b26e2c26b98766c",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Take Survey",
+          "4",
+          "(110)",
+          "New"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-2bab2c27807488c2": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(92)",
+        "(21)"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (92) | Take Survey",
+        "5 | (21) | Take Survey",
+        "4.5 | (57) | Take Survey",
+        "4.5 | (110)",
+        "5 | (110)",
+        "Qualification | Just a few questions before the survey | Enter your birthday | 0.0",
+        "0.0",
+        "Select Month"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0375,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.30375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (92) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (57) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.48125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05125,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05125,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Qualification | Just a few questions before the survey | Enter your birthday | 0.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.6158333333333333,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.05648148148148148,
+            "x": 0.9009259259259259,
+            "y": 0.04708333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.EditText",
+          "clickable": true,
+          "component_type": "text_input",
+          "enabled": true,
+          "focused": true,
+          "label": "0.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.051666666666666666,
+            "width": 0.8944444444444445,
+            "x": 0.05277777777777778,
+            "y": 0.19458333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Month",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.05555555555555555,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Day",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.5166666666666667,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0925,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.5566666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0925,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.5566666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0925,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.5566666666666666
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0925,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.5566666666666666
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-2bab2c27807488c2",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (92) | Take Survey",
+          "5 | (21) | Take Survey",
+          "4.5 | (57) | Take Survey",
+          "4.5 | (110)",
+          "5 | (110)",
+          "Qualification | Just a few questions before the survey | Enter your birthday | 0.0"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "6aced8d8fe0dd193",
+        "text_digest": "2bab2c27807488c2",
         "top_visible_text": [
           "Five Surveys",
           "Current Balance",
@@ -5254,6 +7653,344 @@
         ]
       }
     },
+    "com-fivesurveys-mobile-mainactivity-508790abd026071b": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(92)",
+        "(21)"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (92) | Take Survey",
+        "5 | (21) | Take Survey",
+        "4.5 | (57) | Take Survey",
+        "4.5 | (110) | Take Survey",
+        "3.5 | (51) | Take Survey",
+        "4.5 | (14) | Take Survey",
+        "5 | (110)",
+        "4.5 | (17)"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0375,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.30375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (92) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (57) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.48125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "3.5 | (51) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (14) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (17)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.90875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-508790abd026071b",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (92) | Take Survey",
+          "5 | (21) | Take Survey",
+          "4.5 | (57) | Take Survey",
+          "4.5 | (110) | Take Survey",
+          "3.5 | (51) | Take Survey",
+          "4.5 | (14) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "dfe25268bf09ecfa",
+        "text_digest": "508790abd026071b",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "5",
+          "(110)",
+          "Take Survey",
+          "Start your first survey"
+        ]
+      }
+    },
     "com-fivesurveys-mobile-mainactivity-548a535c31a704f8": {
       "activity_name": ".MainActivity",
       "anchors": [
@@ -6876,6 +9613,378 @@
         ]
       }
     },
+    "com-fivesurveys-mobile-mainactivity-5f466708c90daed3": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Take Survey",
+        "4.5",
+        "(40)",
+        "4",
+        "(110)",
+        "New"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "4.5 | (40) | Take Survey",
+        "4 | (110) | Take Survey",
+        "New | Take Survey",
+        "5 | (86) | Take Survey",
+        "4 | (19) | Take Survey",
+        "5 | (45) | Take Survey",
+        "4 | (74) | Take Survey",
+        "4.5 | (21) | Take Survey",
+        "5 | (110) | Take Survey",
+        "4 | (28) | Take Survey"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.014583333333333334,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0033333333333333335,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (40) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.058333333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.058333333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (86) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (19) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (45) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.41
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (74) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.41
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (28) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.7608333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (20) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.87875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.9095833333333333
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-5f466708c90daed3",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Take Survey",
+          "4.5 | (40) | Take Survey",
+          "4 | (110) | Take Survey",
+          "New | Take Survey",
+          "5 | (86) | Take Survey",
+          "4 | (19) | Take Survey",
+          "5 | (45) | Take Survey",
+          "4 | (74) | Take Survey",
+          "4.5 | (21) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "5a62546ecf7b05e7",
+        "text_digest": "5f466708c90daed3",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Take Survey",
+          "4.5",
+          "(40)",
+          "4"
+        ]
+      }
+    },
     "com-fivesurveys-mobile-mainactivity-6206d06f6ecd5f3c": {
       "activity_name": ".MainActivity",
       "anchors": [
@@ -7634,6 +10743,293 @@
           "My Games0",
           "Animals & Coins",
           "+25%"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-6607dee8420e5f1e": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Take Survey",
+        "4",
+        "(53)",
+        "5",
+        "(110)",
+        "4.5"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "4 | (53) | Take Survey",
+        "5 | (110) | Take Survey",
+        "4.5 | (31) | Take Survey",
+        "4 | (110) | Take Survey",
+        "New | Take Survey",
+        "5 | (86) | Take Survey",
+        "4 | (28) | Take Survey",
+        "4 | (76) | Take Survey",
+        "4 | (74) | Take Survey",
+        "5 | (26) | Take Survey"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.049166666666666664,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.049166666666666664
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.015833333333333335,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0033333333333333335,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (53) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.059583333333333335
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.059583333333333335
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (31) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (86) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (28) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.41
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (76) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (74) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (26) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.645
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-6607dee8420e5f1e",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Take Survey",
+          "4 | (53) | Take Survey",
+          "5 | (110) | Take Survey",
+          "4.5 | (31) | Take Survey",
+          "4 | (110) | Take Survey",
+          "New | Take Survey",
+          "5 | (86) | Take Survey",
+          "4 | (28) | Take Survey",
+          "4 | (76) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "2fbe0113a767d823",
+        "text_digest": "6607dee8420e5f1e",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Take Survey",
+          "4",
+          "(53)",
+          "5"
         ]
       }
     },
@@ -9126,6 +12522,361 @@
           "Home",
           "Surveys",
           "Games"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-849bd4886c8adf3a": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Take Survey",
+        "4.5",
+        "(40)",
+        "4",
+        "(53)",
+        "5"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "4.5 | (40) | Take Survey",
+        "4 | (53) | Take Survey",
+        "5 | (110) | Take Survey",
+        "4 | (110) | Take Survey",
+        "New | Take Survey",
+        "5 | (86) | Take Survey",
+        "4 | (19) | Take Survey",
+        "5 | (45) | Take Survey",
+        "4 | (74) | Take Survey",
+        "4 | (28) | Take Survey"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.014583333333333334,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0033333333333333335,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (40) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.058333333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (53) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.058333333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (86) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (19) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.41
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (45) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (74) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.64375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (28) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.87875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.9095833333333333
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-849bd4886c8adf3a",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Take Survey",
+          "4.5 | (40) | Take Survey",
+          "4 | (53) | Take Survey",
+          "5 | (110) | Take Survey",
+          "4 | (110) | Take Survey",
+          "New | Take Survey",
+          "5 | (86) | Take Survey",
+          "4 | (19) | Take Survey",
+          "5 | (45) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "58072808efe5e1e3",
+        "text_digest": "849bd4886c8adf3a",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Take Survey",
+          "4.5",
+          "(40)",
+          "4"
         ]
       }
     },
@@ -11249,6 +15000,344 @@
         ]
       }
     },
+    "com-fivesurveys-mobile-mainactivity-abdd388fdd6ebeb8": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Take Survey",
+        "4.5",
+        "(40)",
+        "4",
+        "(53)",
+        "5"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "4.5 | (40) | Take Survey",
+        "4 | (53) | Take Survey",
+        "5 | (110) | Take Survey",
+        "4 | (110) | Take Survey",
+        "New | Take Survey",
+        "5 | (86) | Take Survey",
+        "4 | (74) | Take Survey",
+        "5 | (26) | Take Survey",
+        "4 | (20) | Take Survey",
+        "Home"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.014583333333333334,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0033333333333333335,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (40) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.058333333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (53) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.058333333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (86) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (74) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (26) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (20) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.1075,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.7608333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.9095833333333333
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-abdd388fdd6ebeb8",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Take Survey",
+          "4.5 | (40) | Take Survey",
+          "4 | (53) | Take Survey",
+          "5 | (110) | Take Survey",
+          "4 | (110) | Take Survey",
+          "New | Take Survey",
+          "5 | (86) | Take Survey",
+          "4 | (74) | Take Survey",
+          "5 | (26) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "28b8b9123c19bb11",
+        "text_digest": "abdd388fdd6ebeb8",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Take Survey",
+          "4.5",
+          "(40)",
+          "4"
+        ]
+      }
+    },
     "com-fivesurveys-mobile-mainactivity-b01f91efb9783add": {
       "activity_name": ".MainActivity",
       "anchors": [
@@ -13041,6 +17130,412 @@
         ]
       }
     },
+    "com-fivesurveys-mobile-mainactivity-bd099dce4c7a625b": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(92)",
+        "(21)"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (92) | Take Survey",
+        "5 | (21) | Take Survey",
+        "4.5 | (57) | Take Survey",
+        "4.5 | (110) | Take Survey",
+        "3.5 | (51) | Take Survey",
+        "4.5 | (14) | Take Survey",
+        "5 | (110)",
+        "4.5 | (17)"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0375,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.30375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (92) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (57) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.48125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "3.5 | (51) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (14) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (17)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Qualification | Just a few questions before the survey | Enter your birthday | 1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.9666666666666667,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.05648148148148148,
+            "x": 0.9009259259259259,
+            "y": 0.04708333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.EditText",
+          "clickable": true,
+          "component_type": "text_input",
+          "enabled": true,
+          "focused": false,
+          "label": "1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.051666666666666666,
+            "width": 0.8944444444444445,
+            "x": 0.05277777777777778,
+            "y": 0.19458333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "January",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.05555555555555555,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "15",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.5166666666666667,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.90875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-bd099dce4c7a625b",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (92) | Take Survey",
+          "5 | (21) | Take Survey",
+          "4.5 | (57) | Take Survey",
+          "4.5 | (110) | Take Survey",
+          "3.5 | (51) | Take Survey",
+          "4.5 | (14) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "b13d3ba8e594a205",
+        "text_digest": "bd099dce4c7a625b",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "5",
+          "(110)",
+          "Take Survey",
+          "Start your first survey"
+        ]
+      }
+    },
     "com-fivesurveys-mobile-mainactivity-bdf4990949d8674f": {
       "activity_name": ".MainActivity",
       "anchors": [
@@ -13734,6 +18229,51 @@
         ]
       }
     },
+    "com-fivesurveys-mobile-mainactivity-c31f727f62c878e3": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Claim Reward"
+      ],
+      "clickable_text": [
+        "Claim Reward"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-c31f727f62c878e3",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "b73ff6da2723334e",
+        "text_digest": "c31f727f62c878e3",
+        "top_visible_text": [
+          "Five Surveys",
+          "Claim Reward"
+        ]
+      }
+    },
     "com-fivesurveys-mobile-mainactivity-c3b80b40284fbb0d": {
       "activity_name": ".MainActivity",
       "anchors": [
@@ -14271,6 +18811,361 @@
           "Qualification",
           "Just a few questions before the survey",
           "Which languages do you speak?"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-c81d0568ab289152": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Take Survey",
+        "4.5",
+        "(40)",
+        "5",
+        "(110)",
+        "4"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "4.5 | (40) | Take Survey",
+        "5 | (110) | Take Survey",
+        "4 | (110) | Take Survey",
+        "New | Take Survey",
+        "5 | (86) | Take Survey",
+        "4 | (19) | Take Survey",
+        "5 | (45) | Take Survey",
+        "4 | (74) | Take Survey",
+        "4.5 | (21) | Take Survey",
+        "4 | (28) | Take Survey"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.050416666666666665,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.014583333333333334,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0033333333333333335,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (40) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.058333333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.058333333333333334
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "New | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.17625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (86) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (19) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.29333333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (45) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (74) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.5270833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.64375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4 | (28) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.87875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.9095833333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "More",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09041666666666667,
+            "width": 0.2518518518518518,
+            "x": 0.7481481481481481,
+            "y": 0.9095833333333333
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-c81d0568ab289152",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "Take Survey",
+          "4.5 | (40) | Take Survey",
+          "5 | (110) | Take Survey",
+          "4 | (110) | Take Survey",
+          "New | Take Survey",
+          "5 | (86) | Take Survey",
+          "4 | (19) | Take Survey",
+          "5 | (45) | Take Survey",
+          "4 | (74) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "d7252aad44989679",
+        "text_digest": "c81d0568ab289152",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "Take Survey",
+          "4.5",
+          "(40)",
+          "5"
         ]
       }
     },
@@ -16811,6 +21706,412 @@
         "package_name": "com.fivesurveys.mobile",
         "screenshot_sha256": "63d494ad9bc5752a",
         "text_digest": "e48b55851ed7e1e0",
+        "top_visible_text": [
+          "Five Surveys",
+          "Current Balance",
+          "$ 0.00 USD",
+          "Claim Reward",
+          "Complete 5 surveys and get $ 5.00 USD",
+          "$ 5.00 USD",
+          "5",
+          "(110)",
+          "Take Survey",
+          "Start your first survey"
+        ]
+      }
+    },
+    "com-fivesurveys-mobile-mainactivity-e723370b019d6681": {
+      "activity_name": ".MainActivity",
+      "anchors": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(92)",
+        "(21)"
+      ],
+      "clickable_text": [
+        "Claim Reward",
+        "5 | (110) | Take Survey | Start your first survey",
+        "Take Survey",
+        "5 | (110) | Take Survey",
+        "5 | (92) | Take Survey",
+        "5 | (21) | Take Survey",
+        "4.5 | (57) | Take Survey",
+        "4.5 | (110) | Take Survey",
+        "3.5 | (51) | Take Survey",
+        "4.5 | (14) | Take Survey",
+        "5 | (110)",
+        "4.5 | (17)"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Claim Reward",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.04958333333333333,
+            "width": 0.3055555555555556,
+            "x": 0.6666666666666666,
+            "y": 0.04791666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey | Start your first survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0375,
+            "width": 0.37222222222222223,
+            "x": 0.09351851851851851,
+            "y": 0.30375
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.24625
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (92) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (21) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.3641666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (57) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.48125
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (110) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10666666666666667,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.5979166666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "3.5 | (51) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (14) | Take Survey",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.10791666666666666,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.8316666666666667
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "5 | (110)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.0712962962962963,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "4.5 | (17)",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05,
+            "width": 0.41759259259259257,
+            "x": 0.5111111111111111,
+            "y": 0.95
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Qualification | Just a few questions before the survey | Enter your birthday | 1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.9666666666666667,
+            "width": 1.0,
+            "x": 0.0,
+            "y": 0.03333333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.0275,
+            "width": 0.05648148148148148,
+            "x": 0.9009259259259259,
+            "y": 0.04708333333333333
+          }
+        },
+        {
+          "class_name": "android.widget.EditText",
+          "clickable": true,
+          "component_type": "text_input",
+          "enabled": true,
+          "focused": false,
+          "label": "1990.0",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.051666666666666666,
+            "width": 0.8944444444444445,
+            "x": 0.05277777777777778,
+            "y": 0.19458333333333333
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "January",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.05555555555555555,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Select Day",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.05291666666666667,
+            "width": 0.42777777777777776,
+            "x": 0.5166666666666667,
+            "y": 0.26
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Home",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.0,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Surveys",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.2490740740740741,
+            "y": 0.90875
+          }
+        },
+        {
+          "class_name": "android.view.View",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Games",
+          "package_name": "com.fivesurveys.mobile",
+          "resource_id": "",
+          "search_related": false,
+          "target_box": {
+            "height": 0.09125,
+            "width": 0.2518518518518518,
+            "x": 0.49907407407407406,
+            "y": 0.90875
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-e723370b019d6681",
+      "signature": {
+        "activity_name": ".MainActivity",
+        "clickable_text": [
+          "Claim Reward",
+          "5 | (110) | Take Survey | Start your first survey",
+          "Take Survey",
+          "5 | (110) | Take Survey",
+          "5 | (92) | Take Survey",
+          "5 | (21) | Take Survey",
+          "4.5 | (57) | Take Survey",
+          "4.5 | (110) | Take Survey",
+          "3.5 | (51) | Take Survey",
+          "4.5 | (14) | Take Survey"
+        ],
+        "package_name": "com.fivesurveys.mobile",
+        "screenshot_sha256": "c63db2e99ee10a77",
+        "text_digest": "e723370b019d6681",
         "top_visible_text": [
           "Five Surveys",
           "Current Balance",

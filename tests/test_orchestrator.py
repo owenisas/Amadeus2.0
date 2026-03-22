@@ -195,6 +195,90 @@ def test_orchestrator_yolo_mode_skips_interactive_approval(tmp_path: Path) -> No
     assert "yolo mode enabled" in result.notice.casefold()
 
 
+class StableSettingsAdapter:
+    def __init__(self) -> None:
+        self.device_serial = "emulator-5554"
+        self.closed = False
+
+    @contextmanager
+    def session_lock(self):
+        yield
+
+    def close(self) -> None:
+        self.closed = True
+
+    def is_package_installed(self, package_name: str) -> bool:
+        return True
+
+    def launch_app(self, package_name: str, activity: str | None) -> None:
+        return None
+
+    def capture_state(self, run_dir: Path):
+        device = DeviceInfo(
+            serial="emulator-5554",
+            width=1080,
+            height=2400,
+            density=420,
+            orientation="portrait",
+            package_name="com.android.settings",
+            activity_name=".Settings",
+        )
+        return ScreenState(
+            screenshot_path=run_dir / "fake.png",
+            hierarchy_path=run_dir / "fake.xml",
+            screenshot_sha256="abc",
+            xml_source="<hierarchy />",
+            visible_text=["Settings", "Network & internet"],
+            clickable_text=["Network & internet"],
+            package_name=device.package_name,
+            activity_name=device.activity_name,
+            device=device,
+            components=[],
+        )
+
+
+class MalformedTapVisionAgent:
+    def decide(self, **kwargs):
+        return VisionDecision.tool(
+            tool_name="tap",
+            tool_arguments={"target_box": {"x": 0.5, "y": 0.5}},
+            reason="Tap the row.",
+            confidence=0.2,
+        )
+
+
+class ExplodingToolExecutor:
+    def list_tools(self):
+        return []
+
+    def execute(self, **kwargs):
+        raise ValueError("tap requires target_box.")
+
+
+def test_orchestrator_blocks_when_tool_executor_validation_fails(tmp_path: Path) -> None:
+    adapter = StableSettingsAdapter()
+    skill_manager = SkillManager(tmp_path / "skills")
+    orchestrator = Orchestrator(
+        android_adapter=adapter,
+        tool_executor=ExplodingToolExecutor(),
+        vision_agent=MalformedTapVisionAgent(),
+        skill_manager=skill_manager,
+        runs_dir=tmp_path / "runs",
+    )
+    context = RunContext(
+        app=APP_REGISTRY["settings"],
+        goal="open settings",
+        run_dir=tmp_path / "runs",
+        exploration_enabled=True,
+        max_steps=1,
+    )
+
+    result = orchestrator.run(context)
+
+    assert result.status == "blocked"
+    assert "target_box" in result.reason
+
+
 def test_orchestrator_resumes_after_user_approval(tmp_path: Path) -> None:
     """When the user approves a popup, the orchestrator should continue the run rather than stopping."""
     adapter = PopupAdapter()

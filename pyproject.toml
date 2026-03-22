@@ -10,7 +10,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "Appium-Python-Client>=4.0.0",
+  "croniter>=2.0.5",
   "selenium>=4.24.0",
+  "textual>=0.84.0",
 ]
 
 [project.optional-dependencies]

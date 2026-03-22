@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from agent_runner.models import AppConfig, SafetyVerdict, ScreenState, VisionDecision
+from agent_runner.models import AppConfig, BoundingBox, SafetyVerdict, ScreenState, VisionDecision
 
 
 DEFAULT_BLOCKED_TOKENS = [
@@ -80,8 +80,10 @@ def evaluate_decision(
         tool_name = (decision.tool_name or "").casefold()
         if tool_name not in KNOWN_TOOL_ACTIONS:
             return SafetyVerdict(False, f"Unknown tool action '{decision.tool_name}'.")
-        if tool_name == "tap" and not isinstance(decision.tool_arguments.get("target_box"), dict):
-            return SafetyVerdict(False, "Tool tap actions require tool_arguments.target_box.")
+        if tool_name == "tap":
+            tool_box = BoundingBox.from_dict(decision.tool_arguments.get("target_box"))
+            if tool_box is None:
+                return SafetyVerdict(False, "Tool tap actions require a valid tool_arguments.target_box.")
         if tool_name == "type" and not (
             decision.tool_arguments.get("text") or decision.tool_arguments.get("input_text")
         ):

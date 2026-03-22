@@ -450,3 +450,30 @@ def test_tool_tap_requires_target_box_argument() -> None:
 
     assert verdict.allowed is False
     assert "target_box" in verdict.reason
+
+
+def test_tool_tap_requires_valid_target_box_shape() -> None:
+    app = AppConfig(
+        name="settings",
+        package_name="com.android.settings",
+        launch_activity=None,
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=[],
+        high_risk_signatures=[],
+        manual_login_tokens=[],
+        default_goal_hint="inspect settings",
+    )
+
+    verdict = evaluate_decision(
+        app,
+        make_state(visible_text=["Settings"]),
+        VisionDecision.tool(
+            tool_name="tap",
+            tool_arguments={"target_box": {"x": 0.5, "y": 0.5}},
+            reason="Tap the settings row.",
+            confidence=0.0,
+        ),
+    )
+
+    assert verdict.allowed is False
+    assert "valid" in verdict.reason.casefold()

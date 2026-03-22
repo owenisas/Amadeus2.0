@@ -336,3 +336,61 @@ class TaskRecord:
             completion_criteria=list(payload.get("completion_criteria", [])),
             checkpoints=list(payload.get("checkpoints", [])),
         )
+
+
+@dataclass(slots=True)
+class JobRecord:
+    job_id: str
+    name: str
+    device_serial: str
+    app_name: str
+    goal: str
+    cron: str
+    yolo_mode: bool
+    step_budget: int
+    enabled: bool
+    created_at: str
+    updated_at: str
+    last_run_at: str | None = None
+    next_run_at: str | None = None
+    last_result_status: str | None = None
+    last_result_reason: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "job_id": self.job_id,
+            "name": self.name,
+            "device_serial": self.device_serial,
+            "app_name": self.app_name,
+            "goal": self.goal,
+            "cron": self.cron,
+            "yolo_mode": self.yolo_mode,
+            "step_budget": self.step_budget,
+            "enabled": self.enabled,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "last_run_at": self.last_run_at,
+            "next_run_at": self.next_run_at,
+            "last_result_status": self.last_result_status,
+            "last_result_reason": self.last_result_reason,
+        }
+
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "JobRecord":
+        return cls(
+            job_id=str(payload["job_id"]),
+            name=str(payload["name"]),
+            device_serial=str(payload["device_serial"]),
+            app_name=str(payload["app_name"]),
+            goal=str(payload["goal"]),
+            cron=str(payload["cron"]),
+            yolo_mode=bool(payload.get("yolo_mode", False)),
+            step_budget=int(payload.get("step_budget", 12)),
+            enabled=bool(payload.get("enabled", True)),
+            created_at=str(payload["created_at"]),
+            updated_at=str(payload["updated_at"]),
+            last_run_at=payload.get("last_run_at"),
+            next_run_at=payload.get("next_run_at"),
+            last_result_status=payload.get("last_result_status"),
+            last_result_reason=payload.get("last_result_reason"),
+        )

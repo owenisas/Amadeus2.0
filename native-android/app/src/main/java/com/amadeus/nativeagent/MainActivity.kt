@@ -117,6 +117,9 @@ private fun NativeAgentApp(viewModel: NativeAgentViewModel) {
                     val manager = context.getSystemService(android.media.projection.MediaProjectionManager::class.java)
                     projectionLauncher.launch(manager.createScreenCaptureIntent())
                 },
+                onRequestNotificationAccess = {
+                    context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                },
             )
 
             1 -> RunComposerScreen(
@@ -154,6 +157,7 @@ private fun HomeScreen(
     onRequestAccessibility: () -> Unit,
     onRequestOverlay: () -> Unit,
     onRequestProjection: () -> Unit,
+    onRequestNotificationAccess: () -> Unit,
 ) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
@@ -164,11 +168,15 @@ private fun HomeScreen(
                     Text("Accessibility: ${if (snapshot.accessibilityGranted) "ready" else "missing"}")
                     Text("Overlay: ${if (snapshot.overlayGranted) "ready" else "missing"}")
                     Text("Screen capture: ${if (snapshot.projectionGranted) "ready" else "missing"}")
+                    Text("Notification listener: ${if (snapshot.notificationListenerGranted) "ready" else "missing"}")
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Button(onClick = onRequestAccessibility) { Text("Accessibility settings") }
                         Button(onClick = onRequestOverlay) { Text("Overlay permission") }
                     }
-                    Button(onClick = onRequestProjection) { Text("Grant screen capture") }
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(onClick = onRequestProjection) { Text("Grant screen capture") }
+                        Button(onClick = onRequestNotificationAccess) { Text("Notification access") }
+                    }
                 }
             }
         }

@@ -326,14 +326,43 @@ class Orchestrator:
                         )
 
                     if decision.next_action == "tool":
-                        tool_result = self.tool_executor.execute(
-                            tool_name=decision.tool_name or "",
-                            arguments=decision.tool_arguments,
-                            run_dir=run_dir,
-                            current_state=state,
-                            app=context.app,
-                            skill=bundle,
-                        )
+                        try:
+                            tool_result = self.tool_executor.execute(
+                                tool_name=decision.tool_name or "",
+                                arguments=decision.tool_arguments,
+                                run_dir=run_dir,
+                                current_state=state,
+                                app=context.app,
+                                skill=bundle,
+                            )
+                        except ValueError as exc:
+                            action_record.allowed = False
+                            action_record.reason = str(exc)
+                            context.action_history.append(action_record)
+                            self._emit_event(
+                                "action_blocked",
+                                {
+                                    "step": step,
+                                    "decision": decision.to_dict(),
+                                    "reason": str(exc),
+                                },
+                            )
+                            self.skill_manager.update_run_state(
+                                bundle,
+                                status="blocked",
+                                reason=str(exc),
+                                last_screen_id=last_screen_id,
+                                action_history=[item.to_dict() for item in context.action_history],
+                                failure_count=failure_count,
+                            )
+                            return RunResult(
+                                status="blocked",
+                                reason=str(exc),
+                                steps=step,
+                                run_dir=run_dir,
+                                last_state=state,
+                                notice=notice,
+                            )
                         action_record.tool_output = tool_result.output
                         context.action_history.append(action_record)
                         self._emit_event(

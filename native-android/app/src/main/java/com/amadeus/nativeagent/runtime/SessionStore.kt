@@ -15,12 +15,14 @@ class SessionStore {
         projectionGranted: Boolean,
         overlayGranted: Boolean,
         accessibilityGranted: Boolean,
+        notificationListenerGranted: Boolean,
     ) {
         state.update {
             it.copy(
                 projectionGranted = projectionGranted,
                 overlayGranted = overlayGranted,
                 accessibilityGranted = accessibilityGranted,
+                notificationListenerGranted = notificationListenerGranted,
             )
         }
     }

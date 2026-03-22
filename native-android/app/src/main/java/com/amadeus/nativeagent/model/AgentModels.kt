@@ -212,6 +212,21 @@ data class AutomationScript(
 )
 
 @Serializable
+data class NotificationEvent(
+    val eventType: String,
+    val postedAt: Long,
+    val packageName: String,
+    val appLabel: String? = null,
+    val title: String? = null,
+    val text: String? = null,
+    val subtext: String? = null,
+    val category: String? = null,
+    val conversation: String? = null,
+    val key: String,
+    val isOngoing: Boolean = false,
+)
+
+@Serializable
 data class RuntimeSnapshot(
     val currentRun: RunRecord? = null,
     val runHistory: List<RunRecord> = emptyList(),
@@ -220,6 +235,7 @@ data class RuntimeSnapshot(
     val projectionGranted: Boolean = false,
     val overlayGranted: Boolean = false,
     val accessibilityGranted: Boolean = false,
+    val notificationListenerGranted: Boolean = false,
     val debugLines: List<String> = emptyList(),
 )
 

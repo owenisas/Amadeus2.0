@@ -1,41 +1,23 @@
 {
   "failure_count": 0,
-  "last_detected_inputs": [
-    {
-      "class_name": "android.widget.EditText",
-      "clickable": true,
-      "component_type": "text_input",
-      "enabled": true,
-      "focused": true,
-      "label": "0.0",
-      "package_name": "com.fivesurveys.mobile",
-      "resource_id": "",
-      "search_related": false,
-      "target_box": {
-        "height": 0.051666666666666666,
-        "width": 0.8944444444444445,
-        "x": 0.05277777777777778,
-        "y": 0.19458333333333333
-      }
-    }
-  ],
+  "last_detected_inputs": [],
   "last_screen_signature": {
     "activity_name": ".MainActivity",
     "clickable_text": [
       "Claim Reward",
-      "5 | (110) | Take Survey | Start your first survey",
       "Take Survey",
-      "5 | (92) | Take Survey",
+      "4 | (110) | Take Survey",
       "New | Take Survey",
-      "5 | (110) | Take Survey",
-      "5 | (21) | Take Survey",
-      "5 | (110)",
-      "4.5 | (110)",
-      "Qualification | Just a few questions before the survey | Enter your birthday | 0.0"
+      "5 | (86) | Take Survey",
+      "4 | (19) | Take Survey",
+      "5 | (45) | Take Survey",
+      "4 | (74) | Take Survey",
+      "4.5 | (21) | Take Survey",
+      "5 | (110) | Take Survey"
     ],
     "package_name": "com.fivesurveys.mobile",
-    "screenshot_sha256": "cbeea949efa9f834",
-    "text_digest": "0ee47b1be60d9b2d",
+    "screenshot_sha256": "81c02046f455fc7b",
+    "text_digest": "2b26e2c26b98766c",
     "top_visible_text": [
       "Five Surveys",
       "Current Balance",
@@ -43,100 +25,17 @@
       "Claim Reward",
       "Complete 5 surveys and get $ 5.00 USD",
       "$ 5.00 USD",
-      "5",
-      "(110)",
       "Take Survey",
-      "Start your first survey"
+      "4",
+      "(110)",
+      "New"
     ]
   },
-  "last_successful_screen": "com-fivesurveys-mobile-mainactivity-0ee47b1be60d9b2d",
-  "last_working_action_chain": [
-    {
-      "action": "tool",
-      "activity_name": ".MainActivity",
-      "allowed": true,
-      "package_name": "com.fivesurveys.mobile",
-      "reason": "Decision passed local safety checks.",
-      "step": 1,
-      "target_box": {
-        "height": 0.06,
-        "width": 0.25,
-        "x": 0.375,
-        "y": 0.94
-      },
-      "target_label": null,
-      "tool_arguments": {
-        "target_box": {
-          "height": 0.06,
-          "width": 0.25,
-          "x": 0.375,
-          "y": 0.94
-        }
-      },
-      "tool_name": "tap",
-      "tool_output": {
-        "target_box": {
-          "height": 0.06,
-          "width": 0.25,
-          "x": 0.375,
-          "y": 0.94
-        },
-        "target_label": null
-      }
-    },
-    {
-      "action": "tool",
-      "activity_name": ".MainActivity",
-      "allowed": true,
-      "package_name": "com.fivesurveys.mobile",
-      "reason": "Decision passed local safety checks.",
-      "step": 2,
-      "target_box": {
-        "height": 0.06,
-        "width": 0.4,
-        "x": 0.28,
-        "y": 0.315
-      },
-      "target_label": null,
-      "tool_arguments": {
-        "target_box": {
-          "height": 0.06,
-          "width": 0.4,
-          "x": 0.28,
-          "y": 0.315
-        }
-      },
-      "tool_name": "tap",
-      "tool_output": {
-        "target_box": {
-          "height": 0.06,
-          "width": 0.4,
-          "x": 0.28,
-          "y": 0.315
-        },
-        "target_label": null
-      }
-    },
-    {
-      "action": "tool",
-      "activity_name": ".MainActivity",
-      "allowed": false,
-      "package_name": "com.fivesurveys.mobile",
-      "reason": "Blocked by risk token 'submit'.",
-      "step": 3,
-      "target_box": null,
-      "target_label": null,
-      "tool_arguments": {
-        "input_text": "1985",
-        "submit_after_input": false
-      },
-      "tool_name": "type",
-      "tool_output": null
-    }
-  ],
-  "reason": "Blocked by risk token 'submit'.",
+  "last_successful_screen": null,
+  "last_working_action_chain": [],
+  "reason": "App is not installed on the emulator.",
   "screen_transition_confidence": 1.0,
   "scripts": [],
-  "status": "blocked",
+  "status": "error",
   "transitions": []
 }

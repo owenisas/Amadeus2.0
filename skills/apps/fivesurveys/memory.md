@@ -4,9 +4,6 @@
 
 <!-- older entries pruned -->
 
-- Status: error
-- Reason: App is not installed on the emulator.
-
 - Status: blocked
 - Reason: Tap actions require a target_box.
 - Last screen: com-fivesurveys-mobile-mainactivity-8395859c0220a598
@@ -79,3 +76,6 @@
 - Status: blocked
 - Reason: Blocked by risk token 'submit'.
 - Last screen: com-fivesurveys-mobile-mainactivity-0ee47b1be60d9b2d
+
+- Status: error
+- Reason: App is not installed on the emulator.

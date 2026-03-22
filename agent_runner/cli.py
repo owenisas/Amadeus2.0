@@ -65,6 +65,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Open the dashboard in the default browser after the server starts.",
     )
 
+    subparsers.add_parser("tui", help="Start the terminal UI for continuous sessions, jobs, and notifications.")
+
     task_parser = subparsers.add_parser("task", help="Manage persistent multi-run tasks.")
     task_subparsers = task_parser.add_subparsers(dest="task_command", required=True)
 
@@ -263,6 +265,12 @@ def main(argv: list[str] | None = None) -> int:
         from agent_runner.gui import serve_gui
 
         serve_gui(runtime, host=args.host, port=args.port, open_browser=args.open_browser)
+        return 0
+
+    if args.command == "tui":
+        from agent_runner.tui import serve_tui
+
+        serve_tui(runtime)
         return 0
 
     adapter = AndroidAdapter(
