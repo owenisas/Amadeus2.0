@@ -2574,6 +2574,1758 @@
         "x": 0.7962962962962963,
         "y": 0.04958333333333333
       }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "Tarotlouisa's story, Unseen"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Seller-message goals should enter Marketplace first before opening any message thread.",
+      "screen_id": "com-facebook-katana-loginactivity-8d04e23de0d3661f",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "Tarotlouisa's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-8d04e23de0d3661f",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "Tarotlouisa's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-8d04e23de0d3661f",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "You're One Click Away From Confirming canadaowenisas123@gmail.com",
+        "Adding an email to your account can help you reset your password easily and receive email notifications. It also helps us suggest friends and provide and improve ads for you and others, and offer a better service. Learn more.",
+        "Confirm Email",
+        "Add Another Email",
+        "Close",
+        "Go to profile"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-3dc45e02f6673e0d",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "You're One Click Away From Confirming canadaowenisas123@gmail.com",
+        "Adding an email to your account can help you reset your password easily and receive email notifications. It also helps us suggest friends and provide and improve ads for you and others, and offer a better service. Learn more.",
+        "Confirm Email",
+        "Add Another Email",
+        "Close",
+        "Go to profile"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-3dc45e02f6673e0d",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "You're One Click Away From Confirming canadaowenisas123@gmail.com",
+        "Adding an email to your account can help you reset your password easily and receive email notifications. It also helps us suggest friends and provide and improve ads for you and others, and offer a better service. Learn more.",
+        "Confirm Email",
+        "Add Another Email",
+        "Close",
+        "Go to profile"
+      ],
+      "label": "Messaging",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping the Messaging icon in the top right corner to open Facebook messages and check for Marketplace replies.",
+      "screen_id": "com-facebook-katana-loginactivity-3dc45e02f6673e0d",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.8777777777777778,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaginginblue.inbox.activities.InboxActivity",
+      "anchor_text": [
+        "Back",
+        "Chats",
+        "Settings",
+        "New message",
+        "Search field",
+        "Meta AI"
+      ],
+      "component_type": "search_action",
+      "label": "Search field",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-com-facebook-messaginginblue-inbox-activities-inboxactivity-4d72e99b34c25e2d",
+      "search_related": true,
+      "target_box": {
+        "height": 0.04125,
+        "width": 0.8564814814814815,
+        "x": 0.030555555555555555,
+        "y": 0.10208333333333333
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaginginblue.inbox.activities.InboxActivity",
+      "anchor_text": [
+        "Back",
+        "Chats",
+        "Settings",
+        "New message",
+        "Search field",
+        "Meta AI"
+      ],
+      "label": "Marketplace, Unread, 1 new message",
+      "package_name": "com.facebook.katana",
+      "reason": "Open the most relevant Marketplace message thread from the inbox using the saved backup context.",
+      "screen_id": "com-facebook-katana-com-facebook-messaginginblue-inbox-activities-inboxactivity-4d72e99b34c25e2d",
+      "target_box": {
+        "height": 0.08708333333333333,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.54
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Marketplace Seller Inbox",
+        "Selling",
+        "Marketplace Buyer Inbox",
+        "Buying",
+        "All",
+        "Pending Offers"
+      ],
+      "label": "Accepted Offers",
+      "package_name": "com.facebook.katana",
+      "reason": "YOLO mode auto-continued through an approval surface.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-6b01ce977f80d996",
+      "target_box": {
+        "height": 0.04125,
+        "width": 0.37037037037037035,
+        "x": 0.5370370370370371,
+        "y": 0.17541666666666667
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Marketplace Seller Inbox",
+        "Selling",
+        "Marketplace Buyer Inbox",
+        "Buying",
+        "All",
+        "Pending Offers"
+      ],
+      "label": "Get help on Marketplace",
+      "package_name": "com.facebook.katana",
+      "reason": "Open the Marketplace thread that best matches the saved backup and latest seller reply.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-a521a3284683b758",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.13796296296296295,
+        "x": 0.862037037037037,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Marketplace Seller Inbox",
+        "Selling",
+        "Marketplace Buyer Inbox",
+        "Buying",
+        "All",
+        "Pending Offers"
+      ],
+      "label": "Ariel sold iphone 15 pro.",
+      "package_name": "com.facebook.katana",
+      "reason": "Open the Marketplace thread that best matches the saved backup and latest seller reply.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-a521a3284683b758",
+      "target_box": {
+        "height": 0.01875,
+        "width": 0.6481481481481481,
+        "x": 0.21388888888888888,
+        "y": 0.26916666666666667
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Type a message\u2026",
+        "Open sticker, emoji and GIF keyboard.",
+        "Send a like"
+      ],
+      "label": "Back | Marketplace listing | Additional attachment options | Type a message\u2026",
+      "package_name": "com.facebook.katana",
+      "reason": "Replace the default Marketplace message with a custom opener tailored to the current listing.",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-5c95344ce6d4aeb9",
+      "target_box": {
+        "height": 0.6145833333333334,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Type a message\u2026",
+        "Open sticker, emoji and GIF keyboard.",
+        "Send a like"
+      ],
+      "component_type": "text_input",
+      "label": "Type a message\u2026",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-5c95344ce6d4aeb9",
+      "search_related": false,
+      "target_box": {
+        "height": 0.041666666666666664,
+        "width": 0.6935185185185185,
+        "x": 0.10185185185185185,
+        "y": 0.5991666666666666
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, I'm interested in the Marketplace listing. Is it still available?",
+        "Open sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "label": "Send",
+      "package_name": "com.facebook.katana",
+      "reason": "Send the explicitly requested Facebook reply.",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777",
+      "target_box": {
+        "height": 0.06,
+        "width": 0.10185185185185185,
+        "x": 0.8981481481481481,
+        "y": 0.94
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, I'm interested in the Marketplace listing. Is it still available?",
+        "Open sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, I'm interested in the Marketplace listing. Is it still available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777",
+      "search_related": false,
+      "target_box": {
+        "height": 0.08208333333333333,
+        "width": 0.7037037037037037,
+        "x": 0.10185185185185185,
+        "y": 0.9108333333333334
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, I'm interested in the Marketplace listing. Is it still available?",
+        "Close sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "label": "Send",
+      "package_name": "com.facebook.katana",
+      "reason": "Send the explicitly requested Facebook reply.",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-c2d1e49af80e2af2",
+      "target_box": {
+        "height": 0.06,
+        "width": 0.10185185185185185,
+        "x": 0.8981481481481481,
+        "y": 0.5558333333333333
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, I'm interested in the Marketplace listing. Is it still available?",
+        "Close sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, I'm interested in the Marketplace listing. Is it still available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-c2d1e49af80e2af2",
+      "search_related": false,
+      "target_box": {
+        "height": 0.08208333333333333,
+        "width": 0.7037037037037037,
+        "x": 0.10185185185185185,
+        "y": 0.5266666666666666
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, I'm interested in the Marketplace listing. Is it still available?",
+        "Open sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "label": "Back | Marketplace listing | Additional attachment options | Hi, I'm interested in the Marketplace listing. Is it still available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Replace the default Marketplace message with a custom opener tailored to the current listing.",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777",
+      "target_box": {
+        "height": 0.6145833333333334,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, can you share the full specs and current condition for the Marketplace listing?",
+        "Open sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "label": "Send",
+      "package_name": "com.facebook.katana",
+      "reason": "Send the explicitly requested Facebook reply.",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-fca8b53776fad1e9",
+      "target_box": {
+        "height": 0.06,
+        "width": 0.10185185185185185,
+        "x": 0.8981481481481481,
+        "y": 0.94
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, can you share the full specs and current condition for the Marketplace listing?",
+        "Open sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, can you share the full specs and current condition for the Marketplace listing?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-fca8b53776fad1e9",
+      "search_related": false,
+      "target_box": {
+        "height": 0.08208333333333333,
+        "width": 0.7037037037037037,
+        "x": 0.10185185185185185,
+        "y": 0.9108333333333334
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, can you share the full specs and current condition for the Marketplace listing?",
+        "Close sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "label": "Send",
+      "package_name": "com.facebook.katana",
+      "reason": "Send the explicitly requested Facebook reply.",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-e1ebacccd381d50d",
+      "target_box": {
+        "height": 0.06,
+        "width": 0.10185185185185185,
+        "x": 0.8981481481481481,
+        "y": 0.5558333333333333
+      }
+    },
+    {
+      "activity_name": "com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+      "anchor_text": [
+        "Back",
+        "Marketplace listing",
+        "Additional attachment options",
+        "Hi, can you share the full specs and current condition for the Marketplace listing?",
+        "Close sticker, emoji and GIF keyboard.",
+        "Send"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, can you share the full specs and current condition for the Marketplace listing?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-e1ebacccd381d50d",
+      "search_related": false,
+      "target_box": {
+        "height": 0.08208333333333333,
+        "width": 0.7037037037037037,
+        "x": 0.10185185185185185,
+        "y": 0.5266666666666666
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "Tarotlouisa's story, Unseen"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Open Marketplace from the clean Facebook home shell.",
+      "screen_id": "com-facebook-katana-loginactivity-92ebca783ffcf217",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "Tarotlouisa's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-92ebca783ffcf217",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "Tarotlouisa's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-92ebca783ffcf217",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "$600 \u00b7 Macbook Air M3",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping on the Macbook Air M3 listing to inspect its details, as it is a potentially valuable resellable item.",
+      "screen_id": "com-facebook-katana-loginactivity-dbe97292ab96dcc4",
+      "target_box": {
+        "height": 0.26375,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.30291666666666667
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 4",
+        "Macbook Air M3",
+        "$600"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-07781c0fd6e63079",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 4",
+        "Macbook Air M3",
+        "$600"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-07781c0fd6e63079",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.76375
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 4",
+        "Macbook Air M3",
+        "$600"
+      ],
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "The RAM specification is missing from the description. I will type a message asking for the RAM size before sending.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-07781c0fd6e63079",
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.76375
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 4",
+        "Macbook Air M3",
+        "$600"
+      ],
+      "label": "Send",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping the 'Send' button to send the typed message to the seller.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-e68af172306e9dc3",
+      "target_box": {
+        "height": 0.03208333333333333,
+        "width": 0.15555555555555556,
+        "x": 0.7833333333333333,
+        "y": 0.6158333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 4",
+        "Macbook Air M3",
+        "$600"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-e68af172306e9dc3",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 4",
+        "Macbook Air M3",
+        "$600"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, does this have 8GB or 16GB of RAM?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-e68af172306e9dc3",
+      "search_related": false,
+      "target_box": {
+        "height": 0.04583333333333333,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.6020833333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 4",
+        "Macbook Air M3",
+        "$600"
+      ],
+      "label": "Close",
+      "package_name": "com.facebook.katana",
+      "reason": "The 'Message sent to seller' confirmation is visible. Tapping the 'Close' button (X icon) at the top left will dismiss the listing and return to the Marketplace feed.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-68066cadca3d7fa7",
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.030555555555555555,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 4",
+        "Macbook Air M3",
+        "$600"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-68066cadca3d7fa7",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "$200\u00a0\u00b7\u00a0Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+      "package_name": "com.facebook.katana",
+      "reason": "The Macbook Air M3 has already been contacted. The Sony FE f/1.8 50mm lens is a valuable resellable item. Tapping it to inspect details and condition before deciding on a message.",
+      "screen_id": "com-facebook-katana-loginactivity-0b2b7a30e880577b",
+      "target_box": {
+        "height": 0.2633333333333333,
+        "width": 0.49444444444444446,
+        "x": 0.5055555555555555,
+        "y": 0.32
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+        "$200"
+      ],
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping the message input field to focus it before typing a custom offer.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-0649aacc9e31fa72",
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.75
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+        "$200"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-0649aacc9e31fa72",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+        "$200"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-0649aacc9e31fa72",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.75
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+        "$200"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-6f58f7ad553bdbe8",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+        "$200"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-6f58f7ad553bdbe8",
+      "search_related": false,
+      "target_box": {
+        "height": 0.021666666666666667,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.62625
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+        "$200"
+      ],
+      "label": "Send",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping the 'Send' button to send the typed offer message to the seller.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-d1ddbd5f3a5db794",
+      "target_box": {
+        "height": 0.03,
+        "width": 0.15555555555555556,
+        "x": 0.7833333333333333,
+        "y": 0.6179166666666667
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+        "$200"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-d1ddbd5f3a5db794",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony FE f/1.8 50mm E Mount Full Frame Camera Lens",
+        "$200"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, would you take $150 for it?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-d1ddbd5f3a5db794",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.625
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Seller-message goals should enter Marketplace first before opening any message thread.",
+      "screen_id": "com-facebook-katana-loginactivity-35baf243d6c9ad43",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-35baf243d6c9ad43",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-35baf243d6c9ad43",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "Just listed, $100\u00a0\u00b7\u00a0Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping the Asus TUF 27\" monitor listing to view its details and determine if it's a good resell opportunity.",
+      "screen_id": "com-facebook-katana-loginactivity-c0a8578876a54eee",
+      "target_box": {
+        "height": 0.2633333333333333,
+        "width": 0.49444444444444446,
+        "x": 0.5055555555555555,
+        "y": 0.22875
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Tapping the message input field to replace the default 'Hi, is this available?' text with a question about the monitor's condition.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-cb5ab818cda73d44",
+      "target_box": {
+        "height": 0.04583333333333333,
+        "width": 0.7018518518518518,
+        "x": 0.06111111111111111,
+        "y": 0.7720833333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-cb5ab818cda73d44",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-cb5ab818cda73d44",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.78375
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "The message input field is focused and the default text is selected. Typing will replace it with a custom message asking about the condition, as per the improved opener logic.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-a4a7b4a3ac29bd63",
+      "target_box": {
+        "height": 0.021666666666666667,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.62625
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-a4a7b4a3ac29bd63",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-a4a7b4a3ac29bd63",
+      "search_related": false,
+      "target_box": {
+        "height": 0.021666666666666667,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.62625
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "label": "Send",
+      "package_name": "com.facebook.katana",
+      "reason": "The message input field contains the desired text. Tapping the 'Send' button will send the message to the seller, fulfilling the goal of contacting the seller with the improved opener logic.",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-de4f8cb35ee37c81",
+      "target_box": {
+        "height": 0.03208333333333333,
+        "width": 0.15555555555555556,
+        "x": 0.7833333333333333,
+        "y": 0.6158333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-de4f8cb35ee37c81",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 6",
+        "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
+        "$100"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available? Any dead pixels or scratches?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-de4f8cb35ee37c81",
+      "search_related": false,
+      "target_box": {
+        "height": 0.04583333333333333,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.6020833333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Open Marketplace from the clean Facebook home shell.",
+      "screen_id": "com-facebook-katana-loginactivity-fb11443cbdfc1e3d",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-fb11443cbdfc1e3d",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-fb11443cbdfc1e3d",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "Just listed, $1,150\u00a0\u00b7\u00a0Sony a6700 Mirrorless Camera Body \u2014 Lightly Used | Local Pickup Seattle",
+      "package_name": "com.facebook.katana",
+      "reason": "LM Studio request timed out; heuristic fallback used. timed out",
+      "screen_id": "com-facebook-katana-loginactivity-e97564e49b531be4",
+      "target_box": {
+        "height": 0.26375,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.4925
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony a6700 Mirrorless Camera Body \u2014 Lightly Used | Local Pickup Seattle",
+        "$1,150"
+      ],
+      "label": "Selling my Sony Alpha a6700 mirrorless camera body in excellent condition. Lightly used and well | cared for \u2014 sensor, LCD, EVF, and all controls are | See more",
+      "package_name": "com.facebook.katana",
+      "reason": "LM Studio request timed out; heuristic fallback used. timed out",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-4eb0f841c13ce98e",
+      "target_box": {
+        "height": 0.06041666666666667,
+        "width": 0.9388888888888889,
+        "x": 0.030555555555555555,
+        "y": 0.9045833333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony a6700 Mirrorless Camera Body \u2014 Lightly Used | Local Pickup Seattle",
+        "$1,150"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-4eb0f841c13ce98e",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony a6700 Mirrorless Camera Body \u2014 Lightly Used | Local Pickup Seattle",
+        "$1,150"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-4eb0f841c13ce98e",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.78375
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony a6700 Mirrorless Camera Body \u2014 Lightly Used | Local Pickup Seattle",
+        "$1,150"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-4a80ad24a46a7fa2",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 5",
+        "Sony a6700 Mirrorless Camera Body \u2014 Lightly Used | Local Pickup Seattle",
+        "$1,150"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-4a80ad24a46a7fa2",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.78375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Open Marketplace from the clean Facebook home shell.",
+      "screen_id": "com-facebook-katana-loginactivity-6050558cc7517d35",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-6050558cc7517d35",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-6050558cc7517d35",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Sell",
+        "For you, Tab, 1 of 3",
+        "For you",
+        "Local, Tab, 2 of 3",
+        "Local",
+        "Jobs, Tab, 3 of 3"
+      ],
+      "label": "Just listed, $1,170\u00a0\u00b7\u00a02023 Macbook Pro 500Gb",
+      "package_name": "com.facebook.katana",
+      "reason": "LM Studio request timed out; heuristic fallback used. timed out",
+      "screen_id": "com-facebook-katana-loginactivity-d8963dcdcf24899e",
+      "target_box": {
+        "height": 0.26375,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.58375
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 2",
+        "MacBook Air M4, 15 inch",
+        "$1,000"
+      ],
+      "component_type": "search_action",
+      "label": "Navigate to Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-96ac021a73dfc222",
+      "search_related": true,
+      "target_box": {
+        "height": 0.0275,
+        "width": 0.06111111111111111,
+        "x": 0.7962962962962963,
+        "y": 0.04958333333333333
+      }
+    },
+    {
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "anchor_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 2",
+        "MacBook Air M4, 15 inch",
+        "$1,000"
+      ],
+      "component_type": "text_input",
+      "label": "Hi, is this available?",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-activity-react-immersivereactactivity-96ac021a73dfc222",
+      "search_related": false,
+      "target_box": {
+        "height": 0.022916666666666665,
+        "width": 0.6407407407407407,
+        "x": 0.09166666666666666,
+        "y": 0.76375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Open Marketplace from the clean Facebook home shell.",
+      "screen_id": "com-facebook-katana-loginactivity-63c2f23a4e442eea",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-63c2f23a4e442eea",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-63c2f23a4e442eea",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "label": "Marketplace, tab 4 of 6",
+      "package_name": "com.facebook.katana",
+      "reason": "Open Marketplace from the clean Facebook home shell.",
+      "screen_id": "com-facebook-katana-loginactivity-1726424e62654ed7",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Menu | Facebook logo | Create, Double tap to create a new post, story, or reel | Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-facebook-katana-loginactivity-1726424e62654ed7",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.03333333333333333
+      }
+    },
+    {
+      "activity_name": ".LoginActivity",
+      "anchor_text": [
+        "Go to profile",
+        "What's on your mind?",
+        "Select photos or videos for your post",
+        "Stories",
+        "Create story",
+        "OW\u770b\u52d5\u6f2b's story, Unseen"
+      ],
+      "component_type": "search_action",
+      "label": "Search",
+      "package_name": "com.facebook.katana",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "com.facebook.katana:id/(name removed)",
+      "screen_id": "com-facebook-katana-loginactivity-1726424e62654ed7",
+      "search_related": true,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.11203703703703703,
+        "x": 0.7657407407407407,
+        "y": 0.03333333333333333
+      }
     }
   ]
 }

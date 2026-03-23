@@ -69,6 +69,34 @@ def test_adb_timeout_raises_runtime_error(monkeypatch: pytest.MonkeyPatch) -> No
         adapter.adb_command(["shell", "getprop"])
 
 
+def test_is_package_installed_returns_false_for_missing_package(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = make_adapter()
+
+    def fake_adb(args, *, check, timeout=None):
+        return subprocess.CompletedProcess(args, 1, stdout="", stderr="")
+
+    monkeypatch.setattr(adapter, "_adb", fake_adb)
+
+    assert adapter.is_package_installed("com.example.missing") is False
+
+
+def test_is_package_installed_retries_and_raises_for_transport_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = make_adapter()
+    calls = {"count": 0}
+
+    def fake_adb(args, *, check, timeout=None):
+        calls["count"] += 1
+        return subprocess.CompletedProcess(args, 1, stdout="", stderr="error: device offline")
+
+    monkeypatch.setattr(adapter, "_adb", fake_adb)
+    monkeypatch.setattr("agent_runner.android_adapter.time.sleep", lambda seconds: None)
+
+    with pytest.raises(RuntimeError, match="adb failed while checking whether com.facebook.katana is installed"):
+        adapter.is_package_installed("com.facebook.katana")
+
+    assert calls["count"] == 3
+
+
 def test_resolve_tap_box_snaps_to_nearby_clickable_component() -> None:
     adapter = make_adapter()
     device = DeviceInfo(

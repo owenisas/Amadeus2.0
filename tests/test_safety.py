@@ -40,6 +40,19 @@ def amazon_app() -> AppConfig:
     )
 
 
+def facebook_app() -> AppConfig:
+    return AppConfig(
+        name="facebook",
+        package_name="com.facebook.katana",
+        launch_activity=".activity.FbMainTabActivity",
+        allowed_actions=["tap", "back", "home", "wait", "swipe", "type", "tool", "stop"],
+        blocked_keywords=["buy now", "message seller", "send"],
+        high_risk_signatures=["buy now", "checkout"],
+        manual_login_tokens=["log in", "login", "password", "verification", "checkpoint", "code"],
+        default_goal_hint="inspect marketplace",
+    )
+
+
 def test_blocked_keyword_is_rejected() -> None:
     verdict = evaluate_decision(
         amazon_app(),
@@ -99,6 +112,24 @@ def test_manual_intervention_reason_still_blocks_login_in_yolo_mode() -> None:
     reason = detect_manual_intervention_reason(amazon_app(), state, yolo_mode=True)
 
     assert reason == "Manual login required before automation can continue."
+
+
+def test_facebook_email_confirmation_overlay_is_recoverable() -> None:
+    state = make_state(
+        visible_text=[
+            "You're One Click Away From Confirming user@example.com",
+            "Confirm Email",
+            "Add Another Email",
+            "Close",
+            "What's on your mind?",
+        ]
+    )
+    state.package_name = "com.facebook.katana"
+    state.activity_name = ".LoginActivity"
+
+    reason = detect_manual_intervention_reason(facebook_app(), state, yolo_mode=True)
+
+    assert reason is None
 
 
 def test_type_action_without_input_text_is_rejected() -> None:

@@ -180,6 +180,8 @@ def detect_manual_intervention_reason(
     restriction_reason = detect_account_restriction_reason(state)
     if restriction_reason:
         return restriction_reason
+    if app.name == "facebook" and _facebook_recoverable_confirmation_visible(state):
+        return None
     if detect_manual_login_required(app, state):
         return "Manual login required before automation can continue."
     return None
@@ -252,3 +254,16 @@ def _flatten_tool_argument_values(value) -> list[str]:
     if isinstance(value, bool):
         return [str(value).casefold()]
     return [str(value)]
+
+
+def _facebook_recoverable_confirmation_visible(state: ScreenState) -> bool:
+    text_items = [item.casefold() for item in state.visible_text[:60]]
+    clickable_items = [item.casefold() for item in state.clickable_text[:30]]
+    text = " ".join(text_items)
+    clickable = " ".join(clickable_items)
+    return (
+        "confirm email" in text
+        and "add another email" in text
+        and "close" in clickable
+        and "what's on your mind?" in text
+    )

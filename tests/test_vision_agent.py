@@ -1,5 +1,6 @@
 import json
 import io
+import socket
 from pathlib import Path
 import urllib.error
 
@@ -114,6 +115,131 @@ def make_facebook_state(
         activity_name=device.activity_name,
         device=device,
         components=components,
+    )
+
+
+def make_facebook_marketplace_inbox_state() -> ScreenState:
+    return make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Marketplace Seller Inbox",
+            "Selling",
+            "Marketplace Buyer Inbox",
+            "Buying",
+            "All",
+            "Pending Offers",
+            "Accepted Offers",
+            "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+            "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+        ],
+        clickable_text=[
+            "Marketplace Seller Inbox",
+            "Marketplace Buyer Inbox",
+            "All",
+            "Pending Offers",
+            "Accepted Offers",
+            "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+            "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+        ],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Marketplace Seller Inbox",
+                "enabled": True,
+                "target_box": {"x": 0.26, "y": 0.12, "width": 0.45, "height": 0.05},
+            },
+            {
+                "component_type": "button",
+                "label": "Marketplace Buyer Inbox",
+                "enabled": True,
+                "target_box": {"x": 0.74, "y": 0.12, "width": 0.45, "height": 0.05},
+            },
+            {
+                "component_type": "button",
+                "label": "Accepted Offers",
+                "enabled": True,
+                "target_box": {"x": 0.48, "y": 0.19, "width": 0.18, "height": 0.04},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "enabled": True,
+                "target_box": {"x": 0.56, "y": 0.41, "width": 0.62, "height": 0.08},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+                "enabled": True,
+                "target_box": {"x": 0.56, "y": 0.46, "width": 0.62, "height": 0.05},
+            },
+        ],
+    )
+
+
+def make_facebook_marketplace_inbox_without_backup_match_state() -> ScreenState:
+    return make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Marketplace Seller Inbox",
+            "Selling",
+            "Marketplace Buyer Inbox",
+            "Buying",
+            "All",
+            "Pending Offers",
+            "Accepted Offers",
+            "Pending Door Drop Plans",
+            "Ariel · iphone 15 pro",
+            "Ariel sold iphone 15 pro.",
+        ],
+        clickable_text=[
+            "Marketplace Seller Inbox",
+            "Marketplace Buyer Inbox",
+            "All",
+            "Pending Offers",
+            "Accepted Offers",
+            "Pending Door Drop Plans",
+            "Ariel · iphone 15 pro",
+            "Ariel sold iphone 15 pro.",
+            "Get help on Marketplace",
+        ],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Marketplace Seller Inbox",
+                "enabled": True,
+                "target_box": {"x": 0.26, "y": 0.12, "width": 0.45, "height": 0.05},
+            },
+            {
+                "component_type": "button",
+                "label": "Marketplace Buyer Inbox",
+                "enabled": True,
+                "target_box": {"x": 0.74, "y": 0.12, "width": 0.45, "height": 0.05},
+            },
+            {
+                "component_type": "button",
+                "label": "Accepted Offers",
+                "enabled": True,
+                "target_box": {"x": 0.48, "y": 0.19, "width": 0.18, "height": 0.04},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "Ariel · iphone 15 pro",
+                "enabled": True,
+                "target_box": {"x": 0.56, "y": 0.41, "width": 0.62, "height": 0.08},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "Ariel sold iphone 15 pro.",
+                "enabled": True,
+                "target_box": {"x": 0.56, "y": 0.46, "width": 0.62, "height": 0.05},
+            },
+            {
+                "component_type": "button",
+                "label": "Get help on Marketplace",
+                "enabled": True,
+                "target_box": {"x": 0.88, "y": 0.06, "width": 0.12, "height": 0.05},
+            },
+        ],
     )
 
 
@@ -573,6 +699,38 @@ def test_lmstudio_decision_parses_openai_style_json_response(tmp_path: Path, mon
     assert "settings surface" in decision.reason.casefold()
 
 
+def test_gemini_timeout_falls_back_to_heuristic(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent("fake-api-key", "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["settings"])
+    state = make_amazon_state(
+        visible_text=["Settings", "Network & internet"],
+        clickable_text=["Network & internet"],
+        components=[],
+    )
+    state.package_name = "com.android.settings"
+    state.activity_name = ".Settings"
+    state.screenshot_path.write_bytes(b"fake-image")
+
+    def fake_urlopen(*args, **kwargs):
+        raise socket.timeout("The read operation timed out")
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+
+    decision = agent._gemini_decision(
+        goal="open network settings",
+        state=state,
+        skill=bundle,
+        system_instruction="",
+        action_history=[],
+        available_tools=[],
+        yolo_mode=False,
+    )
+
+    assert decision.next_action == "stop"
+    assert "timed out" in decision.reason.casefold()
+    assert agent.last_decision_meta["source"] == "gemini_timeout_fallback"
+
+
 def test_lmstudio_decision_retries_after_http_400_with_text_response_format(tmp_path: Path, monkeypatch) -> None:
     agent = VisionAgent(
         None,
@@ -650,8 +808,10 @@ def test_lmstudio_decision_retries_after_http_400_with_text_response_format(tmp_
     )
 
     assert len(calls) == 2
+    assert calls[0]["stream"] is True
     assert calls[0]["response_format"]["type"] == "text"
     assert isinstance(calls[0]["messages"][0]["content"], list)
+    assert calls[1]["stream"] is True
     assert calls[1]["response_format"]["type"] == "text"
     assert isinstance(calls[1]["messages"][0]["content"], str)
     assert decision.next_action == "wait"
@@ -708,6 +868,136 @@ def test_lmstudio_non_json_fallback_records_raw_detail(tmp_path: Path, monkeypat
     assert decision.next_action == "tap" or decision.next_action == "stop" or decision.next_action == "wait"
     assert agent.last_decision_meta["source"] == "lmstudio_non_json_fallback"
     assert "tap the network option" in str(agent.last_decision_meta.get("detail", ""))
+
+
+def test_lmstudio_reasoning_only_fallback_records_reasoning_detail(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent(
+        None,
+        "qwen3.5-35b-a3b-uncensored-hauhaucs-aggressive",
+        provider="lmstudio",
+        lmstudio_base_url="http://127.0.0.1:1234/v1",
+    )
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".tabbar.TabBarActivity",
+        visible_text=["Facebook", "Marketplace", "PlayStation 5", "Sony a6700 Mirrorless Camera Body"],
+        clickable_text=["Marketplace", "PlayStation 5", "Sony a6700 Mirrorless Camera Body"],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Marketplace, tab 4 of 6",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.08, "width": 0.16, "height": 0.05},
+            }
+        ],
+    )
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {
+                                "content": "",
+                                "reasoning_content": (
+                                    "The app is already on Marketplace. A promising next step would be to open "
+                                    "the Sony a6700 listing and inspect the detail page."
+                                ),
+                            }
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+
+    monkeypatch.setattr("urllib.request.urlopen", lambda *args, **kwargs: FakeResponse())
+
+    decision = agent._lmstudio_decision(
+        goal="inspect valuable marketplace listings read-only",
+        state=state,
+        skill=bundle,
+        system_instruction="",
+        action_history=[],
+        available_tools=[],
+        yolo_mode=False,
+    )
+
+    assert decision.next_action in {"tap", "wait", "stop"}
+    assert agent.last_decision_meta["source"] == "lmstudio_reasoning_only_fallback"
+    assert "Sony a6700" in str(agent.last_decision_meta.get("detail", ""))
+
+
+def test_lmstudio_timeout_can_be_overridden_by_env(monkeypatch) -> None:
+    monkeypatch.setenv("LMSTUDIO_TIMEOUT_SECONDS", "180")
+
+    agent = VisionAgent(
+        None,
+        "qwen3.5-35b-a3b-uncensored-hauhaucs-aggressive",
+        provider="lmstudio",
+        lmstudio_base_url="http://127.0.0.1:1234/v1",
+    )
+
+    assert agent.lmstudio_timeout_seconds == 180.0
+
+
+def test_lmstudio_streaming_sse_response_is_parsed(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent(
+        None,
+        "qwen3.5-35b-a3b-uncensored-hauhaucs-aggressive",
+        provider="lmstudio",
+        lmstudio_base_url="http://127.0.0.1:1234/v1",
+    )
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["settings"])
+    state = make_amazon_state(
+        visible_text=["Settings", "Network & internet"],
+        clickable_text=["Network & internet"],
+        components=[],
+    )
+    state.package_name = "com.android.settings"
+    state.activity_name = ".Settings"
+
+    stream_text = "\n".join(
+        [
+            'data: {"choices":[{"delta":{"reasoning_content":"Thinking about the Settings screen. "}}]}',
+            'data: {"choices":[{"delta":{"content":"{\\"screen_classification\\":\\"settings_home\\",\\"goal_progress\\":\\"navigating\\","}}]}',
+            'data: {"choices":[{"delta":{"content":"\\"next_action\\":\\"wait\\",\\"target_box\\":null,\\"confidence\\":0.74,\\"reason\\":\\"Wait for the settings surface to settle.\\",\\"risk_level\\":\\"low\\"}"}}]}',
+            "data: [DONE]",
+        ]
+    )
+
+    class FakeResponse:
+        headers = {"Content-Type": "text/event-stream"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return stream_text.encode("utf-8")
+
+    monkeypatch.setattr("urllib.request.urlopen", lambda *args, **kwargs: FakeResponse())
+
+    decision = agent._lmstudio_decision(
+        goal="open network settings",
+        state=state,
+        skill=bundle,
+        system_instruction="",
+        action_history=[],
+        available_tools=[],
+        yolo_mode=False,
+    )
+
+    assert decision.next_action == "wait"
+    assert "settings surface" in decision.reason.casefold()
+    assert agent.last_decision_meta["source"] == "lmstudio_model"
 
 
 
@@ -818,7 +1108,7 @@ def test_gmail_welcome_requires_user_approval(tmp_path: Path) -> None:
     assert decision.requires_user_approval is True
 
 
-def test_facebook_stale_listing_detail_backs_out(tmp_path: Path) -> None:
+def test_facebook_stale_listing_detail_resets_to_start_marketplace_from_beginning(tmp_path: Path) -> None:
     agent = VisionAgent(None, "gemini-3.1-pro-preview")
     bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
     state = make_facebook_state(
@@ -835,7 +1125,8 @@ def test_facebook_stale_listing_detail_backs_out(tmp_path: Path) -> None:
         action_history=[],
     )
 
-    assert decision.next_action == "back"
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "reset_app"
 
 
 def test_facebook_marketplace_feed_opens_listing(tmp_path: Path) -> None:
@@ -1035,6 +1326,49 @@ def test_facebook_value_scan_goal_does_not_bypass_gemini_on_marketplace_feed(tmp
     assert "Samsung M8" in (decision.target_label or "")
 
 
+def test_facebook_clean_start_reset_bypasses_gemini(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent("fake-api-key", "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Navigate to Search",
+            "Product Image,1 of 4",
+            "Macbook Air M3",
+            "$600",
+            "Hi, is this available?",
+            "Send",
+        ],
+        clickable_text=[
+            "Close",
+            "Navigate to Search",
+            "Hi, is this available?",
+            "Send",
+        ],
+        components=[],
+    )
+
+    called = {"gemini": False}
+
+    def fake_gemini_decision(**kwargs):
+        called["gemini"] = True
+        raise AssertionError("Gemini should not be called for a clean-start reset.")
+
+    monkeypatch.setattr(agent, "_gemini_decision", fake_gemini_decision)
+
+    decision = agent.decide(
+        goal="Reset Facebook to a clean main view, open Marketplace, and message a promising seller with the right opener.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert called["gemini"] is False
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "reset_app"
+
+
 def test_facebook_weird_visible_state_resets_when_goal_requests_clean_start(tmp_path: Path) -> None:
     agent = VisionAgent(None, "gemini-3.1-pro-preview")
     bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
@@ -1064,6 +1398,71 @@ def test_facebook_weird_visible_state_resets_when_goal_requests_clean_start(tmp_
     assert decision.next_action == "tool"
     assert decision.tool_name == "reset_app"
     assert decision.tool_arguments["package_name"] == "com.facebook.katana"
+
+
+def test_facebook_stale_message_thread_resets_for_marketplace_seller_goal(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name="com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+        visible_text=[
+            "Back",
+            "Marketplace listing",
+            "Additional attachment options",
+            "Type a message…",
+            "Send",
+        ],
+        clickable_text=["Back", "Marketplace listing", "Send"],
+        components=[],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, inspect valuable resellable listings, and when a promising item is found message the seller.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "reset_app"
+
+
+def test_facebook_listing_message_goal_with_clean_start_resets_stale_listing_detail(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Navigate to Search",
+            "More actions",
+            "Product Image,1 of 4",
+            "Macbook Air M3",
+            "$600",
+            "Hi, is this available?",
+            "Send",
+        ],
+        clickable_text=[
+            "Close",
+            "Navigate to Search",
+            "More actions",
+            "Product Image,1 of 4",
+            "Hi, is this available?",
+            "Send",
+        ],
+        components=[],
+    )
+
+    decision = agent.decide(
+        goal="Reset Facebook to a clean main view, open Marketplace, and message a promising seller with the right opener.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "reset_app"
 
 
 def test_facebook_marketplace_feed_swipes_after_returning_from_listing(tmp_path: Path) -> None:
@@ -1382,6 +1781,238 @@ def test_facebook_message_composer_types_requested_reply(tmp_path: Path) -> None
     assert decision.input_text == "Yes, it is still available."
 
 
+def test_facebook_message_inbox_opens_backup_thread(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+            {
+                "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "seller_name": "Joshua",
+                "last_inbound_message": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+            }
+        ],
+        "contacted_items": [],
+    }
+    state = make_facebook_state(
+        activity_name=".messaging.InboxActivity",
+        visible_text=["Messages", "Search Messenger", "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens"],
+        clickable_text=["Search Messenger", "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens"],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.24, "width": 0.84, "height": 0.08},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages, check for new seller replies, and read the latest thread.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens"
+
+
+def test_facebook_marketplace_inbox_opens_backup_thread(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+            {
+                "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "seller_name": "Joshua",
+                "last_inbound_message": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+            }
+        ],
+        "contacted_items": [],
+    }
+    state = make_facebook_marketplace_inbox_state()
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages, check for new seller replies, and read the latest thread.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens"
+
+
+def test_facebook_marketplace_inbox_falls_back_to_visible_thread_not_help(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+            {
+                "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "seller_name": "Joshua",
+                "last_inbound_message": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+            }
+        ],
+        "contacted_items": [],
+    }
+    state = make_facebook_marketplace_inbox_without_backup_match_state()
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages, check for new seller replies, and read the latest thread.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Ariel · iphone 15 pro"
+
+
+def test_facebook_marketplace_help_recovers_with_back_for_message_goal(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Get help on Marketplace",
+            "Learn how to block someone on Marketplace",
+            "See our Marketplace safety tips",
+            "Learn how to mark an item as sold",
+        ],
+        clickable_text=[
+            "Learn how to block someone on Marketplace",
+            "See our Marketplace safety tips",
+            "Learn how to mark an item as sold",
+            "See more",
+        ],
+        components=[],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages, check for new seller replies, and read the latest thread.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "back"
+
+
+def test_facebook_message_thread_stop_mentions_latest_known_reply(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+            {
+                "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "seller_name": "Joshua",
+                "last_inbound_message": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+            }
+        ],
+        "contacted_items": [],
+    }
+    state = make_facebook_state(
+        activity_name=".messaging.ThreadActivity",
+        visible_text=[
+            "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+            "Marketplace listing",
+            "Type a message",
+            "Send",
+        ],
+        clickable_text=["Type a message", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Type a message",
+                "enabled": True,
+                "target_box": {"x": 0.1, "y": 0.9, "width": 0.6, "height": 0.05},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.75, "y": 0.9, "width": 0.15, "height": 0.05},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages and check for new replies.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "stop"
+    assert "Latest known seller reply" in decision.reason
+    assert "West Seattle" in decision.reason
+
+
+def test_facebook_read_only_message_goal_does_not_draft_reply(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+            {
+                "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "seller_name": "Joshua",
+                "last_inbound_message": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+            }
+        ],
+        "contacted_items": [],
+    }
+    state = make_facebook_state(
+        activity_name="com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+        visible_text=[
+            "Back",
+            "Marketplace listing",
+            "Additional attachment options",
+            "Type a message…",
+            "Send",
+        ],
+        clickable_text=[
+            "Back | Marketplace listing | Additional attachment options | Type a message…",
+            "Send",
+        ],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Type a message…",
+                "enabled": True,
+                "target_box": {"x": 0.35, "y": 0.93, "width": 0.5, "height": 0.04},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.83, "y": 0.93, "width": 0.1, "height": 0.04},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages, check for new seller replies using the saved backup, open the most relevant Marketplace thread, read the latest seller response, and stop without sending anything.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "stop"
+    assert "Latest known seller reply" in decision.reason
+
+
 def test_facebook_message_composer_replaces_default_with_custom_listing_message(tmp_path: Path) -> None:
     agent = VisionAgent(None, "gemini-3.1-pro-preview")
     bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
@@ -1391,6 +2022,7 @@ def test_facebook_message_composer_replaces_default_with_custom_listing_message(
             "Close",
             "Canon RF 35mm f/1.8 Macro IS STM Lens",
             "$325",
+            "Product Image, 1 of 5",
             "Message seller",
             "Hi, is this available?",
             "Send",
@@ -1422,6 +2054,128 @@ def test_facebook_message_composer_replaces_default_with_custom_listing_message(
 
     assert decision.next_action == "type"
     assert decision.input_text == "Hi, I'm interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?"
+
+
+def test_facebook_message_composer_uses_profit_target_offer_for_overpriced_macbook(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Back",
+            "MacBook Air M2 13-inch 16GB 256GB",
+            "$700",
+            "Product Image, 1 of 5",
+            "Hello, is this still available?",
+            "Send",
+        ],
+        clickable_text=["Back", "Hello, is this still available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hello, is this still available?",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.75, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.78, "y": 0.62, "width": 0.15, "height": 0.04},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, look for profitable resale deals, and message seller on promising items.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "type"
+    assert decision.input_text == "Hi, can you do $450?"
+
+
+def test_facebook_message_composer_falls_back_to_availability_when_ask_is_already_profitable(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Back",
+            "MacBook Air M2 13-inch 16GB 256GB",
+            "$425",
+            "Product Image, 1 of 5",
+            "Hello, is this still available?",
+            "Send",
+        ],
+        clickable_text=["Back", "Hello, is this still available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hello, is this still available?",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.75, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.78, "y": 0.62, "width": 0.15, "height": 0.04},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, look for profitable resale deals, and message seller on promising items.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "type"
+    assert decision.input_text == "Hi, I'm interested in the MacBook Air M2 13-inch 16GB 256GB. Is it still available?"
+
+
+def test_facebook_message_composer_asks_for_missing_specs_and_condition_when_text_is_incomplete(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Back",
+            "MacBook Air",
+            "$700",
+            "Hello, is this still available?",
+            "Send",
+        ],
+        clickable_text=["Back", "Hello, is this still available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hello, is this still available?",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.75, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.78, "y": 0.62, "width": 0.15, "height": 0.04},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, look for profitable resale deals, and message seller on promising items.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "type"
+    assert decision.input_text == "Hi, can you share the full specs and current condition for the MacBook Air?"
     assert decision.target_box is not None
 
 

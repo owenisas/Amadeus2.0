@@ -78,6 +78,53 @@ def make_facebook_thread_state() -> ScreenState:
     )
 
 
+def make_facebook_marketplace_inbox_state() -> ScreenState:
+    app = APP_REGISTRY["facebook"]
+    device = DeviceInfo(
+        serial="10.0.0.206:43337",
+        width=1080,
+        height=2400,
+        density=440,
+        orientation="portrait",
+        package_name=app.package_name,
+        activity_name=".activity.react.ImmersiveReactActivity",
+    )
+    return ScreenState(
+        screenshot_path=Path("/tmp/facebook-marketplace-inbox.png"),
+        hierarchy_path=Path("/tmp/facebook-marketplace-inbox.xml"),
+        screenshot_sha256="facebookinboxhash",
+        xml_source="""
+        <hierarchy>
+          <node class="android.widget.Button" text="Marketplace Seller Inbox" content-desc="Marketplace Seller Inbox" />
+          <node class="android.widget.Button" text="Marketplace Buyer Inbox" content-desc="Marketplace Buyer Inbox" />
+          <node class="android.widget.Button" text="Accepted Offers" content-desc="Accepted Offers" />
+          <node class="android.widget.Button" text="Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens" content-desc="Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens" />
+          <node class="android.widget.Button" text="Yes, available for pickup in West Seattle off 49th Ave SW near Juneau" content-desc="Yes, available for pickup in West Seattle off 49th Ave SW near Juneau" />
+        </hierarchy>
+        """,
+        visible_text=[
+            "Marketplace Seller Inbox",
+            "Selling",
+            "Marketplace Buyer Inbox",
+            "Buying",
+            "All",
+            "Pending Offers",
+            "Accepted Offers",
+            "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+            "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+        ],
+        clickable_text=[
+            "Marketplace Seller Inbox",
+            "Marketplace Buyer Inbox",
+            "Accepted Offers",
+            "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+        ],
+        package_name=app.package_name,
+        activity_name=device.activity_name,
+        device=device,
+    )
+
+
 def test_skill_manager_bootstraps_and_updates_files(tmp_path: Path) -> None:
     manager = SkillManager(tmp_path)
     bundle = manager.load_skill(APP_REGISTRY["amazon"])
@@ -193,3 +240,16 @@ def test_skill_manager_updates_facebook_backup_from_thread_state(tmp_path: Path)
     assert facebook_backup["contacted_items"][0]["message_status"] == "seller_confirmed_available"
     assert "West Seattle" in bundle.backup_summary
     assert "Canon RF 35mm f/1.8 Macro IS STM Lens" in bundle.backup_summary
+
+
+def test_skill_manager_does_not_treat_marketplace_inbox_as_listing(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.consume_events()
+    state = make_facebook_marketplace_inbox_state()
+
+    manager.update_backup(bundle, state)
+
+    facebook_backup = bundle.backup_data["facebook_marketplace"]
+
+    assert facebook_backup["inspected_items"] == []

@@ -117,8 +117,33 @@ class AndroidAdapter:
         self._driver = None
 
     def is_package_installed(self, package_name: str) -> bool:
-        result = self._adb(["shell", "pm", "path", package_name], check=False)
-        return result.returncode == 0 and "package:" in result.stdout
+        transport_markers = (
+            "device offline",
+            "device not found",
+            "no devices/emulators found",
+            "unauthorized",
+            "cannot connect",
+            "connection refused",
+            "closed",
+        )
+        last_error = ""
+        for attempt in range(1, 4):
+            result = self._adb(["shell", "pm", "path", package_name], check=False)
+            stdout = result.stdout or ""
+            stderr = result.stderr or ""
+            combined = f"{stdout}\n{stderr}".casefold()
+            if result.returncode == 0:
+                return "package:" in stdout
+            if any(marker in combined for marker in transport_markers):
+                last_error = stderr.strip() or stdout.strip() or f"adb exited with status {result.returncode}"
+                if attempt < 3:
+                    time.sleep(0.25 * attempt)
+                    continue
+                raise RuntimeError(
+                    f"adb failed while checking whether {package_name} is installed on {self.device_serial}: {last_error}"
+                )
+            return False
+        return False
 
     def adb_command(
         self,

@@ -746,6 +746,96 @@
         "x": 0.42962962962962964,
         "y": 0.9225
       }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Tapping the 'Take Survey' button to begin the survey flow.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-7c545cef47b67e8e",
+      "target_box": {
+        "height": 0.03791666666666667,
+        "width": 0.4101851851851852,
+        "x": 0.05555555555555555,
+        "y": 0.6529166666666667
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "0.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-18291292a9394b4e",
+      "search_related": false,
+      "target_box": {
+        "height": 0.06333333333333334,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "0.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The user explicitly requested to complete the survey flow, and the current screen is a qualification step asking for the user's birth year. The text input is focused, so I will type a sensible year ('1990') to proceed.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-18291292a9394b4e",
+      "target_box": {
+        "height": 0.06333333333333334,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "0.0",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-de9fa7d3d55e5695",
+      "search_related": false,
+      "target_box": {
+        "height": 0.06333333333333334,
+        "width": 0.8944444444444445,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
     }
   ]
 }

@@ -33,6 +33,7 @@ description: App-specific navigation guidance for the Facebook Android workflow.
 ## Marketplace workflow
 
 - Before using a reusable Marketplace shortcut, reset Facebook to a clean main view instead of resuming a stale deep-linked screen.
+- For Marketplace listing, scan, search, or seller-contact goals, always normalize back to the Marketplace start flow instead of continuing from a stale listing detail, message thread, help page, or other deep-linked Facebook surface.
 - If reset opens a Messenger backup or recovery prompt, use `Back` once to return to the main Facebook home shell.
 - When saving or replaying a Marketplace script, make the backup-prompt dismissal conditional on that prompt actually being visible; do not send `Back` unconditionally from the clean home shell.
 - From the clean home shell, open `Marketplace, tab 4 of 6`.
@@ -46,6 +47,9 @@ description: App-specific navigation guidance for the Facebook Android workflow.
   2. description expander such as `See more`
   3. one short in-listing swipe to reveal seller, location, condition, pickup, or shipping details if they are not already visible
   4. back out only after those read-only details have been inspected
+- Use the product image to infer obvious condition cues when possible: cracked glass, dents, scratches, worn upholstery, panel damage, missing accessories, or mismatched parts.
+- If the text does not confirm important specs and the images do not make them obvious, treat the listing as incomplete and be ready to ask the seller for the missing specs.
+- If condition is not described in text and the images do not make condition obvious, treat that as an information gap and ask the seller directly about current condition.
 - On Marketplace feed screens, prefer short swipes that advance about one row of cards instead of large feed jumps that skip multiple listings.
 
 ## Marketplace messaging workflow
@@ -56,7 +60,14 @@ description: App-specific navigation guidance for the Facebook Android workflow.
 - Marketplace listing detail can expose a reply composer via the `Hello, is this still available?` text input and nearby `Send` button.
 - Prefer reading inboxes and threads first. Only type or send when the goal includes the exact Marketplace reply intent.
 - Before rereading a long Marketplace thread from the beginning, consult `data/backup.md` and `data/backup.json` for the latest known thread summary, seller reply, and contacted-item context.
-- When the goal asks to contact a Marketplace seller but does not provide exact message text, replace the default prefilled opener with a short custom message that references the listing title and asks whether the item is still available.
+- When the goal asks to contact a Marketplace seller but does not provide exact message text, compare the ask price against a profitable target first. If the ask price is too high for a profitable flip, start with a direct offer instead of an availability check.
+- Example: for a `MacBook Air M2 13-inch 16GB 256GB` listed at `$700`, the profitable target is `$450`, so the opener should be `Hi, can you do $450?`
+- If the listing is already at or below the profitable target, fall back to a short custom availability opener that references the listing title.
+- If key specs or current condition are still unclear after checking the text and visible product image, ask the seller for the missing details instead of guessing. Example: `Hi, can you share the full specs and current condition for the MacBook Air?`
+- Buyer meetup preference for Marketplace deals is `University of Washington Bothell`. When arranging a meetup without a more specific user instruction, prefer proposing that location first.
+- If the seller says the item is `pickup only`, ask for the exact address or at least the closest usable cross streets before assuming the meetup is settled.
+- When the thread backup already contains seller location or pickup details, use that backup context instead of asking the seller to repeat the same information.
+- Keep follow-up buyer messages short and practical: availability first, then meetup location, then pickup address only when needed.
 - If Facebook shows the recovery dialog `Are you sure?` with the warning about end-to-end encrypted messages being missing, treat it as a recoverable gating surface.
 - In YOLO mode, auto-continue through that Marketplace messaging recovery prompt instead of asking the user.
 - Save reusable scripts for `open_messages_from_home`, `open_marketplace_message_composer`, and stable Marketplace reply flows once selectors are confirmed.

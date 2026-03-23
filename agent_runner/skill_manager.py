@@ -689,6 +689,9 @@ description: App-specific navigation guidance for the {title} Android workflow.
 
     def _extract_facebook_listing_snapshot(self, state: ScreenState) -> dict[str, Any] | None:
         texts = self._xml_text_values(state.xml_source)
+        joined = " ".join(texts + state.visible_text).casefold()
+        if "marketplace seller inbox" in joined and "marketplace buyer inbox" in joined:
+            return None
         root = self._xml_root(state.xml_source)
         message_sent = "Message sent to seller" in texts
         title_texts: list[str] = []

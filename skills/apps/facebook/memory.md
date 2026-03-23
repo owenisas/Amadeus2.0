@@ -3,76 +3,6 @@
 - Logged-in phone flow is working on `com.facebook.katana`.
 
 <!-- older entries pruned -->
-- Reason: Blocked by risk token 'message seller'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-eff36f66a200ec31
-
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-immersiveactivity-immersiveactivity-ec62106dc81a4447
-
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-immersiveactivity-immersiveactivity-ec62106dc81a4447
-
-- Status: completed
-- Reason: Target 'What do you want to buy?' matched the goal, but no stable target box was available on the current screen.
-- Last screen: com-facebook-katana-loginactivity-c9d5167b73120fc4
-
-- Status: completed
-- Reason: Facebook Marketplace search surface is visible.
-- Last screen: com-facebook-katana-immersiveactivity-immersiveactivity-ec62106dc81a4447
-
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-8360afff127e14e0
-
-- Status: completed
-- Reason: Facebook Marketplace feed has been scanned and no stronger next listing heuristic was found.
-- Last screen: com-facebook-katana-loginactivity-4538ccbca69c81cf
-
-- Status: completed
-- Reason: Facebook Marketplace feed has been scanned and no stronger next listing heuristic was found.
-- Last screen: com-facebook-katana-loginactivity-1a4143c23e563b52
-
-- Status: blocked
-- Reason: Tap actions require a target_box.
-- Last screen: com-facebook-katana-loginactivity-fbc4a2d495378594
-
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-b6bb0489920dfd43
-
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-584837daf88fcc96
-
-- Status: blocked
-- Reason: Blocked by risk token 'buy now'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-584837daf88fcc96
-
-- Status: blocked
-- Reason: Blocked by risk token 'buy now'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-f94db2a5d767b55c
-
-- Status: blocked
-- Reason: Blocked by risk token 'buy now'.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-f94db2a5d767b55c
-
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-c7f9c8239f3d833c
-
-- Marketplace value-scan runs now prefer Gemini `gemini-3.1-pro-preview` decisions on feed/detail surfaces instead of heuristic bypass.
-- Label-only listing taps can now hydrate their target box from the current Marketplace screen state.
-- Buy-now listing detail pages are treated as read-only inspection surfaces, not automatic stop points.
-- Detail-page inspection should proceed in stages: image/title/price, `See more`, one short in-listing swipe for seller/location/condition, then back out.
-- Feed scrolling should stay shallow; large full-screen Marketplace swipes tend to skip too many listings.
-- Marketplace seller messaging should no longer rely on the default `Hi, is this available?` opener when the goal asks to contact the seller. Prefer a short custom opener that references the listing title, then send it from the inline composer.
-
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-c7f9c8239f3d833c
-
 - Status: max_steps_reached
 - Reason: Max steps reached.
 - Last screen: com-facebook-katana-loginactivity-908153ea0ac53092
@@ -80,3 +10,72 @@
 - Status: max_steps_reached
 - Reason: Max steps reached.
 - Last screen: com-facebook-katana-activity-react-immersivereactactivity-75f491c819218952
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-8d04e23de0d3661f
+
+- Status: manual_login_required
+- Reason: Manual login required before automation can continue.
+
+- Status: completed
+- Reason: The saved backup already contains the latest seller response for the Canon RF 35mm lens thread ('Yes, available for pickup in West Seattle off 49th Ave SW near Juneau'). Following instructions to use the backup to avoid revisiting already-contacted items, I will stop here.
+- Last screen: com-facebook-katana-loginactivity-3dc45e02f6673e0d
+
+- Status: completed
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-cf77272c927be547
+
+- Status: completed
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-8f18af5ba25b9e6b
+
+- Status: completed
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-8f18af5ba25b9e6b
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777
+
+- Status: completed
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777
+
+- Status: completed
+- Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: Yes, available for pickup in West Seattle off 49th Ave SW near Juneau
+- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777
+
+- Status: completed
+- Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: Yes, available for pickup in West Seattle off 49th Ave SW near Juneau
+- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-fca8b53776fad1e9
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-0b2b7a30e880577b
+
+- Status: manual_verification_required
+- Reason: Manual account verification required before automation can continue.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-d1ddbd5f3a5db794
+
+- Status: manual_verification_required
+- Reason: Manual account verification required before automation can continue.
+
+- Status: manual_verification_required
+- Reason: Manual account verification required before automation can continue.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-de4f8cb35ee37c81
+
+- Status: error
+- Reason: App is not installed on the emulator.
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-6050558cc7517d35
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-076f56f640052538
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-231d715c3dffd346
