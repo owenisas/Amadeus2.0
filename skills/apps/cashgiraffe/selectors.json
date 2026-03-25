@@ -1,0 +1,40 @@
+{
+  "selectors": [
+    {
+      "activity_name": "de.mcoins.applike.LauncherDefault",
+      "anchor_text": [
+        "Welcome to Cash Giraffe!",
+        "Accept",
+        "Reject"
+      ],
+      "label": "Accept",
+      "package_name": "cashgiraffe.app",
+      "reason": "Primary onboarding consent button on the first visible Cash Giraffe screen.",
+      "screen_id": "cashgiraffe-welcome-consent",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.8777777777777778,
+        "x": 0.06111111111111111,
+        "y": 0.76
+      }
+    },
+    {
+      "activity_name": "de.mcoins.applike.LauncherDefault",
+      "anchor_text": [
+        "Welcome to Cash Giraffe!",
+        "Accept",
+        "Reject"
+      ],
+      "label": "Reject",
+      "package_name": "cashgiraffe.app",
+      "reason": "Safe exit path on the first visible Cash Giraffe consent screen.",
+      "screen_id": "cashgiraffe-welcome-consent",
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.8777777777777778,
+        "x": 0.06111111111111111,
+        "y": 0.82875
+      }
+    }
+  ]
+}

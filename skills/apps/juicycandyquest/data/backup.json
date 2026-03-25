@@ -1,0 +1,18 @@
+{
+  "app_name": "juicycandyquest",
+  "observed_at": "2026-03-25",
+  "summary": {
+    "installed": true,
+    "tracked_by_moneytime": true,
+    "known_blocker": "tutorial overlay"
+  },
+  "surfaces": [
+    {
+      "id": "juicycandyquest-tutorial-overlay",
+      "visible_text": [
+        "Match 3 of the same Candy!",
+        "Close"
+      ]
+    }
+  ]
+}

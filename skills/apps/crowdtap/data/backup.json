@@ -1,0 +1,10 @@
+{
+  "app": "crowdtap",
+  "recent_screens": [
+    {
+      "activity_name": "crc64fb407d7fb80034b3.MainActivity",
+      "package_name": "com.suzy.droid",
+      "note": "Secure launch surface blocks screenshot and UI hierarchy capture."
+    }
+  ]
+}

@@ -1,74 +1,62 @@
 {
   "app": "facebook",
-  "failure_count": 1,
+  "failure_count": 0,
   "last_detected_inputs": [],
   "last_screen_signature": {
-    "activity_name": ".LoginActivity",
+    "activity_name": ".activity.react.ImmersiveReactActivity",
     "clickable_text": [
-      "Sell",
-      "For you",
-      "Local",
-      "Jobs",
-      "Tap to view categories and more",
-      "Location: Bothell, WA",
-      "Just listed, $90\u00a0\u00b7\u00a0Samsung 32\" 1440p QHD Computer Monitor - Color Calibrated",
-      "Just listed, $80\u00a0\u00b7\u00a0LG 32 inch 4K monitor",
-      "Just listed, $50\u00a0\u00b7\u00a0PlayStation 5",
-      "Just listed, $140\u00a0\u00b7\u00a0Canon Len EF 50MM f/1.4 USM"
+      "Get Started",
+      "Back"
     ],
     "package_name": "com.facebook.katana",
-    "screenshot_sha256": "70eeaeb1e7b1a237",
-    "text_digest": "231d715c3dffd346",
+    "screenshot_sha256": "85164acaf2982e52",
+    "text_digest": "8e62b3affe4e8f70",
     "top_visible_text": [
-      "Sell",
-      "For you, Tab, 1 of 3",
-      "For you",
-      "Local, Tab, 2 of 3",
-      "Local",
-      "Jobs, Tab, 3 of 3",
-      "Jobs",
-      "Tap to view categories and more",
-      "More",
-      "Today's picks"
+      "Confirm Your Identity on Marketplace",
+      "We detected unusual activity on your account, so we've  limited the number of sellers you can contact on Marketplace each day. You can try again tomorrow. To remove this restriction, confirm your identity to help us make sure it\u2019s really you.",
+      "Get Started",
+      "Back"
     ]
   },
   "last_search_transition": {
     "action": "type",
-    "from_screen_id": "com-facebook-katana-activity-react-immersivereactactivity-a4a7b4a3ac29bd63",
-    "input_text": "Hi, is this available? Any dead pixels or scratches?",
+    "from_screen_id": "com-facebook-katana-activity-react-immersivereactactivity-f481498b29382877",
+    "input_text": "Hi, can you do $600?",
     "result_activity": ".activity.react.ImmersiveReactActivity",
     "result_anchors": [
       "Close",
       "Navigate to Search",
       "More actions",
-      "Product Image,1 of 6",
-      "Asus TUF 27\" 2K G-SYNC Gaming Monitor",
-      "$100",
-      "Just listed\u00a0\u00b7\u00a03 hours ago",
+      "Product Image,1 of 3",
+      "Gaming PC",
+      "$850",
+      "Just listed\u00a0\u00b7\u00a011 minutes ago",
       "Like",
+      "Comment",
       "Save",
       "Share",
       "Message seller",
-      "Hi, is this available? Any dead pixels or scratches?",
+      "Hi, can you do $600?",
       "Send"
     ],
     "result_clickable_text": [
       "Close",
       "Navigate to Search",
       "More actions",
-      "Product Image,1 of 6",
+      "Product Image,1 of 3",
       "Like",
+      "Comment",
       "Save",
       "Share",
-      "Hi, is this available? Any dead pixels or scratches?",
+      "Hi, can you do $600?",
       "Send"
     ],
     "result_package": "com.facebook.katana",
     "submit_after_input": false,
-    "to_screen_id": "com-facebook-katana-activity-react-immersivereactactivity-de4f8cb35ee37c81",
+    "to_screen_id": "com-facebook-katana-activity-react-immersivereactactivity-f2a621ac68ccf7bb",
     "trigger_label": "Hi, is this available?"
   },
-  "last_successful_screen": "com-facebook-katana-loginactivity-231d715c3dffd346",
+  "last_successful_screen": "com-facebook-katana-activity-react-immersivereactactivity-f2a621ac68ccf7bb",
   "last_working_action_chain": [
     {
       "action": "tool",
@@ -76,9 +64,9 @@
       "allowed": true,
       "package_name": "com.facebook.katana",
       "reason": "Escape action allowed on high-risk surface.",
-      "step": 1,
+      "step": 8,
       "target_box": null,
-      "target_label": null,
+      "target_label": "com.facebook.katana",
       "tool_arguments": {
         "package_name": "com.facebook.katana"
       },
@@ -94,7 +82,7 @@
       "allowed": true,
       "package_name": "com.facebook.katana",
       "reason": "Decision passed local safety checks.",
-      "step": 2,
+      "step": 9,
       "target_box": {
         "height": 0.050416666666666665,
         "width": 0.16666666666666666,
@@ -107,434 +95,148 @@
       "tool_output": null
     },
     {
-      "action": "tool",
+      "action": "tap",
       "activity_name": ".LoginActivity",
       "allowed": true,
       "package_name": "com.facebook.katana",
-      "reason": "Escape action allowed on high-risk surface.",
-      "step": 3,
-      "target_box": null,
-      "target_label": null,
+      "reason": "Decision passed local safety checks.",
+      "step": 10,
+      "target_box": {
+        "height": 0.26375,
+        "width": 0.49444444444444446,
+        "x": 0.5055555555555555,
+        "y": 0.4925
+      },
+      "target_label": "Just listed, $100\u00a0\u00b7\u00a0Dell 27 Inch USB-C Hub Computer Monitor - P2723DE",
       "tool_arguments": {},
-      "tool_name": "capture_state",
+      "tool_name": null,
+      "tool_output": null
+    },
+    {
+      "action": "tap",
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "allowed": true,
+      "package_name": "com.facebook.katana",
+      "reason": "Decision passed local safety checks.",
+      "step": 11,
+      "target_box": {
+        "height": 0.03666666666666667,
+        "width": 0.15555555555555556,
+        "x": 0.7833333333333333,
+        "y": 0.7766666666666666
+      },
+      "target_label": "Send",
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    },
+    {
+      "action": "tool",
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "allowed": true,
+      "package_name": "com.facebook.katana",
+      "reason": "Escape action allowed on high-risk surface.",
+      "step": 12,
+      "target_box": null,
+      "target_label": "com.facebook.katana",
+      "tool_arguments": {
+        "package_name": "com.facebook.katana"
+      },
+      "tool_name": "reset_app",
       "tool_output": {
-        "screen": {
-          "activity_name": ".LoginActivity",
-          "clickable_text": [
-            "Sell",
-            "For you",
-            "Local",
-            "Jobs",
-            "Tap to view categories and more",
-            "Location: Bothell, WA",
-            "Just listed, $90\u00a0\u00b7\u00a0Samsung 32\" 1440p QHD Computer Monitor - Color Calibrated",
-            "Just listed, $80\u00a0\u00b7\u00a0LG 32 inch 4K monitor",
-            "Just listed, $50\u00a0\u00b7\u00a0PlayStation 5",
-            "Just listed, $140\u00a0\u00b7\u00a0Canon Len EF 50MM f/1.4 USM",
-            "$1,150 marked down from $1,900MSI STEALTH A16 AI+ A3HVGG-002US (2025) Gaming Laptop",
-            "$1,000\u00a0\u00b7\u00a0MacBook Air M4, 15 inch",
-            "Menu | Marketplace | Tap to view your Marketplace account | What do you want to buy?",
-            "Menu",
-            "Tap to view your Marketplace account",
-            "What do you want to buy?",
-            "Home, tab 1 of 6",
-            "Reels, tab 2 of 6",
-            "Friends, tab 3 of 6",
-            "Marketplace, tab 4 of 6",
-            "Notifications, tab 5 of 6, 10 or more new",
-            "Profile, tab 6 of 6"
-          ],
-          "components": [
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "Sell",
-              "package_name": "com.facebook.katana",
-              "resource_id": "",
-              "search_related": false,
-              "target_box": {
-                "height": 0.04125,
-                "width": 0.12962962962962962,
-                "x": 0.030555555555555555,
-                "y": 0.1375
-              }
-            },
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "For you",
-              "package_name": "com.facebook.katana",
-              "resource_id": "unified_tabs_for_you_sub_tab_pill",
-              "search_related": false,
-              "target_box": {
-                "height": 0.04125,
-                "width": 0.20462962962962963,
-                "x": 0.17037037037037037,
-                "y": 0.1375
-              }
-            },
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "Local",
-              "package_name": "com.facebook.katana",
-              "resource_id": "unified_tabs_locals_sub_tab_pill",
-              "search_related": false,
-              "target_box": {
-                "height": 0.04125,
-                "width": 0.16111111111111112,
-                "x": 0.3851851851851852,
-                "y": 0.1375
-              }
-            },
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "Jobs",
-              "package_name": "com.facebook.katana",
-              "resource_id": "marketplace_jobs_sub_tab_pill",
-              "search_related": false,
-              "target_box": {
-                "height": 0.04125,
-                "width": 0.14814814814814814,
-                "x": 0.5564814814814815,
-                "y": 0.1375
-              }
-            },
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "Tap to view categories and more",
-              "package_name": "com.facebook.katana",
-              "resource_id": "unified_tabs_more_pill",
-              "search_related": false,
-              "target_box": {
-                "height": 0.04125,
-                "width": 0.21388888888888888,
-                "x": 0.7046296296296296,
-                "y": 0.1375
-              }
-            },
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "Location: Bothell, WA",
-              "package_name": "com.facebook.katana",
-              "resource_id": "",
-              "search_related": false,
-              "target_box": {
-                "height": 0.03666666666666667,
-                "width": 0.31296296296296294,
-                "x": 0.6824074074074075,
-                "y": 0.19041666666666668
-              }
-            },
-            {
-              "class_name": "android.view.ViewGroup",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Just listed, $90\u00a0\u00b7\u00a0Samsung 32\" 1440p QHD Computer Monitor - Color Calibrated",
-              "package_name": "com.facebook.katana",
-              "resource_id": "mp_top_picks_clickable_item",
-              "search_related": false,
-              "target_box": {
-                "height": 0.2633333333333333,
-                "width": 0.49537037037037035,
-                "x": 0.0,
-                "y": 0.22875
-              }
-            },
-            {
-              "class_name": "android.view.ViewGroup",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Just listed, $80\u00a0\u00b7\u00a0LG 32 inch 4K monitor",
-              "package_name": "com.facebook.katana",
-              "resource_id": "mp_top_picks_clickable_item",
-              "search_related": false,
-              "target_box": {
-                "height": 0.2633333333333333,
-                "width": 0.49444444444444446,
-                "x": 0.5055555555555555,
-                "y": 0.22875
-              }
-            },
-            {
-              "class_name": "android.view.ViewGroup",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Just listed, $50\u00a0\u00b7\u00a0PlayStation 5",
-              "package_name": "com.facebook.katana",
-              "resource_id": "mp_top_picks_clickable_item",
-              "search_related": false,
-              "target_box": {
-                "height": 0.26375,
-                "width": 0.49537037037037035,
-                "x": 0.0,
-                "y": 0.4925
-              }
-            },
-            {
-              "class_name": "android.view.ViewGroup",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Just listed, $140\u00a0\u00b7\u00a0Canon Len EF 50MM f/1.4 USM",
-              "package_name": "com.facebook.katana",
-              "resource_id": "mp_top_picks_clickable_item",
-              "search_related": false,
-              "target_box": {
-                "height": 0.26375,
-                "width": 0.49444444444444446,
-                "x": 0.5055555555555555,
-                "y": 0.4925
-              }
-            },
-            {
-              "class_name": "android.view.ViewGroup",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "$1,150 marked down from $1,900MSI STEALTH A16 AI+ A3HVGG-002US (2025) Gaming Laptop",
-              "package_name": "com.facebook.katana",
-              "resource_id": "mp_top_picks_clickable_item",
-              "search_related": false,
-              "target_box": {
-                "height": 0.24416666666666667,
-                "width": 0.49537037037037035,
-                "x": 0.0,
-                "y": 0.7558333333333334
-              }
-            },
-            {
-              "class_name": "android.view.ViewGroup",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "$1,000\u00a0\u00b7\u00a0MacBook Air M4, 15 inch",
-              "package_name": "com.facebook.katana",
-              "resource_id": "mp_top_picks_clickable_item",
-              "search_related": false,
-              "target_box": {
-                "height": 0.24416666666666667,
-                "width": 0.49444444444444446,
-                "x": 0.5055555555555555,
-                "y": 0.7558333333333334
-              }
-            },
-            {
-              "class_name": "android.widget.FrameLayout",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Menu | Marketplace | Tap to view your Marketplace account | What do you want to buy?",
-              "package_name": "com.facebook.katana",
-              "resource_id": "com.facebook.katana:id/(name removed)",
-              "search_related": false,
-              "target_box": {
-                "height": 0.050416666666666665,
-                "width": 1.0,
-                "x": 0.0,
-                "y": 0.08458333333333333
-              }
-            },
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "Menu",
-              "package_name": "com.facebook.katana",
-              "resource_id": "com.facebook.katana:id/(name removed)",
-              "search_related": false,
-              "target_box": {
-                "height": 0.050416666666666665,
-                "width": 0.11203703703703703,
-                "x": 0.010185185185185186,
-                "y": 0.08458333333333333
-              }
-            },
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "Tap to view your Marketplace account",
-              "package_name": "com.facebook.katana",
-              "resource_id": "com.facebook.katana:id/(name removed)",
-              "search_related": false,
-              "target_box": {
-                "height": 0.050416666666666665,
-                "width": 0.11203703703703703,
-                "x": 0.7657407407407407,
-                "y": 0.08458333333333333
-              }
-            },
-            {
-              "class_name": "android.widget.Button",
-              "clickable": true,
-              "component_type": "button",
-              "enabled": true,
-              "focused": false,
-              "label": "What do you want to buy?",
-              "package_name": "com.facebook.katana",
-              "resource_id": "com.facebook.katana:id/(name removed)",
-              "search_related": false,
-              "target_box": {
-                "height": 0.050416666666666665,
-                "width": 0.11203703703703703,
-                "x": 0.8777777777777778,
-                "y": 0.08458333333333333
-              }
-            },
-            {
-              "class_name": "android.view.View",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Home, tab 1 of 6",
-              "package_name": "com.facebook.katana",
-              "resource_id": "com.facebook.katana:id/(name removed)",
-              "search_related": false,
-              "target_box": {
-                "height": 0.050416666666666665,
-                "width": 0.16666666666666666,
-                "x": 0.0,
-                "y": 0.03333333333333333
-              }
-            },
-            {
-              "class_name": "android.view.View",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Reels, tab 2 of 6",
-              "package_name": "com.facebook.katana",
-              "resource_id": "com.facebook.katana:id/(name removed)",
-              "search_related": false,
-              "target_box": {
-                "height": 0.050416666666666665,
-                "width": 0.16666666666666666,
-                "x": 0.16666666666666666,
-                "y": 0.03333333333333333
-              }
-            },
-            {
-              "class_name": "android.view.View",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Friends, tab 3 of 6",
-              "package_name": "com.facebook.katana",
-              "resource_id": "com.facebook.katana:id/(name removed)",
-              "search_related": false,
-              "target_box": {
-                "height": 0.050416666666666665,
-                "width": 0.16666666666666666,
-                "x": 0.3333333333333333,
-                "y": 0.03333333333333333
-              }
-            },
-            {
-              "class_name": "android.view.View",
-              "clickable": true,
-              "component_type": "touch_target",
-              "enabled": true,
-              "focused": false,
-              "label": "Marketplace, tab 4 of 6",
-              "package_name": "com.facebook.katana",
-              "resource_id": "com.facebook.katana:id/(name removed)",
-              "search_related": false,
-              "target_box": {
-                "height": 0.050416666666666665,
-                "width": 0.16666666666666666,
-                "x": 0.5,
-                "y": 0.03333333333333333
-              }
-            }
-          ],
-          "device": {
-            "activity_name": ".LoginActivity",
-            "density": 440,
-            "height": 2400,
-            "orientation": "portrait",
-            "package_name": "com.facebook.katana",
-            "serial": "10.0.0.206:43337",
-            "width": 1080
-          },
-          "hierarchy_path": "runs/facebook-20260322-210432/20260322-210633.xml",
-          "package_name": "com.facebook.katana",
-          "screenshot_path": "runs/facebook-20260322-210432/20260322-210633.png",
-          "visible_text": [
-            "Sell",
-            "For you, Tab, 1 of 3",
-            "For you",
-            "Local, Tab, 2 of 3",
-            "Local",
-            "Jobs, Tab, 3 of 3",
-            "Jobs",
-            "Tap to view categories and more",
-            "More",
-            "Today's picks",
-            "Location: Bothell, WA",
-            "Bothell, WA",
-            "Just listed, $90\u00a0\u00b7\u00a0Samsung 32\" 1440p QHD Computer Monitor - Color Calibrated",
-            "Just listed",
-            "$90\u00a0\u00b7\u00a0Samsung 32\" 1440p QHD Computer Monitor - Color Calibrated",
-            "Just listed, $80\u00a0\u00b7\u00a0LG 32 inch 4K monitor",
-            "$80\u00a0\u00b7\u00a0LG 32 inch 4K monitor",
-            "Just listed, $50\u00a0\u00b7\u00a0PlayStation 5",
-            "$50\u00a0\u00b7\u00a0PlayStation 5",
-            "Just listed, $140\u00a0\u00b7\u00a0Canon Len EF 50MM f/1.4 USM",
-            "$140\u00a0\u00b7\u00a0Canon Len EF 50MM f/1.4 USM",
-            "$1,150 marked down from $1,900MSI STEALTH A16 AI+ A3HVGG-002US (2025) Gaming Laptop",
-            "$1,000\u00a0\u00b7\u00a0MacBook Air M4, 15 inch",
-            "Menu",
-            "Marketplace",
-            "Tap to view your Marketplace account",
-            "What do you want to buy?",
-            "Home, tab 1 of 6",
-            "Reels, tab 2 of 6",
-            "Friends, tab 3 of 6",
-            "Marketplace, tab 4 of 6",
-            "Notifications, tab 5 of 6, 10 or more new",
-            "Profile, tab 6 of 6"
-          ]
-        }
+        "activity": null,
+        "package_name": "com.facebook.katana"
       }
+    },
+    {
+      "action": "tap",
+      "activity_name": ".LoginActivity",
+      "allowed": true,
+      "package_name": "com.facebook.katana",
+      "reason": "Decision passed local safety checks.",
+      "step": 13,
+      "target_box": {
+        "height": 0.050416666666666665,
+        "width": 0.16666666666666666,
+        "x": 0.5,
+        "y": 0.08375
+      },
+      "target_label": "Marketplace, tab 4 of 6",
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    },
+    {
+      "action": "tap",
+      "activity_name": ".LoginActivity",
+      "allowed": true,
+      "package_name": "com.facebook.katana",
+      "reason": "Decision passed local safety checks.",
+      "step": 14,
+      "target_box": {
+        "height": 0.24416666666666667,
+        "width": 0.49537037037037035,
+        "x": 0.0,
+        "y": 0.7558333333333334
+      },
+      "target_label": "Just listed, $850\u00a0\u00b7\u00a0Gaming PC",
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    },
+    {
+      "action": "tap",
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "allowed": true,
+      "package_name": "com.facebook.katana",
+      "reason": "Decision passed local safety checks.",
+      "step": 15,
+      "target_box": {
+        "height": 0.06041666666666667,
+        "width": 0.9388888888888889,
+        "x": 0.030555555555555555,
+        "y": 0.8770833333333333
+      },
+      "target_label": "See more",
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    },
+    {
+      "action": "type",
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "allowed": true,
+      "package_name": "com.facebook.katana",
+      "reason": "Decision passed local safety checks.",
+      "step": 16,
+      "target_box": {
+        "height": 0.04583333333333333,
+        "width": 0.7018518518518518,
+        "x": 0.06111111111111111,
+        "y": 0.7445833333333334
+      },
+      "target_label": "Hi, is this available?",
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    },
+    {
+      "action": "tap",
+      "activity_name": ".activity.react.ImmersiveReactActivity",
+      "allowed": true,
+      "package_name": "com.facebook.katana",
+      "reason": "Decision passed local safety checks.",
+      "step": 17,
+      "target_box": {
+        "height": 0.03,
+        "width": 0.15555555555555556,
+        "x": 0.7833333333333333,
+        "y": 0.6179166666666667
+      },
+      "target_label": "Send",
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
     }
   ],
   "marketplace_location": "Bothell, Washington",
@@ -543,8 +245,8 @@
     "Menu tab 5 of 5",
     "Marketplace tile"
   ],
-  "reason": "Max steps reached.",
-  "screen_transition_confidence": 0.8,
+  "reason": "Manual account verification required before automation can continue.",
+  "screen_transition_confidence": 1.0,
   "search_transitions": [
     {
       "action": "tap",
@@ -802,7 +504,45 @@
       "submit_after_input": false,
       "to_screen_id": "com-facebook-katana-activity-react-immersivereactactivity-de4f8cb35ee37c81",
       "trigger_label": "Hi, is this available?"
+    },
+    {
+      "action": "type",
+      "from_screen_id": "com-facebook-katana-activity-react-immersivereactactivity-f481498b29382877",
+      "input_text": "Hi, can you do $600?",
+      "result_activity": ".activity.react.ImmersiveReactActivity",
+      "result_anchors": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 3",
+        "Gaming PC",
+        "$850",
+        "Just listed\u00a0\u00b7\u00a011 minutes ago",
+        "Like",
+        "Comment",
+        "Save",
+        "Share",
+        "Message seller",
+        "Hi, can you do $600?",
+        "Send"
+      ],
+      "result_clickable_text": [
+        "Close",
+        "Navigate to Search",
+        "More actions",
+        "Product Image,1 of 3",
+        "Like",
+        "Comment",
+        "Save",
+        "Share",
+        "Hi, can you do $600?",
+        "Send"
+      ],
+      "result_package": "com.facebook.katana",
+      "submit_after_input": false,
+      "to_screen_id": "com-facebook-katana-activity-react-immersivereactactivity-f2a621ac68ccf7bb",
+      "trigger_label": "Hi, is this available?"
     }
   ],
-  "status": "max_steps_reached"
+  "status": "manual_verification_required"
 }

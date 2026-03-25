@@ -1,0 +1,18 @@
+{
+  "app": "crowdtap",
+  "failure_count": 1,
+  "last_detected_inputs": [],
+  "last_screen_signature": {
+    "activity_name": "crc64fb407d7fb80034b3.MainActivity",
+    "clickable_text": [],
+    "package_name": "com.suzy.droid",
+    "screenshot_sha256": "",
+    "text_digest": "secure-surface",
+    "top_visible_text": []
+  },
+  "last_successful_screen": null,
+  "last_working_action_chain": [],
+  "reason": "Launch currently lands on a secure surface that blocks screenshot and hierarchy capture.",
+  "screen_transition_confidence": 0.0,
+  "status": "blocked"
+}

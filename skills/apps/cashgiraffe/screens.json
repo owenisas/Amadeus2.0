@@ -1,0 +1,18 @@
+{
+  "screens": [
+    {
+      "id": "cashgiraffe-welcome-consent",
+      "package_name": "cashgiraffe.app",
+      "activity_name": "de.mcoins.applike.LauncherDefault",
+      "signature": {
+        "visible_text": [
+          "Welcome to Cash Giraffe!",
+          "Play games and earn money or gift cards!",
+          "Accept",
+          "Reject"
+        ]
+      },
+      "note": "Initial consent gate shown after the app launches."
+    }
+  ]
+}

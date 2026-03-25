@@ -1,0 +1,23 @@
+{
+  "app_name": "cashgiraffe",
+  "observed_at": "2026-03-25",
+  "summary": {
+    "installed": true,
+    "launch_blockers": [
+      "MIUI chain start confirmation"
+    ],
+    "current_surface": "welcome-consent"
+  },
+  "surfaces": [
+    {
+      "id": "cashgiraffe-welcome-consent",
+      "visible_text": [
+        "Welcome to Cash Giraffe!",
+        "Play games and earn money or gift cards!",
+        "Complete sign up and earn 3,599",
+        "Accept",
+        "Reject"
+      ]
+    }
+  ]
+}

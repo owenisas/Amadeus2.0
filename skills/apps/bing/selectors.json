@@ -1,0 +1,58 @@
+{
+  "selectors": [
+    {
+      "activity_name": "com.microsoft.sapphire.app.main.MainSapphireActivity",
+      "anchor_text": [
+        "Rewards",
+        "Earn Microsoft Rewards just for searching",
+        "Image Creator"
+      ],
+      "label": "Rewards",
+      "package_name": "com.microsoft.bing",
+      "reason": "Open the Bing Rewards surface from the main shell.",
+      "screen_id": "bing-main-home",
+      "target_box": {
+        "height": 0.09625,
+        "width": 0.35648148148148145,
+        "x": 0.040740740740740744,
+        "y": 0.5645833333333333
+      }
+    },
+    {
+      "activity_name": "com.microsoft.sapphire.runtime.templates.TemplateActivity",
+      "anchor_text": [
+        "Rewards",
+        "Today's points",
+        "Search to earn"
+      ],
+      "label": "real estate market trends, earn 5 points",
+      "package_name": "com.microsoft.bing",
+      "reason": "Representative first visible search reward row. Equivalent search rows can be tapped in sequence until Search to earn reaches 50/50.",
+      "screen_id": "bing-rewards-search",
+      "target_box": {
+        "height": 0.04708333333333333,
+        "width": 0.7962962962962963,
+        "x": 0.10185185185185185,
+        "y": 0.5245833333333333
+      }
+    },
+    {
+      "activity_name": "com.microsoft.sapphire.app.main.MainSapphireActivity",
+      "anchor_text": [
+        "Search",
+        "Camera search",
+        "Voice search"
+      ],
+      "label": "news-feed-top-article",
+      "package_name": "com.microsoft.bing",
+      "reason": "Representative tap region for the top news article after one upward swipe from the Bing home shell. Use this to drive Read to earn with unique article titles.",
+      "screen_id": "bing-home-news-feed",
+      "target_box": {
+        "height": 0.16916666666666666,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.17916666666666667
+      }
+    }
+  ]
+}

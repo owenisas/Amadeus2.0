@@ -1,0 +1,51 @@
+{
+  "app": "bing",
+  "app_name": "bing",
+  "last_updated": "2026-03-23T00:13:40-07:00",
+  "package_name": "com.microsoft.bing",
+  "rewards_status": {
+    "daily_points": 80,
+    "daily_cap": 80,
+    "search_points": 50,
+    "search_cap": 50,
+    "read_points": 30,
+    "read_cap": 30,
+    "join_gate_visible": true,
+    "join_gate_note": "Tapping Join to claim triggered a microphone permission prompt. Deny it."
+  },
+  "recent_screens": [
+    {
+      "activity_name": "com.microsoft.sapphire.app.main.MainSapphireActivity",
+      "package_name": "com.microsoft.bing",
+      "visible_text": [
+        "Rewards",
+        "Earn Microsoft Rewards just for searching",
+        "Image Creator",
+        "Video Creator"
+      ]
+    },
+    {
+      "activity_name": "com.microsoft.sapphire.runtime.templates.TemplateActivity",
+      "clickable_text": [
+        "Claim free entry",
+        "Instant Win",
+        "Back",
+        "Search | Voice search",
+        "Voice search",
+        "Refresh",
+        "More"
+      ],
+      "last_seen_at": "2026-03-23T00:13:40-07:00",
+      "package_name": "com.microsoft.bing",
+      "screen_id": "bing-rewards-summary-80-of-80",
+      "seen_count": 1,
+      "visible_text": [
+        "Rewards",
+        "80 pts",
+        "Today's points 80/80",
+        "Search to earn, 50 points earned",
+        "Read to earn, 30 points earned"
+      ]
+    }
+  ]
+}

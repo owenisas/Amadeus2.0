@@ -1,0 +1,36 @@
+{
+  "selectors": [
+    {
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "anchor_text": [
+        "PLAY"
+      ],
+      "label": "PLAY",
+      "package_name": "com.hideseek.swordslash",
+      "reason": "Primary start button from the main menu.",
+      "screen_id": "swordslash-menu",
+      "target_box": {
+        "height": 0.12,
+        "width": 0.36,
+        "x": 0.32,
+        "y": 0.68
+      }
+    },
+    {
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "anchor_text": [
+        "STAGE 2"
+      ],
+      "label": "throw-center",
+      "package_name": "com.hideseek.swordslash",
+      "reason": "Safe center-lane throw area that avoids the bottom ad banner.",
+      "screen_id": "swordslash-live-stage",
+      "target_box": {
+        "height": 0.18,
+        "width": 0.22,
+        "x": 0.39,
+        "y": 0.58
+      }
+    }
+  ]
+}

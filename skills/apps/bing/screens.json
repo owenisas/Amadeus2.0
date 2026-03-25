@@ -1,0 +1,102 @@
+{
+  "screens": {
+    "com-microsoft-bing-bingappglobalfreactivity-copilot-intro": {
+      "activity_name": "com.microsoft.sapphire.features.firstrun.BingAppGlobalFreActivity",
+      "anchors": [
+        "Introducing Copilot Search in Bing",
+        "Try it now",
+        "Maybe later"
+      ],
+      "clickable_text": [
+        "Try it now",
+        "Maybe later"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.microsoft.bing",
+      "screen_id": "com-microsoft-bing-bingappglobalfreactivity-copilot-intro",
+      "signature": {
+        "activity_name": "com.microsoft.sapphire.features.firstrun.BingAppGlobalFreActivity",
+        "clickable_text": [
+          "Try it now",
+          "Maybe later"
+        ],
+        "package_name": "com.microsoft.bing",
+        "screenshot_sha256": "",
+        "text_digest": "copilot-intro",
+        "top_visible_text": [
+          "Introducing Copilot Search in Bing",
+          "Try it now",
+          "Maybe later"
+        ]
+      }
+    },
+    "com-microsoft-bing-com-microsoft-sapphire-features-firstrun-bingappglobalfreactivity-92522ded29230b6b": {
+      "activity_name": "com.microsoft.sapphire.features.firstrun.BingAppGlobalFreActivity",
+      "anchors": [
+        "Introducing\nCopilot Search in Bing",
+        "Try it now",
+        "Maybe later",
+        "By continuing, you're accepting our Terms of Service. To learn more, see the Terms of Use, Microsoft Privacy Statement and Microsoft Services Agreement"
+      ],
+      "clickable_text": [
+        "Try it now",
+        "Maybe later"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Try it now",
+          "package_name": "com.microsoft.bing",
+          "resource_id": "com.microsoft.bing:id/sapphire_fre_bing_yes_button",
+          "search_related": false,
+          "target_box": {
+            "height": 0.055,
+            "width": 0.837037037037037,
+            "x": 0.08148148148148149,
+            "y": 0.8004166666666667
+          }
+        },
+        {
+          "class_name": "android.widget.TextView",
+          "clickable": true,
+          "component_type": "touch_target",
+          "enabled": true,
+          "focused": false,
+          "label": "Maybe later",
+          "package_name": "com.microsoft.bing",
+          "resource_id": "com.microsoft.bing:id/sapphire_fre_bing_no_button",
+          "search_related": false,
+          "target_box": {
+            "height": 0.055,
+            "width": 0.837037037037037,
+            "x": 0.08148148148148149,
+            "y": 0.8645833333333334
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.microsoft.bing",
+      "screen_id": "com-microsoft-bing-com-microsoft-sapphire-features-firstrun-bingappglobalfreactivity-92522ded29230b6b",
+      "signature": {
+        "activity_name": "com.microsoft.sapphire.features.firstrun.BingAppGlobalFreActivity",
+        "clickable_text": [
+          "Try it now",
+          "Maybe later"
+        ],
+        "package_name": "com.microsoft.bing",
+        "screenshot_sha256": "f261cb27d84206b9",
+        "text_digest": "92522ded29230b6b",
+        "top_visible_text": [
+          "Introducing\nCopilot Search in Bing",
+          "Try it now",
+          "Maybe later",
+          "By continuing, you're accepting our Terms of Service. To learn more, see the Terms of Use, Microsoft Privacy Statement and Microsoft Services Agreement"
+        ]
+      }
+    }
+  }
+}

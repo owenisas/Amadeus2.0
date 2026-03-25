@@ -1,0 +1,26 @@
+{
+  "screens": [
+    {
+      "id": "swordslash-menu",
+      "package_name": "com.hideseek.swordslash",
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "signature": {
+        "visible_text": [
+          "PLAY"
+        ]
+      },
+      "note": "Main menu surface observed before the first run started."
+    },
+    {
+      "id": "swordslash-live-stage",
+      "package_name": "com.hideseek.swordslash",
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "signature": {
+        "visible_text": [
+          "STAGE 2"
+        ]
+      },
+      "note": "In-stage play surface. Treat the bottom banner as an ad and avoid it."
+    }
+  ]
+}

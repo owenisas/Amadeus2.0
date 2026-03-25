@@ -5,10 +5,6 @@
 <!-- older entries pruned -->
 - Status: max_steps_reached
 - Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-908153ea0ac53092
-
-- Status: max_steps_reached
-- Reason: Max steps reached.
 - Last screen: com-facebook-katana-activity-react-immersivereactactivity-75f491c819218952
 
 - Status: max_steps_reached
@@ -79,3 +75,7 @@
 - Status: max_steps_reached
 - Reason: Max steps reached.
 - Last screen: com-facebook-katana-loginactivity-231d715c3dffd346
+
+- Status: manual_verification_required
+- Reason: Manual account verification required before automation can continue.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-f2a621ac68ccf7bb

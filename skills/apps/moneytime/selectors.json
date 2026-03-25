@@ -1,0 +1,153 @@
+{
+  "selectors": [
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Home",
+        "Games",
+        "Offers",
+        "Cashout"
+      ],
+      "label": "Home",
+      "package_name": "com.money.time",
+      "reason": "Bottom navigation entry for returning to the home earning summary.",
+      "screen_id": "moneytime-games-library",
+      "target_box": {
+        "height": 0.027680140597539543,
+        "width": 0.25,
+        "x": 0.0,
+        "y": 0.9723198594024605
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Home",
+        "Games",
+        "Offers",
+        "Cashout"
+      ],
+      "label": "Games",
+      "package_name": "com.money.time",
+      "reason": "Bottom navigation entry for the tracked game library.",
+      "screen_id": "moneytime-home-earning-window",
+      "target_box": {
+        "height": 0.027680140597539543,
+        "width": 0.25,
+        "x": 0.25,
+        "y": 0.9723198594024605
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Home",
+        "Games",
+        "Offers",
+        "Cashout"
+      ],
+      "label": "Cashout",
+      "package_name": "com.money.time",
+      "reason": "Bottom navigation entry for checking whether the cash balance has converted yet.",
+      "screen_id": "moneytime-home-earning-window",
+      "target_box": {
+        "height": 0.027680140597539543,
+        "width": 0.25,
+        "x": 0.75,
+        "y": 0.9723198594024605
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Games",
+        "Your Games",
+        "New Games",
+        "Sword Slash"
+      ],
+      "label": "Sword Slash",
+      "package_name": "com.money.time",
+      "reason": "Tracked high-yield game card under Your Games.",
+      "screen_id": "moneytime-games-library",
+      "target_box": {
+        "height": 0.2860272671353251,
+        "width": 0.9185185185185185,
+        "x": 0.040740740740740744,
+        "y": 0.16695957820738135
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Games",
+        "Your Games",
+        "New Games",
+        "Ball Sort Puzzle"
+      ],
+      "label": "Ball Sort Puzzle",
+      "package_name": "com.money.time",
+      "reason": "Tracked game card that moved into active earning after install and first play session.",
+      "screen_id": "moneytime-games-library",
+      "target_box": {
+        "height": 0.28646748681898067,
+        "width": 0.9185185185185185,
+        "x": 0.040740740740740744,
+        "y": 0.4771528998242531
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Games",
+        "Your Games",
+        "Juicy Candy Quest"
+      ],
+      "label": "Juicy Candy Quest",
+      "package_name": "com.money.time",
+      "reason": "Tracked game card after install and initial in-level session.",
+      "screen_id": "moneytime-games-library",
+      "target_box": {
+        "height": 0.21221441124780317,
+        "width": 0.9185185185185185,
+        "x": 0.040740740740740744,
+        "y": 0.7877855887521968
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Ball Sort Puzzle",
+        "Play Ball Sort Puzzle",
+        "CONTINUE"
+      ],
+      "label": "CONTINUE",
+      "package_name": "com.money.time",
+      "reason": "Offer modal primary CTA that opens Ball Sort Puzzle in Play Store.",
+      "screen_id": "moneytime-games-library",
+      "target_box": {
+        "height": 0.06766256590509666,
+        "width": 0.6944444444444444,
+        "x": 0.1527777777777778,
+        "y": 0.7948154657293497
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Juicy Candy Quest",
+        "Play Juicy Candy Quest",
+        "CONTINUE"
+      ],
+      "label": "CONTINUE",
+      "package_name": "com.money.time",
+      "reason": "Offer modal primary CTA that opens Juicy Candy Quest in Play Store.",
+      "screen_id": "moneytime-games-library",
+      "target_box": {
+        "height": 0.06766256590509666,
+        "width": 0.6944444444444444,
+        "x": 0.1527777777777778,
+        "y": 0.7948154657293497
+      }
+    }
+  ]
+}

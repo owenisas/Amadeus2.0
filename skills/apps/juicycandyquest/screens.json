@@ -1,0 +1,29 @@
+{
+  "screens": [
+    {
+      "id": "juicycandyquest-menu",
+      "package_name": "com.hideseek.juicycandyquest",
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "signature": {
+        "visible_text": [
+          "LEVEL 1",
+          "Daily",
+          "Stage"
+        ]
+      },
+      "note": "Main menu before the first level starts."
+    },
+    {
+      "id": "juicycandyquest-tutorial-overlay",
+      "package_name": "com.hideseek.juicycandyquest",
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "signature": {
+        "visible_text": [
+          "Match 3 of the same Candy!",
+          "Close"
+        ]
+      },
+      "note": "First in-level tutorial overlay shown on level 1."
+    }
+  ]
+}

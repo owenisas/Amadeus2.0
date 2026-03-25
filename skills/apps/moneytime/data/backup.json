@@ -1,0 +1,40 @@
+{
+  "app_name": "moneytime",
+  "observed_at": "2026-03-25",
+  "summary": {
+    "installed": true,
+    "onboarding_complete": true,
+    "cashout_amount": "$0.00",
+    "pending_monies": "85519 / 350000",
+    "earning_window_remaining": "0h 59m 49s",
+    "tracked_games": [
+      "Sword Slash",
+      "Ball Sort Puzzle",
+      "Juicy Candy Quest"
+    ]
+  },
+  "surfaces": [
+    {
+      "id": "moneytime-home-earning-window",
+      "visible_text": [
+        "Invite friends",
+        "Fill the Loyalty Progress before the end of the timer:",
+        "85519",
+        "/ 350000",
+        "MONIES",
+        "$0.00",
+        "CASHOUT"
+      ]
+    },
+    {
+      "id": "moneytime-games-library",
+      "visible_text": [
+        "Games",
+        "Your Games",
+        "Sword Slash",
+        "Ball Sort Puzzle",
+        "Juicy Candy Quest"
+      ]
+    }
+  ]
+}

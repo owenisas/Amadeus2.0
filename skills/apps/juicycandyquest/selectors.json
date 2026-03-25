@@ -1,0 +1,39 @@
+{
+  "selectors": [
+    {
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "anchor_text": [
+        "LEVEL 1",
+        "Daily",
+        "Stage"
+      ],
+      "label": "LEVEL 1",
+      "package_name": "com.hideseek.juicycandyquest",
+      "reason": "Primary start button on the main menu.",
+      "screen_id": "juicycandyquest-menu",
+      "target_box": {
+        "height": 0.09,
+        "width": 0.56,
+        "x": 0.22,
+        "y": 0.61
+      }
+    },
+    {
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "anchor_text": [
+        "Match 3 of the same Candy!",
+        "Close"
+      ],
+      "label": "Close",
+      "package_name": "com.hideseek.juicycandyquest",
+      "reason": "Tutorial overlay dismiss button if it accepts taps.",
+      "screen_id": "juicycandyquest-tutorial-overlay",
+      "target_box": {
+        "height": 0.07,
+        "width": 0.32,
+        "x": 0.34,
+        "y": 0.61
+      }
+    }
+  ]
+}

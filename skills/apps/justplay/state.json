@@ -1,0 +1,10 @@
+{
+  "last_activity_name": ".offersList.OffersListActivity",
+  "last_package_name": "com.justplay.app",
+  "last_screen_id": "justplay-welcome-reward",
+  "notes": [
+    "Installed from Play Store on 2026-03-25.",
+    "First verified in-app state is a welcome dialog with a safe OK acknowledgement.",
+    "Current deepest verified state is a Welcome Reward claim gate."
+  ]
+}

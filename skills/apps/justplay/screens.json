@@ -1,0 +1,30 @@
+{
+  "screens": [
+    {
+      "id": "justplay-welcome-dialog",
+      "package_name": "com.justplay.app",
+      "activity_name": ".offersList.OffersListActivity",
+      "signature": {
+        "visible_text": [
+          "#1 Loyalty Program for Gamers",
+          "Welcome to JustPlay, the 24h Rewards App that allows you to earn REAL MONEY for playing games you love!",
+          "OK"
+        ]
+      },
+      "note": "Initial welcome dialog shown on first successful app open."
+    },
+    {
+      "id": "justplay-welcome-reward",
+      "package_name": "com.justplay.app",
+      "activity_name": ".offersList.OffersListActivity",
+      "signature": {
+        "visible_text": [
+          "Welcome Reward",
+          "Here are 20,000 loyalty coins for you",
+          "Claim Now!"
+        ]
+      },
+      "note": "Reward claim gate shown after clearing the initial onboarding overlays."
+    }
+  ]
+}

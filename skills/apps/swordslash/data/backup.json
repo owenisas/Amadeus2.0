@@ -1,0 +1,17 @@
+{
+  "app_name": "swordslash",
+  "observed_at": "2026-03-25",
+  "summary": {
+    "installed": true,
+    "tracked_by_moneytime": true,
+    "known_stage": "STAGE 2"
+  },
+  "surfaces": [
+    {
+      "id": "swordslash-live-stage",
+      "visible_text": [
+        "STAGE 2"
+      ]
+    }
+  ]
+}

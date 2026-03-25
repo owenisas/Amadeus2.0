@@ -1,0 +1,75 @@
+{
+  "screens": {
+    "com-google-android-apps-paidtasks-onboarding-warmwelcomeactivity-f83af450d73ef081": {
+      "activity_name": ".onboarding.WarmWelcomeActivity",
+      "anchors": [
+        "Setup encountered an error, please try again later.",
+        "Exit"
+      ],
+      "clickable_text": [
+        "Exit"
+      ],
+      "components": [
+        {
+          "class_name": "android.widget.Button",
+          "clickable": true,
+          "component_type": "button",
+          "enabled": true,
+          "focused": false,
+          "label": "Exit",
+          "package_name": "com.google.android.apps.paidtasks",
+          "resource_id": "android:id/button2",
+          "search_related": false,
+          "target_box": {
+            "height": 0.055,
+            "width": 0.16296296296296298,
+            "x": 0.6888888888888889,
+            "y": 0.5233333333333333
+          }
+        }
+      ],
+      "fallback_actions": [],
+      "package_name": "com.google.android.apps.paidtasks",
+      "screen_id": "com-google-android-apps-paidtasks-onboarding-warmwelcomeactivity-f83af450d73ef081",
+      "signature": {
+        "activity_name": ".onboarding.WarmWelcomeActivity",
+        "clickable_text": [
+          "Exit"
+        ],
+        "package_name": "com.google.android.apps.paidtasks",
+        "screenshot_sha256": "04de156e8fd43d39",
+        "text_digest": "f83af450d73ef081",
+        "top_visible_text": [
+          "Setup encountered an error, please try again later.",
+          "Exit"
+        ]
+      }
+    },
+    "com-google-android-apps-paidtasks-onboarding-warmwelcomeactivity-setup-error": {
+      "activity_name": ".onboarding.WarmWelcomeActivity",
+      "anchors": [
+        "Setup encountered an error, please try again later.",
+        "Exit"
+      ],
+      "clickable_text": [
+        "Exit"
+      ],
+      "fallback_actions": [],
+      "package_name": "com.google.android.apps.paidtasks",
+      "screen_id": "com-google-android-apps-paidtasks-onboarding-warmwelcomeactivity-setup-error",
+      "signature": {
+        "activity_name": ".onboarding.WarmWelcomeActivity",
+        "clickable_text": [
+          "Exit"
+        ],
+        "package_name": "com.google.android.apps.paidtasks",
+        "screenshot_sha256": "",
+        "text_digest": "setup-error",
+        "top_visible_text": [
+          "Setup encountered an error, please try again later.",
+          "Exit"
+        ]
+      }
+    }
+  }
+}

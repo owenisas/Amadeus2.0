@@ -1,0 +1,30 @@
+{
+  "app": "opinionrewards",
+  "app_name": "opinionrewards",
+  "last_updated": "2026-03-22T23:37:27-07:00",
+  "package_name": "com.google.android.apps.paidtasks",
+  "recent_screens": [
+    {
+      "activity_name": ".onboarding.WarmWelcomeActivity",
+      "package_name": "com.google.android.apps.paidtasks",
+      "visible_text": [
+        "Setup encountered an error, please try again later.",
+        "Exit"
+      ]
+    },
+    {
+      "activity_name": ".onboarding.WarmWelcomeActivity",
+      "clickable_text": [
+        "Exit"
+      ],
+      "last_seen_at": "2026-03-22T23:37:27-07:00",
+      "package_name": "com.google.android.apps.paidtasks",
+      "screen_id": "com-google-android-apps-paidtasks-onboarding-warmwelcomeactivity-f83af450d73ef081",
+      "seen_count": 1,
+      "visible_text": [
+        "Setup encountered an error, please try again later.",
+        "Exit"
+      ]
+    }
+  ]
+}

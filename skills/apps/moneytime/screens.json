@@ -1,0 +1,51 @@
+{
+  "screens": [
+    {
+      "id": "moneytime-home-earning-window",
+      "package_name": "com.money.time",
+      "activity_name": ".MainActivity",
+      "signature": {
+        "visible_text": [
+          "Invite friends",
+          "Fill the Loyalty Progress before the end of the timer:",
+          "MONIES",
+          "CASHOUT",
+          "Daily streak",
+          "Top Earners Games"
+        ]
+      },
+      "note": "Primary home screen showing the current earning-period timer, pending monies, and current cashout amount."
+    },
+    {
+      "id": "moneytime-games-library",
+      "package_name": "com.money.time",
+      "activity_name": ".MainActivity",
+      "signature": {
+        "visible_text": [
+          "Games",
+          "Your Games",
+          "New Games",
+          "Sword Slash",
+          "Ball Sort Puzzle",
+          "Juicy Candy Quest"
+        ]
+      },
+      "note": "Games tab showing tracked titles under Your Games and new offer candidates below."
+    },
+    {
+      "id": "moneytime-cashout",
+      "package_name": "com.money.time",
+      "activity_name": ".MainActivity",
+      "signature": {
+        "visible_text": [
+          "Cashout",
+          "Your total Cash Out are",
+          "$0.00",
+          "Cashout with PayPal",
+          "Gift card"
+        ]
+      },
+      "note": "Read-only payout screen. Use only to confirm whether a real balance is available."
+    }
+  ]
+}

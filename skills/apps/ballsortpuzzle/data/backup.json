@@ -1,0 +1,18 @@
+{
+  "app_name": "ballsortpuzzle",
+  "observed_at": "2026-03-25",
+  "summary": {
+    "installed": true,
+    "tracked_by_moneytime": true,
+    "first_level_completed": true
+  },
+  "surfaces": [
+    {
+      "id": "ballsortpuzzle-level-clear",
+      "visible_text": [
+        "Nicely Done!!",
+        "Next"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "selectors": [
+    {
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "anchor_text": [
+        "LEVEL 1",
+        "CLICK TO SELECT BALL"
+      ],
+      "label": "left-tube",
+      "package_name": "com.hideseek.fruitsortpuzzle",
+      "reason": "First source tube used in the proven opening sequence.",
+      "screen_id": "ballsortpuzzle-first-level",
+      "target_box": {
+        "height": 0.12,
+        "width": 0.16,
+        "x": 0.31,
+        "y": 0.46
+      }
+    },
+    {
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "anchor_text": [
+        "LEVEL 1",
+        "CLICK TO SELECT BALL"
+      ],
+      "label": "right-tube",
+      "package_name": "com.hideseek.fruitsortpuzzle",
+      "reason": "First destination tube used in the proven opening sequence.",
+      "screen_id": "ballsortpuzzle-first-level",
+      "target_box": {
+        "height": 0.12,
+        "width": 0.16,
+        "x": 0.59,
+        "y": 0.46
+      }
+    },
+    {
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "anchor_text": [
+        "Nicely Done!!",
+        "Next"
+      ],
+      "label": "Next",
+      "package_name": "com.hideseek.fruitsortpuzzle",
+      "reason": "Post-level CTA after a successful first clear.",
+      "screen_id": "ballsortpuzzle-level-clear",
+      "target_box": {
+        "height": 0.09,
+        "width": 0.5,
+        "x": 0.25,
+        "y": 0.63
+      }
+    }
+  ]
+}

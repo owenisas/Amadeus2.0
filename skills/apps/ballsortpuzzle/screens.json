@@ -1,0 +1,28 @@
+{
+  "screens": [
+    {
+      "id": "ballsortpuzzle-first-level",
+      "package_name": "com.hideseek.fruitsortpuzzle",
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "signature": {
+        "visible_text": [
+          "LEVEL 1",
+          "CLICK TO SELECT BALL"
+        ]
+      },
+      "note": "First puzzle board with tutorial guidance."
+    },
+    {
+      "id": "ballsortpuzzle-level-clear",
+      "package_name": "com.hideseek.fruitsortpuzzle",
+      "activity_name": "com.unity3d.player.UnityPlayerActivity",
+      "signature": {
+        "visible_text": [
+          "Nicely Done!!",
+          "Next"
+        ]
+      },
+      "note": "Post-level reward surface after the first board is cleared."
+    }
+  ]
+}

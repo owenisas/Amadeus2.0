@@ -1,0 +1,39 @@
+{
+  "selectors": [
+    {
+      "activity_name": ".offersList.OffersListActivity",
+      "anchor_text": [
+        "#1 Loyalty Program for Gamers",
+        "Welcome to JustPlay",
+        "OK"
+      ],
+      "label": "OK",
+      "package_name": "com.justplay.app",
+      "reason": "Dismiss the initial JustPlay welcome dialog to reach the main offers surface.",
+      "screen_id": "justplay-welcome-dialog",
+      "target_box": {
+        "height": 0.055,
+        "width": 0.7555555555555555,
+        "x": 0.12222222222222222,
+        "y": 0.6133333333333333
+      }
+    },
+    {
+      "activity_name": ".offersList.OffersListActivity",
+      "anchor_text": [
+        "Welcome Reward",
+        "Claim Now!"
+      ],
+      "label": "Claim Now!",
+      "package_name": "com.justplay.app",
+      "reason": "High-risk reward claim surface discovered after onboarding. Record it so the runtime can recognize and gate it.",
+      "screen_id": "justplay-welcome-reward",
+      "target_box": {
+        "height": 1.0,
+        "width": 1.0,
+        "x": 0.0,
+        "y": 0.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "app_name": "justplay",
+  "observed_at": "2026-03-25",
+  "summary": {
+    "installed": true,
+    "launch_blockers": [
+      "MIUI chain start confirmation"
+    ],
+    "current_surface": "welcome-reward"
+  },
+  "surfaces": [
+    {
+      "id": "justplay-welcome-dialog",
+      "visible_text": [
+        "#1 Loyalty Program for Gamers",
+        "Welcome to JustPlay, the 24h Rewards App that allows you to earn REAL MONEY for playing games you love!",
+        "OK"
+      ]
+    },
+    {
+      "id": "justplay-welcome-reward",
+      "visible_text": [
+        "Welcome Reward",
+        "Here are 20,000 loyalty coins for you",
+        "Claim Now!"
+      ]
+    }
+  ]
+}

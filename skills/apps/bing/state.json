@@ -1,0 +1,71 @@
+{
+  "app": "bing",
+  "failure_count": 0,
+  "last_detected_inputs": [],
+  "last_screen_signature": {
+    "activity_name": "com.microsoft.sapphire.runtime.templates.TemplateActivity",
+    "clickable_text": [
+      "Claim free entry",
+      "Instant Win",
+      "Back",
+      "Search | Voice search",
+      "Voice search",
+      "Refresh",
+      "More"
+    ],
+    "package_name": "com.microsoft.bing",
+    "screenshot_sha256": "bing-rewards-80-80",
+    "text_digest": "bing-rewards-80-of-80",
+    "top_visible_text": [
+      "Rewards",
+      "80",
+      "pts",
+      "Today's points",
+      "80/80",
+      "Search to earn, 50 points earned",
+      "Read to earn, 30 points earned"
+    ]
+  },
+  "last_successful_screen": "bing-rewards-summary-80-of-80",
+  "last_working_action_chain": [
+    {
+      "action": "tap",
+      "activity_name": "com.microsoft.sapphire.app.main.MainSapphireActivity",
+      "allowed": true,
+      "package_name": "com.microsoft.bing",
+      "reason": "Open Bing Rewards from the main shell.",
+      "step": 1,
+      "target_box": {
+        "height": 0.09625,
+        "width": 0.35648148148148145,
+        "x": 0.040740740740740744,
+        "y": 0.5645833333333333
+      },
+      "target_label": "Rewards",
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    },
+    {
+      "action": "tap",
+      "activity_name": "com.microsoft.sapphire.runtime.templates.TemplateActivity",
+      "allowed": true,
+      "package_name": "com.microsoft.bing",
+      "reason": "Tap the visible search task row to earn Bing search points.",
+      "step": 2,
+      "target_box": {
+        "height": 0.04708333333333333,
+        "width": 0.7962962962962963,
+        "x": 0.10185185185185185,
+        "y": 0.5245833333333333
+      },
+      "target_label": "search-task-row",
+      "tool_arguments": {},
+      "tool_name": null,
+      "tool_output": null
+    }
+  ],
+  "reason": "Bing Rewards reached the current in-app daily cap of 80/80 points without granting extra permissions.",
+  "screen_transition_confidence": 1.0,
+  "status": "completed"
+}
