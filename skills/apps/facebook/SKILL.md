@@ -60,10 +60,13 @@ description: App-specific navigation guidance for the Facebook Android workflow.
 - Marketplace listing detail can expose a reply composer via the `Hello, is this still available?` text input and nearby `Send` button.
 - Prefer reading inboxes and threads first. Only type or send when the goal includes the exact Marketplace reply intent.
 - Before rereading a long Marketplace thread from the beginning, consult `data/backup.md` and `data/backup.json` for the latest known thread summary, seller reply, and contacted-item context.
+- After sending seller messages during an active scan, periodically check the Marketplace-related inbox again before messaging more new listings so seller replies are not missed.
 - When the goal asks to contact a Marketplace seller but does not provide exact message text, compare the ask price against a profitable target first. If the ask price is too high for a profitable flip, start with a direct offer instead of an availability check.
-- Example: for a `MacBook Air M2 13-inch 16GB 256GB` listed at `$700`, the profitable target is `$450`, so the opener should be `Hi, can you do $450?`
-- If the listing is already at or below the profitable target, fall back to a short custom availability opener that references the listing title.
-- If key specs or current condition are still unclear after checking the text and visible product image, ask the seller for the missing details instead of guessing. Example: `Hi, can you share the full specs and current condition for the MacBook Air?`
+- Use short human wording. Do not send robotic templates like `Hi, is this available?` when the runtime can derive a more specific opener from the listing.
+- Never paste the full Marketplace listing title into the opener. Reduce it to a short natural reference like `the MacBook Air`, `your gaming PC`, `the Canon lens`, or `the monitor`.
+- Example: for a `MacBook Air M2 13-inch 16GB 256GB` listed at `$700`, the profitable target is `$450`, so the opener should be closer to `Hey, if it's in good shape, would you take $450 for your MacBook Air?`
+- If the listing is already at or below the profitable target, fall back to a short custom availability opener such as `Hey, is your MacBook Air still available?`
+- If key specs or current condition are still unclear after checking the text and visible product image, ask the seller for the missing details instead of guessing. Example: `Hey, can you share the specs and current condition for your MacBook Air?`
 - Buyer meetup preference for Marketplace deals is `University of Washington Bothell`. When arranging a meetup without a more specific user instruction, prefer proposing that location first.
 - If the seller says the item is `pickup only`, ask for the exact address or at least the closest usable cross streets before assuming the meetup is settled.
 - When the thread backup already contains seller location or pickup details, use that backup context instead of asking the seller to repeat the same information.

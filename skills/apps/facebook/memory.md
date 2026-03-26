@@ -3,44 +3,6 @@
 - Logged-in phone flow is working on `com.facebook.katana`.
 
 <!-- older entries pruned -->
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-75f491c819218952
-
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-8d04e23de0d3661f
-
-- Status: manual_login_required
-- Reason: Manual login required before automation can continue.
-
-- Status: completed
-- Reason: The saved backup already contains the latest seller response for the Canon RF 35mm lens thread ('Yes, available for pickup in West Seattle off 49th Ave SW near Juneau'). Following instructions to use the backup to avoid revisiting already-contacted items, I will stop here.
-- Last screen: com-facebook-katana-loginactivity-3dc45e02f6673e0d
-
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-cf77272c927be547
-
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-8f18af5ba25b9e6b
-
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-8f18af5ba25b9e6b
-
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777
-
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777
-
-- Status: completed
-- Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: Yes, available for pickup in West Seattle off 49th Ave SW near Juneau
-- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-cccd37b8390a5777
 
 - Status: completed
 - Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: Yes, available for pickup in West Seattle off 49th Ave SW near Juneau
@@ -79,3 +41,41 @@
 - Status: manual_verification_required
 - Reason: Manual account verification required before automation can continue.
 - Last screen: com-facebook-katana-activity-react-immersivereactactivity-f2a621ac68ccf7bb
+
+- Status: completed
+- Reason: Facebook message inbox is visible for read-only inspection.
+- Last screen: com-facebook-katana-com-facebook-messaginginblue-inbox-activities-inboxactivity-f09b5016a712be1f
+
+- Status: error
+- Reason: App is not installed on the emulator.
+
+- Status: error
+- Reason: App is not installed on the emulator.
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-4e738c377068b729
+
+- Status: completed
+- Reason: Gemini request timed out; heuristic fallback used. The read operation timed out
+- Last screen: com-facebook-katana-loginactivity-2c00940f65d54140
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-395d4184b67b3a51
+
+- Status: completed
+- Reason: Facebook message inbox is visible for read-only inspection.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-e09b9ea7bc4bf2bc
+
+- Status: completed
+- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
+- Last screen: com-facebook-katana-com-facebook-messaginginblue-inbox-activities-inboxactivity-67d9f5bf4803897a
+
+- Status: completed
+- Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: No
+- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-b2176a003b6595ee
+
+- Status: completed
+- Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: No
+- Last screen: com-facebook-katana-com-facebook-messaginginblue-threadsettings-surface-activity-mibthreadsettingssurfaceactivity-f3d9fa04c220ec1e

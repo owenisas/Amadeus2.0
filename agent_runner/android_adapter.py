@@ -154,7 +154,18 @@ class AndroidAdapter:
     ) -> subprocess.CompletedProcess[str]:
         return self._adb(args, check=check, timeout=timeout)
 
+    def wake_device(self) -> None:
+        power = self._adb(["shell", "dumpsys", "power"], check=False)
+        if "mWakefulness=Asleep" not in (power.stdout or ""):
+            return
+        self._adb(["shell", "input", "keyevent", "224"], check=False)
+        time.sleep(0.5)
+        self._adb(["shell", "wm", "dismiss-keyguard"], check=False)
+        self._adb(["shell", "input", "keyevent", "82"], check=False)
+        time.sleep(0.5)
+
     def launch_app(self, package_name: str, activity: str | None = None) -> None:
+        self.wake_device()
         self.connect()
         assert self._driver is not None
         try:

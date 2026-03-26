@@ -1,36 +1,40 @@
 # Facebook backup
 
-- Last updated: 2026-03-25T14:58:19-07:00
+- Last updated: 2026-03-26T01:10:59-07:00
 - Package: `com.facebook.katana`
 
 ## Recent screens
-- `.LoginActivity` x1: Sell, For you, Tab, 1 of 2, For you, Local, Tab, 2 of 2
-- `.activity.react.ImmersiveReactActivity` x1: Close, Navigate to Search, More actions, Product Image,1 of 3
-- `.activity.react.ImmersiveReactActivity` x1: Close, Navigate to Search, More actions, Product Image,1 of 3
-- `.activity.react.ImmersiveReactActivity` x1: Close, Navigate to Search, More actions, Product Image,1 of 3
-- `.activity.react.ImmersiveReactActivity` x1: Confirm Your Identity on Marketplace, We detected unusual activity on your account, so we've  limited the number of sellers you can contact on Marketplace each day. You can try again tomorrow. To remove this restriction, confirm your identity to help us make sure it’s really you., Get Started, Back
+- `com.facebook.messaginginblue.inbox.activities.InboxActivity` x1: Back, Marketplace inbox, Restore chat history., DebySue · 2023 MacBook pro, Unread, DebySue: Yes
+- `com.facebook.messaginginblue.inbox.activities.InboxActivity` x1: Back, Marketplace inbox, Restore chat history., Shoumik · [Full PC] 32GB DDR5 RAM / Ryzen 5 7600 / RX 6700 XT /, Unread, Shoumik: Yes, are you interested?
+- `com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity` x1: Back, Joshua · PC, Marketplace listing, Chat profile
+- `com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity` x1: Back, Joshua · PC, Marketplace listing, Chat profile
+- `com.facebook.messaginginblue.threadsettings.surface.activity.MiBThreadSettingsSurfaceActivity` x1: Back, Edit, Joshua · PC, Mute notifications
 
 ## Contacted items
-- Dell 27 Inch USB-C Hub Computer Monitor - P2723DE | $100 | Just listed | sent
-- Apple iPhone 16 Pro Max – 256GB – White – Excellent Condition | $700 | Just listed | sent
-- Microsoft Surface Laptop 4 32GB 1TB SSD | $350 | Just listed | sent
-- Macbook Air M3 | $600 | seller n/a | sent
-- Canon RF 35mm f/1.8 Macro IS STM Lens | $325 | Joshua | seller_confirmed_available
-  Last reply: Yes, available for pickup in West Seattle off 49th Ave SW near Juneau
+- PC | price n/a | Joshua | message_sent
+- HP Omen Max 16 - 5080, i7 255hx, 32gb ram, 512 gb + 2tb ssds, 240hz 2560x1600p OLED screen, wifi 7 | $1,900 | seller n/a | sent
+- 2021 MacBook Pro M1 Pro chip | $800 | seller n/a | sent
+- motherboard with cpu and ram | $300 | seller n/a | sent
+- Apple MacBook Pro 16" A2141 2019 – i9 2.30GHz – 32GB RAM – 1TB SSD – Retina EUC | $429 | Just listed | sent
 
 ## Thread summaries
+- Joshua · PC
+  You: Hi, is this available?
+- Brandon · Gaming PC
+  You: 350?
+  Seller: No
 - Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens
   You: Hi, I’m interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?
   Seller: Yes, available for pickup in West Seattle off 49th Ave SW near Juneau
 
 ## Inspected items
-- Gaming PC | $850 | Built this PC myself in 2023, but moving and looking to take a break from gaming. Works very well, no lag when playing high computational games. Intel i7 CPU and Nvidia RTX 3080 and 32 GB RAM. Specs included in photos. Took care of PC well, no problems whatsoever. I have an external wifi booster included. Pickup only in South Seattle
-  Details: Built this PC myself in 2023, but moving and looking to take a break from gaming. Works very well, no lag when playing high computational games. Intel i7 CPU and Nvidia RTX 3080 and 32 GB RAM. Specs included in photos. Took care of PC well, no problems whatsoever. I have an external wifi booster included. Pickup only in South Seattle
-- Sell | $100 marked down from $150MacBook Pro Early 2013 | Location: Bothell, WA
-  Details: $100 marked down from $150MacBook Pro Early 2013
-- Dell 27 Inch USB-C Hub Computer Monitor - P2723DE | $100
-  Details: 27” QHD 2560 x 1440 at 60 Hz with USB-C hub built-in
-- Apple iPhone 16 Pro Max – 256GB – White – Excellent Condition | $700
-  Details: Apple iPhone 16 Pro Max in white with 256GB storage. The phone is in excellent condition, with
-- Microsoft Surface Laptop 4 32GB 1TB SSD | $350
-  Details: Microsoft Surface Laptop 4 in fantastic condition. Reset to the factory settings unlocked and is ready
+- Sell | $300 marked down from $450Apple iPad Pro 11‑inch | Location: Bothell, WA
+  Details: $300 marked down from $450Apple iPad Pro 11‑inch
+- Sceptre 27-inch 240hz gaming monitor | $120
+  Details: $120 can negotiate on price. Works completely fine I just don’t play games as much anymore. Will take anything from around $120
+- Playstation 5 | $400
+  Details: Roberto Braulio, Joined Facebook in 2010
+- HP Omen Max 16 - 5080, i7 255hx, 32gb ram, 512 gb + 2tb ssds, 240hz 2560x1600p OLED screen, wifi 7 | $1,900
+  Details: Hi, I'm interested in the HP Omen Max 16. Is it still available?
+- 2021 MacBook Pro M1 Pro chip | $800
+  Details: Hey, if everything checks out, would you take $550 for the 2021 MacBook Pro M1 Pro chip?

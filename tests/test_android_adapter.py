@@ -97,6 +97,61 @@ def test_is_package_installed_retries_and_raises_for_transport_error(monkeypatch
     assert calls["count"] == 3
 
 
+def test_launch_app_wakes_device_if_asleep(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = make_adapter()
+    adb_calls: list[list[str]] = []
+    launched: list[tuple[str, str | None]] = []
+
+    class FakeDriver:
+        def start_activity(self, package_name, activity):
+            launched.append((package_name, activity))
+
+    def fake_adb(args, *, check, timeout=None):
+        adb_calls.append(args)
+        if args == ["shell", "dumpsys", "power"]:
+            return subprocess.CompletedProcess(args, 0, stdout="mWakefulness=Asleep", stderr="")
+        return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+
+    adapter._driver = FakeDriver()
+    monkeypatch.setattr(adapter, "connect", lambda: None)
+    monkeypatch.setattr(adapter, "wait_for_stable_ui", lambda seconds: None)
+    monkeypatch.setattr(adapter, "_adb", fake_adb)
+    monkeypatch.setattr("agent_runner.android_adapter.time.sleep", lambda seconds: None)
+
+    adapter.launch_app("com.example.app", ".MainActivity")
+
+    assert ["shell", "input", "keyevent", "224"] in adb_calls
+    assert ["shell", "wm", "dismiss-keyguard"] in adb_calls
+    assert ["shell", "input", "keyevent", "82"] in adb_calls
+    assert launched == [("com.example.app", ".MainActivity")]
+
+
+def test_launch_app_skips_wake_when_device_already_awake(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = make_adapter()
+    adb_calls: list[list[str]] = []
+    launched: list[tuple[str, str | None]] = []
+
+    class FakeDriver:
+        def start_activity(self, package_name, activity):
+            launched.append((package_name, activity))
+
+    def fake_adb(args, *, check, timeout=None):
+        adb_calls.append(args)
+        if args == ["shell", "dumpsys", "power"]:
+            return subprocess.CompletedProcess(args, 0, stdout="mWakefulness=Awake", stderr="")
+        return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+
+    adapter._driver = FakeDriver()
+    monkeypatch.setattr(adapter, "connect", lambda: None)
+    monkeypatch.setattr(adapter, "wait_for_stable_ui", lambda seconds: None)
+    monkeypatch.setattr(adapter, "_adb", fake_adb)
+
+    adapter.launch_app("com.example.app", ".MainActivity")
+
+    assert ["shell", "input", "keyevent", "224"] not in adb_calls
+    assert launched == [("com.example.app", ".MainActivity")]
+
+
 def test_resolve_tap_box_snaps_to_nearby_clickable_component() -> None:
     adapter = make_adapter()
     device = DeviceInfo(
