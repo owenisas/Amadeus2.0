@@ -1,0 +1,28 @@
+{
+  "name": "expand_listing_details",
+  "description": "Expand a Marketplace listing description using the visible detail expander.",
+  "args": [],
+  "steps": [
+    {
+      "action": "tap",
+      "target_label": "See more",
+      "only_if_visible_text": "See more"
+    },
+    {
+      "action": "tap",
+      "target_label": "See details",
+      "only_if_visible_text": "See details"
+    }
+  ],
+  "preconditions": [
+    {
+      "predicate": "facebook_listing_detail_visible"
+    }
+  ],
+  "postconditions": [
+    {
+      "predicate": "facebook_listing_details_expanded"
+    }
+  ],
+  "fallback_policy": "fallback_to_slow_path"
+}

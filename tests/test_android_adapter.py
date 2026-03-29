@@ -123,6 +123,10 @@ def test_launch_app_wakes_device_if_asleep(monkeypatch: pytest.MonkeyPatch) -> N
     assert ["shell", "input", "keyevent", "224"] in adb_calls
     assert ["shell", "wm", "dismiss-keyguard"] in adb_calls
     assert ["shell", "input", "keyevent", "82"] in adb_calls
+    assert ["shell", "settings", "put", "system", "screen_brightness_mode", "0"] in adb_calls
+    assert ["shell", "settings", "put", "system", "screen_brightness", "0"] in adb_calls
+    assert ["shell", "settings", "put", "system", "haptic_feedback_enabled", "0"] in adb_calls
+    assert ["shell", "settings", "put", "system", "vibrate_on", "0"] in adb_calls
     assert launched == [("com.example.app", ".MainActivity")]
 
 
@@ -149,6 +153,12 @@ def test_launch_app_skips_wake_when_device_already_awake(monkeypatch: pytest.Mon
     adapter.launch_app("com.example.app", ".MainActivity")
 
     assert ["shell", "input", "keyevent", "224"] not in adb_calls
+    assert ["shell", "wm", "dismiss-keyguard"] in adb_calls
+    assert ["shell", "input", "keyevent", "82"] in adb_calls
+    assert ["shell", "settings", "put", "system", "screen_brightness_mode", "0"] in adb_calls
+    assert ["shell", "settings", "put", "system", "screen_brightness", "0"] in adb_calls
+    assert ["shell", "settings", "put", "system", "haptic_feedback_enabled", "0"] in adb_calls
+    assert ["shell", "settings", "put", "system", "vibrate_on", "0"] in adb_calls
     assert launched == [("com.example.app", ".MainActivity")]
 
 
@@ -307,6 +317,61 @@ def test_perform_tap_uses_resolved_component_box(monkeypatch: pytest.MonkeyPatch
     assert captured == {"x": 539, "y": 2289}
 
 
+def test_perform_tap_falls_back_to_adb_when_appium_click_crashes(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = make_adapter()
+    adb_calls: list[list[str]] = []
+
+    class FakeDriver:
+        def execute_script(self, script, payload):
+            raise RuntimeError(
+                "'POST /appium/gestures/click' cannot be proxied to UiAutomator2 server "
+                "because the instrumentation process is not running"
+            )
+
+    device = DeviceInfo(
+        serial="emulator-5554",
+        width=1080,
+        height=2400,
+        density=420,
+        orientation="portrait",
+        package_name="com.facebook.katana",
+        activity_name=".activity.react.ImmersiveReactActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/fake.png"),
+        hierarchy_path=Path("/tmp/fake.xml"),
+        screenshot_sha256="abc",
+        xml_source="<hierarchy />",
+        visible_text=["Hi, is this available?"],
+        clickable_text=["Hi, is this available?"],
+        package_name=device.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=[],
+    )
+    decision = VisionDecision(
+        screen_classification="facebook_marketplace_listing",
+        goal_progress="opening_composer",
+        next_action="tap",
+        target_box=BoundingBox(x=0.09, y=0.72, width=0.64, height=0.03),
+        confidence=0.9,
+        reason="Tap message composer.",
+        risk_level="low",
+    )
+    adapter._driver = FakeDriver()
+    monkeypatch.setattr(adapter, "connect", lambda: None)
+    monkeypatch.setattr(adapter, "wait_for_stable_ui", lambda seconds: None)
+    monkeypatch.setattr(
+        adapter,
+        "_adb",
+        lambda args, *, check, timeout=None: adb_calls.append(args) or subprocess.CompletedProcess(args, 0, stdout="", stderr=""),
+    )
+
+    adapter.perform(decision, state)
+
+    assert adb_calls == [["shell", "input", "tap", "442", "1764"]]
+
+
 def test_perform_swipe_uses_bounded_region_from_target_box(monkeypatch: pytest.MonkeyPatch) -> None:
     adapter = make_adapter()
     captured: dict[str, object] = {}
@@ -438,6 +503,79 @@ def test_perform_type_uses_target_box_and_active_element_replace(monkeypatch: py
     assert ("send_keys", "Hi, I'm interested in the monitor. Is it still available?") in calls
 
 
+def test_perform_type_adb_fallback_escapes_punctuation(monkeypatch: pytest.MonkeyPatch) -> None:
+    adapter = make_adapter()
+    adb_calls: list[list[str]] = []
+
+    class FakeSwitchTo:
+        @property
+        def active_element(self):
+            raise RuntimeError("no active element")
+
+    class FakeDriver:
+        switch_to = FakeSwitchTo()
+
+        def execute_script(self, script, payload):
+            return None
+
+    device = DeviceInfo(
+        serial="emulator-5554",
+        width=1080,
+        height=2400,
+        density=420,
+        orientation="portrait",
+        package_name="com.facebook.katana",
+        activity_name=".activity.react.ImmersiveReactActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/fake.png"),
+        hierarchy_path=Path("/tmp/fake.xml"),
+        screenshot_sha256="abc",
+        xml_source="<hierarchy />",
+        visible_text=["Message", "Send"],
+        clickable_text=["Message", "Send"],
+        package_name=device.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Message",
+                "enabled": True,
+                "clickable": True,
+                "target_box": {"x": 0.09, "y": 0.72, "width": 0.64, "height": 0.03},
+            }
+        ],
+    )
+    decision = VisionDecision(
+        screen_classification="facebook_message_composer",
+        goal_progress="drafting_reply",
+        next_action="type",
+        target_box=BoundingBox(x=0.09, y=0.72, width=0.64, height=0.03),
+        confidence=0.9,
+        reason="Type the reply.",
+        risk_level="low",
+        input_text="I'll take the iPhone 16e for $400, can we meet in Bothell?",
+        submit_after_input=False,
+    )
+
+    monkeypatch.setattr(adapter, "connect", lambda: None)
+    monkeypatch.setattr(adapter, "wait_for_stable_ui", lambda seconds: None)
+    monkeypatch.setattr("agent_runner.android_adapter.time.sleep", lambda seconds: None)
+    monkeypatch.setattr(adapter, "_driver", FakeDriver())
+
+    def fake_adb(args, *, check, timeout=None):
+        adb_calls.append(args)
+        return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(adapter, "_adb", fake_adb)
+
+    adapter.perform(decision, state)
+
+    assert adb_calls[-1][:3] == ["shell", "input", "text"]
+    assert adb_calls[-1][3] == "I\\'ll%stake%sthe%siPhone%s16e%sfor%s\\$400\\,%scan%swe%smeet%sin%sBothell\\?"
+
+
 def test_retry_tap_alternatives_tries_multiple_methods_until_state_changes(monkeypatch: pytest.MonkeyPatch) -> None:
     adapter = make_adapter()
     device = DeviceInfo(
@@ -498,6 +636,43 @@ def test_retry_tap_alternatives_tries_multiple_methods_until_state_changes(monke
     assert calls == ["appium_raw", "adb_resolved"]
     assert attempts[-1]["changed"] is True
     assert next_state.visible_text == ["Question 2"]
+
+
+def test_capture_state_falls_back_to_adb_when_appium_screenshot_crashes(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    adapter = make_adapter()
+
+    class FakeDriver:
+        current_package = "com.facebook.katana"
+        current_activity = ".activity.react.ImmersiveReactActivity"
+        orientation = "PORTRAIT"
+
+        def get_window_size(self):
+            return {"width": 1080, "height": 2400}
+
+        def get_screenshot_as_file(self, path):
+            raise RuntimeError(
+                "'GET /screenshot' cannot be proxied to UiAutomator2 server because the instrumentation process is not running"
+            )
+
+        @property
+        def page_source(self):
+            raise RuntimeError("page source unavailable")
+
+    adapter._driver = FakeDriver()
+    monkeypatch.setattr(adapter, "connect", lambda: None)
+    monkeypatch.setattr(adapter, "_wm_density", lambda: None)
+    monkeypatch.setattr(adapter, "_adb_screencap_png", lambda path: path.write_bytes(b"png"))
+    monkeypatch.setattr(adapter, "_uiautomator_dump_xml", lambda: "<hierarchy><node text='Seller' clickable='true'/></hierarchy>")
+
+    state = adapter.capture_state(tmp_path)
+
+    assert state.package_name == "com.facebook.katana"
+    assert state.activity_name == ".activity.react.ImmersiveReactActivity"
+    assert state.screenshot_path.exists()
+    assert state.hierarchy_path.exists()
+    assert "Seller" in state.visible_text
 
 
 def test_detects_appium_unavailable_error() -> None:

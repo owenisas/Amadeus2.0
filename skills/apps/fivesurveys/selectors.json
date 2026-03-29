@@ -836,6 +836,399 @@
         "x": 0.05277777777777778,
         "y": 0.19458333333333333
       }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Tapping the 'Take Survey' button on the first featured survey card to begin the survey flow as requested.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-af997ad10c5f87d2",
+      "target_box": {
+        "height": 0.03875,
+        "width": 0.37222222222222223,
+        "x": 0.09351851851851851,
+        "y": 0.30375
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "Enter Year",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-bf992b39e80cf60c",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8916666666666667,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Enter Year",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The 'Enter Year' field is focused. Typing a plausible birth year (1990) to proceed with the qualification.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-bf992b39e80cf60c",
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8916666666666667,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Select Month",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The year has been entered. The next step in the birthday qualification is to select the month. Tapping the 'Select Month' dropdown to choose a month.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-7164d9ee16239a9a",
+      "target_box": {
+        "height": 0.05,
+        "width": 0.43,
+        "x": 0.265,
+        "y": 0.285
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "Enter Year",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-7164d9ee16239a9a",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8916666666666667,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "January",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Selecting a month from the dropdown to proceed with the qualification.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-4fd882a40cb05878",
+      "target_box": {
+        "height": 0.05,
+        "width": 0.15,
+        "x": 0.23,
+        "y": 0.41
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "Enter Year",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-4fd882a40cb05878",
+      "search_related": false,
+      "target_box": {
+        "height": 0.051666666666666666,
+        "width": 0.8916666666666667,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Home",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The surveys list is not rendering. Tapping the 'Home' tab in the bottom navigation bar may force the app to reload its content or provide an alternative path to find a survey.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-ebb95de11513a06d",
+      "target_box": {
+        "height": 0.05,
+        "width": 0.1,
+        "x": 0.125,
+        "y": 0.95
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Take Survey",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The user wants to select a survey. The 'Take Survey' button is visible under Featured Surveys.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-075882a46d38f585",
+      "target_box": {
+        "height": 0.03791666666666667,
+        "width": 0.4101851851851852,
+        "x": 0.05555555555555555,
+        "y": 0.6541666666666667
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Enter Year",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The 'Enter Year' field is focused. Typing a plausible birth year (1990) to proceed with the qualification.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-fde2a3239ff6863d",
+      "target_box": {
+        "height": 0.06333333333333334,
+        "width": 0.8916666666666667,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "Enter Year",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-fde2a3239ff6863d",
+      "search_related": false,
+      "target_box": {
+        "height": 0.06333333333333334,
+        "width": 0.8916666666666667,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Select Month",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Tapping the 'Select Month' dropdown to continue filling out the birthday qualification form.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-fde2a3239ff6863d",
+      "target_box": {
+        "height": 0.05,
+        "width": 0.4,
+        "x": 0.25,
+        "y": 0.3
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Select Month",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Tapping the 'Select Month' dropdown to choose a birth month.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-80ab8f946fdba787",
+      "target_box": {
+        "height": 0.05,
+        "width": 0.43,
+        "x": 0.265,
+        "y": 0.305
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "component_type": "text_input",
+      "label": "Enter Year",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "Observed dynamic component from UI hierarchy.",
+      "resource_id": "",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-80ab8f946fdba787",
+      "search_related": false,
+      "target_box": {
+        "height": 0.06333333333333334,
+        "width": 0.8916666666666667,
+        "x": 0.05277777777777778,
+        "y": 0.19458333333333333
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "keyboard_enter",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The keyboard is currently open and might be blocking interaction with the dropdowns or the continue button. Tapping the green 'Enter/Done' button on the keyboard to submit the year and hopefully move focus to the next field or dismiss the keyboard.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-fde2a3239ff6863d",
+      "target_box": {
+        "height": 0.08,
+        "width": 0.15,
+        "x": 0.9,
+        "y": 0.95
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Surveys tab",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The Home feed's 'Featured Surveys' section is loading. Tapping the 'Surveys' tab in the bottom navigation bar is the most direct way to access the survey list and start the flow.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-357fa037dcae0fea",
+      "target_box": {
+        "height": 0.08,
+        "width": 0.25,
+        "x": 0.375,
+        "y": 0.95
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Surveys tab",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The user wants to complete a survey. The app is currently on the 'Games' tab. Tapping the 'Surveys' tab in the bottom navigation bar will switch to the surveys list.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-68a52c2b08eaaace",
+      "target_box": {
+        "height": 0.08,
+        "width": 0.25,
+        "x": 0.375,
+        "y": 0.95
+      }
+    },
+    {
+      "activity_name": ".MainActivity",
+      "anchor_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD"
+      ],
+      "label": "Home tab",
+      "package_name": "com.fivesurveys.mobile",
+      "reason": "The previous attempts to tap the Surveys tab did not change the screen from the Games tab. Tapping the Home tab to return to the main feed where surveys are typically featured.",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-68a52c2b08eaaace",
+      "target_box": {
+        "height": 0.08,
+        "width": 0.25,
+        "x": 0.125,
+        "y": 0.95
+      }
     }
   ]
 }

@@ -132,6 +132,98 @@ def test_facebook_email_confirmation_overlay_is_recoverable() -> None:
     assert reason is None
 
 
+def test_facebook_logged_in_feed_is_not_treated_as_manual_login_required() -> None:
+    state = make_state(
+        visible_text=[
+            "Go to profile",
+            "What's on your mind?",
+            "Stories",
+            "Messaging",
+            "Marketplace, tab 4 of 6",
+        ]
+    )
+    state.package_name = "com.facebook.katana"
+    state.activity_name = ".LoginActivity"
+
+    assert detect_manual_login_required(facebook_app(), state) is False
+
+
+def test_facebook_listing_with_windows_code_text_is_not_treated_as_manual_login_required() -> None:
+    state = make_state(
+        visible_text=[
+            "Close",
+            "Product Image,1 of 4",
+            "High end gaming pc, RTX 5080 intel ultra 9 285k",
+            "$2,000",
+            "Message seller",
+            "Hi, is this available?",
+            "Description",
+            "It does need a new windows code to activate windows, doesn't affect anything.",
+        ]
+    )
+    state.package_name = "com.facebook.katana"
+    state.activity_name = ".activity.react.ImmersiveReactActivity"
+
+    assert detect_manual_login_required(facebook_app(), state) is False
+
+
+def test_facebook_description_expander_with_factory_reset_text_is_allowed() -> None:
+    verdict = evaluate_decision(
+        facebook_app(),
+        make_state(
+            visible_text=[
+                "Nintendo Switch OLED in White",
+                "Description",
+                "Well kept Nintendo Switch OLED Screen for sale. Comes with all original parts. Factory reset.",
+                "See more",
+            ]
+        ),
+        VisionDecision(
+            screen_classification="listing_detail",
+            goal_progress="reading_description",
+            next_action="tap",
+            target_box=BoundingBox(0.03, 0.90, 0.18, 0.02),
+            confidence=0.9,
+            reason="Expand the listing description before deciding whether to message the seller.",
+            risk_level="low",
+            target_label="Well kept Nintendo Switch OLED Screen for sale. Comes with all original parts. Factory reset. | See more",
+        ),
+        goal="Open Facebook Marketplace, inspect listings, read the description, and send a buyer message only after reviewing details.",
+    )
+
+    assert verdict.allowed is True
+
+
+def test_facebook_listing_payment_text_does_not_block_message_focus() -> None:
+    verdict = evaluate_decision(
+        facebook_app(),
+        make_state(
+            visible_text=[
+                "Close",
+                "Product Image,1 of 3",
+                "Lenovo G34w 34\" Ultrawide Curved Gaming Monitor",
+                "$160",
+                "Hi, is this available?",
+                "Send",
+                "Cash or Venmo. Local pickup only — no shipping, no holding without payment.",
+            ]
+        ),
+        VisionDecision(
+            screen_classification="marketplace_listing_detail",
+            goal_progress="Expanded listing details to read the description. The item is a Lenovo G34w monitor for $160, local pickup, cash/Venmo, broken stand but VESA compatible. It's a good deal. Proceeding to draft a custom buyer message.",
+            next_action="tap",
+            target_box=BoundingBox(0.06, 0.77, 0.70, 0.04),
+            confidence=0.95,
+            reason="Tapping the message input field to focus it so we can type a custom buyer message.",
+            risk_level="low",
+            target_label="Hi, is this available?",
+        ),
+        goal="Resume the Facebook Marketplace hunting workflow. Inspect valuable local resale listings and send short human buyer messages when profitable.",
+    )
+
+    assert verdict.allowed is True
+
+
 def test_type_action_without_input_text_is_rejected() -> None:
     verdict = evaluate_decision(
         amazon_app(),
@@ -205,6 +297,33 @@ def test_tool_type_submit_flag_name_does_not_trigger_submit_risk_token() -> None
     assert verdict.allowed is True
 
 
+def test_run_fast_function_tool_is_allowed() -> None:
+    app = facebook_app()
+
+    verdict = evaluate_decision(
+        app,
+        make_state(visible_text=["Description", "See more"]),
+        VisionDecision(
+            screen_classification="listing_detail",
+            goal_progress="inspecting_listing",
+            next_action="tool",
+            target_box=None,
+            confidence=0.9,
+            reason="Use the fast function to expand listing details before drafting a seller message.",
+            risk_level="low",
+            tool_name="run_fast_function",
+            tool_arguments={
+                "app_name": "facebook",
+                "function_name": "expand_listing_details",
+                "arguments": {},
+            },
+        ),
+        goal="Resume the Facebook Marketplace hunting workflow and continue scanning listings.",
+    )
+
+    assert verdict.allowed is True
+
+
 def test_playstore_install_allowed_for_free_app() -> None:
     playstore = AppConfig(
         name="playstore",
@@ -271,6 +390,35 @@ def test_generic_purchase_text_on_screen_does_not_block_read_only_decision() -> 
             reason="Back out after finishing the read-only listing inspection.",
             risk_level="low",
         ),
+    )
+
+    assert verdict.allowed is True
+
+
+def test_facebook_listing_tap_is_not_blocked_by_purchase_word_in_reason() -> None:
+    state = make_state(
+        visible_text=[
+            "Just listed, $200 · Dell UltraSharp 27\" Monitor + Razer RGB Gaming Keyboard",
+            "Location: Bothell, WA",
+        ]
+    )
+    state.package_name = "com.facebook.katana"
+    state.activity_name = ".LoginActivity"
+
+    verdict = evaluate_decision(
+        facebook_app(),
+        state,
+        VisionDecision(
+            screen_classification="Marketplace Feed",
+            goal_progress="Inspecting a potentially profitable listing.",
+            next_action="tap",
+            target_box=BoundingBox(0.1, 0.2, 0.3, 0.2),
+            confidence=0.95,
+            reason="Tap the listing to inspect it and determine if it's a profitable purchase.",
+            risk_level="low",
+            target_label='Just listed, $200 · Dell UltraSharp 27" Monitor + Razer RGB Gaming Keyboard',
+        ),
+        goal="Inspect valuable Marketplace listings and send messages when profitable.",
     )
 
     assert verdict.allowed is True

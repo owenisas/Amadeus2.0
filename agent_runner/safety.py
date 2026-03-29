@@ -62,6 +62,7 @@ KNOWN_TOOL_ACTIONS = {
     "bootstrap_skill",
     "save_script",
     "run_script",
+    "run_fast_function",
     "list_scripts",
 }
 GENERIC_ACCOUNT_RESTRICTION_TOKENS = [
@@ -111,20 +112,37 @@ def evaluate_decision(
         return SafetyVerdict(False, f"Action '{decision.next_action}' is not allowed for {app.name}.")
 
     tool_argument_text = " ".join(_flatten_tool_argument_values(decision.tool_arguments))
-    decision_text = " ".join(
+    reason_text = (decision.reason or "").casefold()
+    action_payload_text = " ".join(
         filter(
             None,
             [
-                decision.reason,
                 decision.target_label,
                 decision.input_text,
-                decision.screen_classification,
-                decision.goal_progress,
                 decision.tool_name,
                 tool_argument_text,
             ],
         )
     ).casefold()
+    action_text = " ".join(
+        filter(
+            None,
+            [
+                action_payload_text,
+                decision.screen_classification,
+                decision.goal_progress,
+            ],
+        )
+    ).casefold()
+    decision_text = " ".join(
+        filter(
+            None,
+            [
+                reason_text,
+                action_text,
+            ],
+        )
+    ).strip()
     screen_text = "" if decision.screen_classification == "approval_surface" else " ".join(state.visible_text[:60]).casefold()
     combined = " ".join([decision_text, screen_text]).strip()
 
@@ -134,8 +152,11 @@ def evaluate_decision(
                 return SafetyVerdict(False, f"Blocked Play Store purchase token '{token}'.")
 
     for token in DEFAULT_BLOCKED_TOKENS:
-        if token.casefold() in decision_text:
-            return SafetyVerdict(False, f"Blocked by risk token '{token}'.")
+        if token.casefold() not in action_payload_text:
+            continue
+        if _is_safe_navigation_target(decision):
+            continue
+        return SafetyVerdict(False, f"Blocked by risk token '{token}'.")
 
     blocked_keywords = app.blocked_keywords
     high_risk_signatures = app.high_risk_signatures
@@ -167,6 +188,8 @@ def evaluate_decision(
 
 
 def detect_manual_login_required(app: AppConfig, state: ScreenState) -> bool:
+    if app.name == "facebook":
+        return _facebook_login_prompt_visible(state)
     text = " ".join(state.visible_text[:80]).casefold()
     return any(token.casefold() in text for token in app.manual_login_tokens)
 
@@ -225,6 +248,62 @@ def _facebook_goal_allows_marketplace_messaging(goal: str | None) -> bool:
     return "marketplace" in lowered and any(
         token in lowered
         for token in ["message ", "messages", "reply", "respond", "conversation", "chat", "inbox", "seller"]
+    )
+
+
+def _facebook_logged_in_home_visible(state: ScreenState) -> bool:
+    text = " ".join(state.visible_text[:40]).casefold()
+    if "log in" in text or "password" in text or "checkpoint" in text:
+        return False
+    return any(
+        token in text
+        for token in [
+            "what's on your mind?",
+            "stories",
+            "create story",
+            "marketplace, tab 4 of 6",
+            "messaging",
+            "reels, tab 2 of 6",
+        ]
+    )
+
+
+def _facebook_logged_in_surface_visible(state: ScreenState) -> bool:
+    text = " ".join(state.visible_text[:80]).casefold()
+    clickable = " ".join(state.clickable_text[:40]).casefold()
+    if _facebook_logged_in_home_visible(state):
+        return True
+    return any(
+        token in text or token in clickable
+        for token in [
+            "marketplace inbox",
+            "view marketplace profile",
+            "tap to view your marketplace account",
+            "product image",
+            "message seller",
+            "see conversation",
+            "you started this chat",
+            "rate seller",
+            "close navigate to search",
+        ]
+    )
+
+
+def _facebook_login_prompt_visible(state: ScreenState) -> bool:
+    if _facebook_logged_in_surface_visible(state):
+        return False
+    text = " ".join(state.visible_text[:80]).casefold()
+    explicit_tokens = ["log in", "login", "password", "checkpoint", "enter password", "forgot password"]
+    if any(token in text for token in explicit_tokens):
+        return True
+    return any(
+        token in text
+        for token in [
+            "verification code",
+            "enter code",
+            "confirmation code",
+            "enter the code",
+        ]
     )
 
 

@@ -1,0 +1,539 @@
+{
+  "app_name": "facebook",
+  "package_name": "com.facebook.katana",
+  "screens": {
+    "facebook_home_feed": {
+      "priority": 80,
+      "confidence": 0.95,
+      "when": {
+        "all_of": [
+          {
+            "package_is": "com.facebook.katana"
+          },
+          {
+            "any_of": [
+              {
+                "all_of": [
+                  {
+                    "text_visible": [
+                      "Marketplace, tab 4 of 6",
+                      "Home, tab 1 of 6"
+                    ]
+                  }
+                ]
+              },
+              {
+                "text_visible": [
+                  "What's on your mind?"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "facebook_home_shell": {
+      "priority": 70,
+      "confidence": 0.9,
+      "when": {
+        "all_of": [
+          {
+            "package_is": "com.facebook.katana"
+          },
+          {
+            "text_visible": [
+              "Marketplace, tab 4 of 6"
+            ]
+          },
+          {
+            "not": {
+              "screen_is": "facebook_marketplace_feed"
+            }
+          }
+        ]
+      }
+    },
+    "facebook_marketplace_feed": {
+      "priority": 95,
+      "confidence": 0.98,
+      "when": {
+        "all_of": [
+          {
+            "package_is": "com.facebook.katana"
+          },
+          {
+            "text_visible": [
+              "Sell"
+            ]
+          },
+          {
+            "any_of": [
+              {
+                "text_visible": [
+                  "For you"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Local"
+                ]
+              },
+              {
+                "text_visible": [
+                  "What do you want to buy?"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Tap to view your Marketplace account"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "facebook_marketplace_search": {
+      "priority": 96,
+      "confidence": 0.97,
+      "when": {
+        "all_of": [
+          {
+            "text_visible": [
+              "What do you want to buy?"
+            ]
+          },
+          {
+            "any_of": [
+              {
+                "text_visible": [
+                  "Recent searches"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Saved searches"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "facebook_marketplace_account": {
+      "priority": 92,
+      "confidence": 0.96,
+      "when": {
+        "all_of": [
+          {
+            "text_visible": [
+              "View Marketplace profile"
+            ]
+          },
+          {
+            "any_of": [
+              {
+                "text_visible": [
+                  "Messages"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Saved items"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Recently viewed"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "facebook_marketplace_inbox": {
+      "priority": 100,
+      "confidence": 0.99,
+      "when": {
+        "all_of": [
+          {
+            "text_visible": [
+              "Marketplace seller inbox",
+              "Marketplace buyer inbox"
+            ]
+          }
+        ]
+      },
+      "extractors": [
+        "facebook_marketplace_inbox_threads"
+      ]
+    },
+    "facebook_message_inbox": {
+      "priority": 85,
+      "confidence": 0.9,
+      "when": {
+        "all_of": [
+          {
+            "any_of": [
+              {
+                "text_visible": [
+                  "Chats"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Messages"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Messenger"
+                ]
+              }
+            ]
+          },
+          {
+            "not": {
+              "screen_is": "facebook_message_thread"
+            }
+          }
+        ]
+      }
+    },
+    "facebook_message_thread": {
+      "priority": 110,
+      "confidence": 0.99,
+      "when": {
+        "all_of": [
+          {
+            "text_visible": [
+              "Marketplace listing"
+            ]
+          },
+          {
+            "any_of": [
+              {
+                "text_visible": [
+                  "View seller profile"
+                ]
+              },
+              {
+                "text_visible": [
+                  "You started this chat"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Message"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "extractors": [
+        "facebook_thread_snapshot"
+      ]
+    },
+    "facebook_listing_detail": {
+      "priority": 105,
+      "confidence": 0.99,
+      "when": {
+        "all_of": [
+          {
+            "any_of": [
+              {
+                "text_visible": [
+                  "Close",
+                  "Product Image"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Message seller"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Contact seller"
+                ]
+              },
+              {
+                "text_visible": [
+                  "Message sent to seller"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "extractors": [
+        "facebook_listing_snapshot"
+      ]
+    },
+    "facebook_listing_details_expanded": {
+      "priority": 106,
+      "confidence": 0.99,
+      "when": {
+        "all_of": [
+          {
+            "screen_is": "facebook_listing_detail"
+          },
+          {
+            "text_hidden": [
+              "See more",
+              "See details"
+            ]
+          }
+        ]
+      },
+      "extractors": [
+        "facebook_listing_snapshot"
+      ]
+    },
+    "facebook_listing_message_sent_surface": {
+      "priority": 115,
+      "confidence": 1.0,
+      "when": {
+        "any_of": [
+          {
+            "text_visible": [
+              "Message sent to seller"
+            ]
+          },
+          {
+            "text_visible": [
+              "See conversation"
+            ]
+          }
+        ]
+      },
+      "extractors": [
+        "facebook_listing_snapshot"
+      ]
+    }
+  },
+  "predicates": {
+    "facebook_home_feed_visible": {
+      "screen_is": "facebook_home_feed"
+    },
+    "facebook_marketplace_feed_visible": {
+      "screen_is": "facebook_marketplace_feed"
+    },
+    "facebook_messages_visible": {
+      "any_of": [
+        {
+          "screen_is": "facebook_marketplace_inbox"
+        },
+        {
+          "screen_is": "facebook_message_inbox"
+        },
+        {
+          "screen_is": "facebook_message_thread"
+        }
+      ]
+    },
+    "facebook_listing_detail_visible": {
+      "screen_is": "facebook_listing_detail"
+    },
+    "facebook_listing_details_expanded": {
+      "screen_is": "facebook_listing_details_expanded"
+    },
+    "facebook_listing_message_sent_surface": {
+      "screen_is": "facebook_listing_message_sent_surface"
+    },
+    "facebook_message_thread_visible": {
+      "screen_is": "facebook_message_thread"
+    },
+    "facebook_listing_message_sent": {
+      "any_of": [
+        {
+          "screen_is": "facebook_listing_message_sent_surface"
+        },
+        {
+          "all_of": [
+            {
+              "screen_is": "facebook_message_thread"
+            },
+            {
+              "argument_text_hidden": "message"
+            }
+          ]
+        }
+      ]
+    },
+    "facebook_thread_reply_sent": {
+      "all_of": [
+        {
+          "screen_is": "facebook_message_thread"
+        },
+        {
+          "argument_text_hidden": "message"
+        }
+      ]
+    }
+  },
+  "extractors": {
+    "facebook_thread_snapshot": {
+      "kind": "thread_snapshot"
+    },
+    "facebook_listing_snapshot": {
+      "kind": "listing_snapshot"
+    },
+    "facebook_marketplace_inbox_threads": {
+      "kind": "inbox_threads"
+    }
+  },
+  "function_templates": {
+    "open_marketplace_feed": {
+      "name": "open_marketplace_feed",
+      "description": "Open Facebook Marketplace from the home shell using the fastest stable path.",
+      "args": [],
+      "script_name": "open_marketplace_direct",
+      "preconditions": [
+        {
+          "predicate": "facebook_home_feed_visible"
+        }
+      ],
+      "postconditions": [
+        {
+          "predicate": "facebook_marketplace_feed_visible"
+        }
+      ],
+      "fallback_policy": "fallback_to_slow_path"
+    },
+    "open_messages_from_home": {
+      "name": "open_messages_from_home",
+      "description": "Open Facebook messages from the home shell using the saved entry path.",
+      "args": [],
+      "script_name": "open_messages_from_home",
+      "preconditions": [
+        {
+          "predicate": "facebook_home_feed_visible"
+        }
+      ],
+      "postconditions": [
+        {
+          "predicate": "facebook_messages_visible"
+        }
+      ],
+      "fallback_policy": "fallback_to_slow_path"
+    },
+    "expand_listing_details": {
+      "name": "expand_listing_details",
+      "description": "Expand a Marketplace listing description using the visible detail expander.",
+      "args": [],
+      "steps": [
+        {
+          "action": "tap",
+          "target_label": "See more",
+          "only_if_visible_text": "See more"
+        },
+        {
+          "action": "tap",
+          "target_label": "See details",
+          "only_if_visible_text": "See details"
+        }
+      ],
+      "preconditions": [
+        {
+          "predicate": "facebook_listing_detail_visible"
+        }
+      ],
+      "postconditions": [
+        {
+          "predicate": "facebook_listing_details_expanded"
+        }
+      ],
+      "fallback_policy": "fallback_to_slow_path"
+    },
+    "close_listing_to_feed": {
+      "name": "close_listing_to_feed",
+      "description": "Close the current Marketplace listing and return to the Marketplace feed.",
+      "args": [],
+      "steps": [
+        {
+          "action": "tap",
+          "target_label": "Close"
+        }
+      ],
+      "preconditions": [
+        {
+          "predicate": "facebook_listing_detail_visible"
+        }
+      ],
+      "postconditions": [
+        {
+          "predicate": "facebook_marketplace_feed_visible"
+        }
+      ],
+      "fallback_policy": "fallback_to_slow_path"
+    }
+  },
+  "promotion_rules": [
+    {
+      "function_name": "open_marketplace_feed",
+      "action": "tap",
+      "target_label_contains": "Marketplace, tab 4 of 6",
+      "before": {
+        "screen_is": "facebook_home_feed"
+      },
+      "after": {
+        "screen_is": "facebook_marketplace_feed"
+      }
+    },
+    {
+      "function_name": "open_messages_from_home",
+      "action": "tap",
+      "target_label_contains": "Messaging",
+      "before": {
+        "screen_is": "facebook_home_feed"
+      },
+      "after": {
+        "predicate": "facebook_messages_visible"
+      }
+    },
+    {
+      "function_name": "expand_listing_details",
+      "action": "tap",
+      "target_label_contains": "See",
+      "before": {
+        "screen_is": "facebook_listing_detail"
+      },
+      "after": {
+        "screen_is": "facebook_listing_details_expanded"
+      }
+    },
+    {
+      "function_name": "close_listing_to_feed",
+      "action": "back",
+      "before": {
+        "screen_is": "facebook_listing_detail"
+      },
+      "after": {
+        "screen_is": "facebook_marketplace_feed"
+      }
+    },
+    {
+      "function_name": "close_listing_to_feed",
+      "action": "tap",
+      "target_label_contains": "Close",
+      "before": {
+        "screen_is": "facebook_listing_detail"
+      },
+      "after": {
+        "screen_is": "facebook_marketplace_feed"
+      }
+    }
+  ],
+  "workflow_state_defaults": {
+    "mode": "hunt",
+    "mode_reason": "default_hunt",
+    "queue": [],
+    "active_item_key": null,
+    "active_thread_key": null,
+    "last_mode_switch_at": null,
+    "last_observed_at": null
+  }
+}

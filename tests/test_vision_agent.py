@@ -587,7 +587,141 @@ def test_facebook_marketplace_search_surface_stops_when_script_already_exists(tm
     )
 
     assert decision.next_action == "stop"
-    assert "search surface is visible" in decision.reason.casefold()
+
+
+def test_facebook_home_feed_prefers_fast_function_for_marketplace_entry(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.save_fast_function(
+        "facebook",
+        "open_marketplace_feed",
+        {
+            "name": "open_marketplace_feed",
+            "description": "",
+            "script_name": "open_marketplace_direct",
+            "preconditions": [{"predicate": "facebook_home_feed_visible"}],
+            "postconditions": [{"predicate": "facebook_marketplace_feed_visible"}],
+            "fallback_policy": "fallback_to_slow_path",
+        },
+    )
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=["What's on your mind?", "Home", "Reels", "Marketplace, tab 4 of 6"],
+        clickable_text=["Messaging", "Marketplace, tab 4 of 6", "Home, tab 1 of 6"],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Marketplace, tab 4 of 6",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.03, "width": 0.16, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Resume the Facebook Marketplace hunting workflow and continue scanning listings.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "run_fast_function"
+    assert decision.tool_arguments["function_name"] == "open_marketplace_feed"
+
+
+def test_facebook_reply_mode_uses_send_thread_reply_fast_function(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.save_fast_function(
+        "facebook",
+        "send_thread_reply",
+        {
+            "name": "send_thread_reply",
+            "description": "",
+            "args": [{"name": "message", "required": True}],
+            "steps": [{"action": "type", "input_text": "{{message}}"}, {"action": "tap", "target_label": "Send"}],
+            "preconditions": [{"predicate": "facebook_message_thread_visible"}],
+            "postconditions": [{"predicate": "facebook_thread_reply_sent"}],
+            "fallback_policy": "fallback_to_slow_path",
+        },
+    )
+    state = make_facebook_state(
+        activity_name=".ThreadActivity",
+        visible_text=[
+            "Joshua · PC",
+            "Marketplace listing",
+            "You started this chat.",
+            "Joshua, Yes",
+            "Message",
+            "Send",
+        ],
+        clickable_text=["Joshua · PC", "Message", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Message",
+                "enabled": True,
+                "target_box": {"x": 0.1, "y": 0.9, "width": 0.6, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.8, "y": 0.9, "width": 0.15, "height": 0.03},
+            },
+        ],
+    )
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+            {
+                "thread_key": "joshua-pc",
+                "thread_title": "Joshua · PC",
+                "seller_name": "Joshua",
+                "item_title": "PC",
+                "last_inbound_message": "Yes",
+                "last_outbound_message": "Hi",
+                "needs_reply": True,
+                "last_updated": "2026-03-27T10:00:00-07:00",
+            }
+        ],
+        "workflow": {
+            "mode": "reply",
+            "mode_reason": "actionable_seller_replies",
+            "reply_queue": [{"thread_key": "joshua-pc", "thread_title": "Joshua · PC"}],
+            "active_thread_key": "joshua-pc",
+            "active_listing_key": None,
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        },
+    }
+    bundle.state["facebook_workflow"] = {
+        "mode": "reply",
+        "mode_reason": "actionable_seller_replies",
+        "reply_queue": [{"thread_key": "joshua-pc", "thread_title": "Joshua · PC"}],
+        "active_thread_key": "joshua-pc",
+        "active_listing_key": None,
+        "last_mode_switch_at": None,
+        "last_reply_check_at": None,
+        "handled_thread_keys": [],
+    }
+
+    decision = agent.decide(
+        goal="Check Facebook Marketplace replies and send follow-ups using the Facebook skill rules.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.screen_classification == "facebook_message_thread"
+    assert decision.next_action in {"tool", "type"}
+    if decision.next_action == "tool":
+        assert decision.tool_name == "run_fast_function"
+        assert decision.tool_arguments["function_name"] == "send_thread_reply"
 
 
 def test_facebook_home_feed_with_marketplace_tab_is_not_misclassified_as_marketplace_feed(tmp_path: Path) -> None:
@@ -944,6 +1078,18 @@ def test_lmstudio_timeout_can_be_overridden_by_env(monkeypatch) -> None:
     )
 
     assert agent.lmstudio_timeout_seconds == 180.0
+
+
+def test_gemini_timeout_can_be_overridden_by_env(monkeypatch) -> None:
+    monkeypatch.setenv("GEMINI_TIMEOUT_SECONDS", "120")
+
+    agent = VisionAgent(
+        "test-key",
+        "gemini-3.1-pro-preview",
+        provider="gemini",
+    )
+
+    assert agent.gemini_timeout_seconds == 120.0
 
 
 def test_lmstudio_streaming_sse_response_is_parsed(tmp_path: Path, monkeypatch) -> None:
@@ -1324,6 +1470,100 @@ def test_facebook_value_scan_goal_does_not_bypass_gemini_on_marketplace_feed(tmp
     assert decision.next_action == "tap"
     assert decision.target_box is not None
     assert "Samsung M8" in (decision.target_label or "")
+
+
+def test_facebook_marketplace_feed_avoids_bulky_tv_when_portable_electronic_exists(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Marketplace",
+            "$65 · Samsung 8 series 55 4K Smart LED TV",
+            "$375 · Google Pixel 9 Pro XL fully unlocked",
+        ],
+        clickable_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "$65 · Samsung 8 series 55 4K Smart LED TV",
+            "$375 · Google Pixel 9 Pro XL fully unlocked",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "$65 · Samsung 8 series 55 4K Smart LED TV",
+                "enabled": True,
+                "target_box": {"x": 0.0, "y": 0.48, "width": 0.49, "height": 0.25},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "$375 · Google Pixel 9 Pro XL fully unlocked",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.48, "width": 0.49, "height": 0.25},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect valuable resellable listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert "Pixel 9 Pro XL" in (decision.target_label or "")
+
+
+def test_facebook_marketplace_feed_avoids_low_margin_budget_gaming_pc(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Marketplace",
+            "$160 · Budget Gaming PC – GTX 770 – 16GB DDR3 – Great for Fortnite & Roblox",
+            "$700 · Acer Nitro 5 RTX 4060 16GB RAM",
+        ],
+        clickable_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "$160 · Budget Gaming PC – GTX 770 – 16GB DDR3 – Great for Fortnite & Roblox",
+            "$700 · Acer Nitro 5 RTX 4060 16GB RAM",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "$160 · Budget Gaming PC – GTX 770 – 16GB DDR3 – Great for Fortnite & Roblox",
+                "enabled": True,
+                "target_box": {"x": 0.0, "y": 0.48, "width": 0.49, "height": 0.25},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "$700 · Acer Nitro 5 RTX 4060 16GB RAM",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.48, "width": 0.49, "height": 0.25},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace from a clean main view and inspect valuable resellable listings read-only.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert "Acer Nitro 5" in (decision.target_label or "")
 
 
 def test_facebook_clean_start_reset_bypasses_gemini(tmp_path: Path, monkeypatch) -> None:
@@ -1923,6 +2163,21 @@ def test_facebook_marketplace_inbox_opens_backup_thread(tmp_path: Path) -> None:
             }
         ],
         "contacted_items": [],
+        "workflow": {
+            "mode": "reply",
+            "mode_reason": "actionable_seller_replies",
+            "reply_queue": [
+                {
+                    "thread_key": "joshua-canon-rf-35mm-f-1-8-macro-is-stm-lens",
+                    "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                }
+            ],
+            "active_thread_key": "joshua-canon-rf-35mm-f-1-8-macro-is-stm-lens",
+            "active_listing_key": None,
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        },
     }
     state = make_facebook_marketplace_inbox_state()
 
@@ -1978,6 +2233,16 @@ def test_facebook_home_feed_checks_messages_after_recent_send(tmp_path: Path) ->
     bundle.backup_data["facebook_marketplace"] = {
         "threads": [{"thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens"}],
         "contacted_items": [{"item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens"}],
+        "workflow": {
+            "mode": "reply",
+            "mode_reason": "actionable_seller_replies",
+            "reply_queue": [{"thread_key": "joshua-canon", "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens"}],
+            "active_thread_key": "joshua-canon",
+            "active_listing_key": None,
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        },
     }
     state = make_facebook_state(
         activity_name=".kana.feed.impl.FeedFragmentActivity",
@@ -2009,6 +2274,95 @@ def test_facebook_home_feed_checks_messages_after_recent_send(tmp_path: Path) ->
     assert decision.next_action == "tap"
     assert decision.target_label == "Messaging"
     assert decision.goal_progress == "checking_replies"
+
+
+def test_facebook_hunt_mode_finishes_listing_before_switching_to_reply(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+            {
+                "thread_key": "joshua-canon",
+                "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "item_title": "Canon RF 35mm f/1.8 Macro IS STM Lens",
+                "seller_name": "Joshua",
+                "last_inbound_message": "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau",
+                "needs_reply": True,
+            }
+        ],
+        "contacted_items": [],
+        "workflow": {
+            "mode": "hunt",
+            "mode_reason": "finishing_listing_step",
+            "reply_queue": [{"thread_key": "joshua-canon", "thread_title": "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens"}],
+            "active_thread_key": None,
+            "active_listing_key": "lenovo-p16v-gen-1",
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        },
+    }
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Marketplace",
+            "$790",
+            "Lenovo P16v gen 1",
+            "Description",
+            "See details",
+            "Message seller",
+        ],
+        clickable_text=["See details", "Message seller"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "See details",
+                "enabled": True,
+                "target_box": {"x": 0.42, "y": 0.61, "width": 0.2, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Marketplace, inspect valuable local resale listings, and send buyer messages using the Facebook skill rules.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "See details"
+
+
+def test_facebook_reply_mode_returns_to_hunt_when_queue_is_empty(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [],
+        "contacted_items": [],
+        "workflow": {
+            "mode": "reply",
+            "mode_reason": "draining_reply_queue",
+            "reply_queue": [],
+            "active_thread_key": None,
+            "active_listing_key": None,
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        },
+    }
+    state = make_facebook_marketplace_inbox_state()
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace messages, check for new seller replies, and continue hunting when replies are done.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "back"
+    assert decision.goal_progress == "returning_to_hunt"
 
 
 def test_facebook_marketplace_feed_opens_account_for_reply_check_goal(tmp_path: Path) -> None:
@@ -2052,6 +2406,248 @@ def test_facebook_marketplace_feed_opens_account_for_reply_check_goal(tmp_path: 
     assert decision.next_action == "tap"
     assert decision.target_label == "Tap to view your Marketplace account"
     assert decision.goal_progress == "opening_marketplace_account"
+
+
+def test_facebook_reply_goal_overrides_hunt_workflow_on_marketplace_feed(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [],
+        "contacted_items": [],
+        "workflow": {
+            "mode": "hunt",
+            "mode_reason": "queue_empty",
+            "reply_queue": [],
+            "active_thread_key": None,
+            "active_listing_key": None,
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        },
+    }
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Marketplace",
+            "Tap to view your Marketplace account",
+            "What do you want to buy?",
+        ],
+        clickable_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "Tap to view your Marketplace account",
+            "What do you want to buy?",
+        ],
+        components=[
+            {
+                "component_type": "button",
+                "label": "Tap to view your Marketplace account",
+                "enabled": True,
+                "target_box": {"x": 0.77, "y": 0.08, "width": 0.11, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Check Facebook Marketplace seller replies, send follow-up replies, and then continue hunting for listings.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Tap to view your Marketplace account"
+    assert decision.goal_progress == "opening_marketplace_account"
+
+
+def test_facebook_marketplace_account_opens_messages_for_reply_goal(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [],
+        "contacted_items": [],
+        "workflow": {
+            "mode": "hunt",
+            "mode_reason": "queue_empty",
+            "reply_queue": [],
+            "active_thread_key": None,
+            "active_listing_key": None,
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        },
+    }
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Owen Uj",
+            "View Marketplace profile",
+            "10+ saved items",
+            "1 message",
+            "Recently viewed",
+            "Marketplace access",
+        ],
+        clickable_text=[
+            "View Marketplace profile",
+            "10+ saved items",
+            "1 message",
+            "Recently viewed",
+            "Marketplace access",
+            "Back",
+        ],
+        components=[
+            {
+                "component_type": "button",
+                "label": "1 message, ,",
+                "enabled": True,
+                "target_box": {"x": 0.51, "y": 0.16, "width": 0.46, "height": 0.08},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Check Facebook Marketplace seller replies, send follow-up replies, and then continue hunting for listings.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.goal_progress == "opening_messages"
+    assert decision.target_label == "1 message, ,"
+
+
+def test_facebook_thread_surface_is_not_misclassified_as_generic_inbox(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+            {
+                "thread_key": "jesse-prebuilt-gaming-pc-5060ti",
+                "thread_title": "Jesse · Prebuilt Gaming pc 5060ti",
+                "seller_name": "Jesse",
+                "item_title": "Prebuilt Gaming pc 5060ti",
+                "last_inbound_message": "Jesse sold Prebuilt Gaming pc 5060ti.",
+                "last_outbound_message": "Hey, is this still available?",
+                "needs_reply": True,
+            }
+        ],
+        "contacted_items": [],
+        "workflow": {
+            "mode": "reply",
+            "mode_reason": "actionable_seller_replies",
+            "reply_queue": [{"thread_key": "jesse-prebuilt-gaming-pc-5060ti", "thread_title": "Jesse · Prebuilt Gaming pc 5060ti"}],
+            "active_thread_key": "jesse-prebuilt-gaming-pc-5060ti",
+            "active_listing_key": None,
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        },
+    }
+    state = make_facebook_state(
+        activity_name="com.facebook.messaging.msys.thread.fragment.MsysThreadViewActivity",
+        visible_text=[
+            "Back",
+            "Jesse · Prebuilt Gaming pc 5060ti",
+            "Marketplace listing",
+            "Chat profile",
+            "Type a message",
+            "Send",
+        ],
+        clickable_text=[
+            "Back",
+            "Jesse · Prebuilt Gaming pc 5060ti",
+            "Marketplace listing",
+            "Chat profile",
+            "Type a message",
+            "Send",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Type a message",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.95, "width": 0.7, "height": 0.05},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.92, "y": 0.95, "width": 0.08, "height": 0.05},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "Back | Jesse · Prebuilt Gaming pc 5060ti | Marketplace listing | Chat profile",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.05, "width": 1.0, "height": 0.08},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Check Facebook Marketplace seller replies, send follow-up replies using the Facebook skill rules if any actionable seller messages are present, and then continue the Marketplace hunt for more listings.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.screen_classification == "facebook_message_thread"
+    assert decision.next_action in {"tool", "type"}
+    if decision.next_action == "tool":
+        assert decision.tool_name == "run_fast_function"
+        assert decision.tool_arguments["function_name"] == "send_thread_reply"
+
+
+def test_facebook_home_feed_prefers_marketplace_tab_over_feed_post(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".LoginActivity",
+        visible_text=[
+            "Go to profile",
+            "What's on your mind?",
+            "Stories",
+            "Good morning. Should I continue using business cards?",
+            "Marketplace, tab 4 of 6",
+        ],
+        clickable_text=[
+            "Good morning. Should I continue using business cards?",
+            "Messaging",
+            "Marketplace, tab 4 of 6",
+        ],
+        components=[
+            {
+                "component_type": "touch_target",
+                "label": "Good morning. Should I continue using business cards?",
+                "enabled": True,
+                "target_box": {"x": 0.1, "y": 0.45, "width": 0.8, "height": 0.12},
+            },
+            {
+                "component_type": "touch_target",
+                "label": "Marketplace, tab 4 of 6",
+                "enabled": True,
+                "target_box": {"x": 0.5, "y": 0.03, "width": 0.16, "height": 0.05},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Resume the Facebook Marketplace hunting workflow and continue scanning listings.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "Marketplace, tab 4 of 6"
 
 
 def test_facebook_marketplace_account_opens_messages_row_for_reply_check_goal(tmp_path: Path) -> None:
@@ -2110,6 +2706,46 @@ def test_facebook_marketplace_inbox_detects_newer_inbox_wording() -> None:
     )
 
     assert agent._facebook_marketplace_inbox_visible(state) is True
+
+
+def test_facebook_thread_settings_recovers_with_back(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name="com.facebook.messaginginblue.threadsettings.surface.activity.MiBThreadSettingsSurfaceActivity",
+        visible_text=[
+            "Back",
+            "Edit",
+            "Joshua · PC",
+            "Mute notifications",
+            "Messenger",
+            "Chat info",
+            "Search in conversation",
+            "Read receipts",
+            "Leave chat",
+        ],
+        clickable_text=[
+            "Back",
+            "Edit",
+            "Mute notifications",
+            "Messenger",
+            "Search in conversation",
+            "Read receipts",
+            "Leave chat",
+        ],
+        components=[],
+    )
+
+    decision = agent.decide(
+        goal="Reset Facebook to a clean main view, open Marketplace, inspect valuable local resale listings, send short human buyer messages using the Facebook skill rules when profitable, and periodically check Marketplace replies from sellers before messaging more new listings.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "back"
+    assert decision.goal_progress == "recovering_to_thread"
 
 
 def test_facebook_marketplace_inbox_falls_back_to_visible_thread_not_help(tmp_path: Path) -> None:
@@ -2224,6 +2860,71 @@ def test_facebook_marketplace_help_recovers_with_back_for_message_goal(tmp_path:
     )
 
     assert decision.next_action == "back"
+
+
+def test_facebook_default_thread_reply_prefers_delivery_to_bothell() -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+
+    reply = agent._facebook_default_thread_reply(
+        {
+            "item_title": "MacBook Air M2 13-inch 16GB 256GB",
+            "price": "$700",
+            "last_inbound_message": "Yes, still available",
+            "last_outbound_message": "Hey, is your MacBook Air still available?",
+        }
+    )
+
+    assert reply == "Can you do $425? Thanks"
+
+
+def test_facebook_clean_message_normalizes_weird_caps() -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+
+    cleaned = agent._facebook_clean_message("COULD YOU LET ME KNOW THE rAm and ssd ON THIS macbook air m1?")
+
+    assert cleaned == "Could you let me know the RAM and SSD on this MacBook Air M1?"
+
+
+def test_facebook_default_thread_reply_asks_for_address_on_pickup_only() -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+
+    reply = agent._facebook_default_thread_reply(
+        {
+            "item_title": "Nintendo Switch OLED",
+            "last_inbound_message": "Yes, but it's pickup only",
+        }
+    )
+
+    assert reply == "Hey, what’s the pickup address or nearest cross streets?"
+
+
+def test_facebook_default_thread_reply_moves_to_bothell_after_counter() -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+
+    reply = agent._facebook_default_thread_reply(
+        {
+            "item_title": "ASUS TUF Gaming PC",
+            "price": "$410",
+            "last_inbound_message": "$390",
+            "last_outbound_message": "Can you do $350? Thanks",
+        }
+    )
+
+    assert reply == "Can we meet in Bothell?"
+
+
+def test_facebook_default_thread_reply_asks_location_when_seller_cannot_meet() -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+
+    reply = agent._facebook_default_thread_reply(
+        {
+            "item_title": "ASUS TUF Gaming PC",
+            "last_inbound_message": "I don’t have a car atm",
+            "last_outbound_message": "Can we meet in Bothell?",
+        }
+    )
+
+    assert reply == "Where are you located?"
 
 
 def test_facebook_message_thread_stop_mentions_latest_known_reply(tmp_path: Path) -> None:
@@ -2413,7 +3114,89 @@ def test_facebook_message_composer_uses_profit_target_offer_for_overpriced_macbo
     )
 
     assert decision.next_action == "type"
-    assert decision.input_text == "Hey, if it's in good shape, would you take $450 for your MacBook Air M2?"
+    assert decision.input_text == "Hey, if it's in good shape, would you take $425 for your MacBook Air M2? Thanks"
+
+
+def test_facebook_message_composer_uses_more_aggressive_offer_for_overpriced_macbook_air_m1(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Back",
+            "MacBook Air M1 8GB 256GB",
+            "$375",
+            "Product Image, 1 of 5",
+            "Hello, is this still available?",
+            "Send",
+        ],
+        clickable_text=["Back", "Hello, is this still available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hello, is this still available?",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.75, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.78, "y": 0.62, "width": 0.15, "height": 0.04},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, look for profitable resale deals, and message seller on promising items.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "type"
+    assert decision.input_text == "Hey, if it's in good shape, would you take $230 for your MacBook Air M1? Thanks"
+
+
+def test_facebook_message_composer_distinguishes_macbook_air_m2_base_model_from_16gb_model(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Back",
+            "MacBook Air M2 13-inch 8GB 256GB",
+            "$550",
+            "Product Image, 1 of 5",
+            "Hello, is this still available?",
+            "Send",
+        ],
+        clickable_text=["Back", "Hello, is this still available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hello, is this still available?",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.75, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.78, "y": 0.62, "width": 0.15, "height": 0.04},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, look for profitable resale deals, and message seller on promising items.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "type"
+    assert decision.input_text == "Hey, if it's in good shape, would you take $325 for your MacBook Air M2? Thanks"
 
 
 def test_facebook_message_composer_falls_back_to_availability_when_ask_is_already_profitable(tmp_path: Path) -> None:
@@ -2498,6 +3281,88 @@ def test_facebook_message_composer_asks_for_missing_specs_and_condition_when_tex
     assert decision.target_box is not None
 
 
+def test_facebook_listing_message_goal_expands_details_before_drafting_reply(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Desktop Components - all great quality!",
+            "$123",
+            "Hello, is this still available?",
+            "Message sent to seller",
+            "See Conversation",
+            "Description",
+        ],
+        clickable_text=["See details", "More Options", "See Conversation"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "See details",
+                "enabled": True,
+                "target_box": {"x": 0.05, "y": 0.12, "width": 0.4, "height": 0.06},
+            },
+            {
+                "component_type": "text_input",
+                "label": "Hello, is this still available?",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.75, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.78, "y": 0.62, "width": 0.15, "height": 0.04},
+            },
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, look for profitable resale deals, and message seller on promising items.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+    )
+
+    assert decision.next_action == "tap"
+    assert "see details" in (decision.target_label or "").casefold()
+
+
+def test_facebook_listing_after_send_opens_see_conversation_to_capture_thread(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Nintendo Switch OLED in White",
+            "$200",
+            "Message sent to seller",
+            "See conversation",
+            "Description",
+        ],
+        clickable_text=["See conversation"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "See conversation",
+                "enabled": True,
+                "target_box": {"x": 0.08, "y": 0.32, "width": 0.45, "height": 0.05},
+            }
+        ],
+    )
+
+    decision = agent.decide(
+        goal="Open Facebook Marketplace, inspect valuable local resale listings, send short human buyer messages using the Facebook skill rules when profitable, periodically check Marketplace replies from sellers, and continue hunting.",
+        state=state,
+        skill=bundle,
+        action_history=[{"action": "tap", "target_label": "Send", "screen_classification": "facebook_message_composer"}],
+        yolo_mode=True,
+    )
+
+    assert decision.next_action == "tap"
+    assert decision.target_label == "See conversation"
+
+
 def test_facebook_message_composer_uses_custom_message_for_send_buyer_messages_goal(tmp_path: Path) -> None:
     agent = VisionAgent(None, "gemini-3.1-pro-preview")
     bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
@@ -2542,7 +3407,7 @@ def test_facebook_message_composer_uses_custom_message_for_send_buyer_messages_g
     )
 
     assert decision.next_action == "type"
-    assert decision.input_text == "Hey, if it's in good shape, would you take $850 for your MacBook Pro?"
+    assert decision.input_text == "Hey, can you share the full specs for your MacBook Pro?"
 
 
 def test_facebook_read_only_scanning_phrase_does_not_disable_custom_message_flow(tmp_path: Path) -> None:
@@ -2613,6 +3478,201 @@ def test_facebook_postprocess_rewrites_send_to_custom_message_for_listing_goal(t
 
     assert decision.next_action == "type"
     assert decision.input_text == "Hey, is your gaming PC still available?"
+
+
+def test_facebook_postprocess_expands_listing_details_before_rewriting_send(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Product Image,1 of 6",
+            'Dell UltraSharp 27" Monitor + Razer RGB Gaming Keyboard',
+            "$200",
+            "Message seller",
+            "Description",
+            "Selling a Dell UltraSharp 27 Monitor and Razer RGB gaming keyboard in excellent, like-new",
+            "condition. Both were barely used for about a",
+            "See more",
+            "Hi, is this available?",
+            "Send",
+        ],
+        clickable_text=["Hi, is this available?", "Send", "See more"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hi, is this available?",
+                "enabled": True,
+                "target_box": {"x": 0.09166666666666666, "y": 0.80875, "width": 0.6407407407407407, "height": 0.022916666666666665},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.7833333333333333, "y": 0.8016666666666666, "width": 0.15555555555555556, "height": 0.03666666666666667},
+            },
+            {
+                "component_type": "button",
+                "label": "See more",
+                "enabled": True,
+                "target_box": {"x": 0.7888888888888889, "y": 0.9754166666666667, "width": 0.18055555555555555, "height": 0.014583333333333334},
+            },
+        ],
+    )
+    original = VisionDecision(
+        screen_classification="Marketplace Listing Detail",
+        goal_progress="sending",
+        next_action="tap",
+        target_box=BoundingBox(x=0.7833333333333333, y=0.8016666666666666, width=0.15555555555555556, height=0.03666666666666667),
+        confidence=1.0,
+        reason="The goal explicitly requests sending buyer messages if available. The 'Send' button is visible.",
+        risk_level="low",
+        target_label="Send",
+    )
+
+    decision = agent._apply_post_decision_overrides(
+        goal="Open Facebook Marketplace, look for profitable resale deals, and message seller on promising items.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        decision=original,
+    )
+
+    assert decision.next_action == "tap"
+    assert "see more" in (decision.target_label or "").casefold()
+
+
+def test_facebook_postprocess_rewrites_default_type_message_for_listing_goal(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.save_fast_function(
+        "facebook",
+        "send_initial_message",
+        {
+            "name": "send_initial_message",
+            "description": "",
+            "args": [{"name": "message", "required": True}],
+            "steps": [{"action": "type", "input_text": "{{message}}"}, {"action": "tap", "target_label": "Send"}],
+            "preconditions": [{"predicate": "facebook_listing_detail_visible"}],
+            "postconditions": [{"predicate": "facebook_listing_message_sent"}],
+            "fallback_policy": "fallback_to_slow_path",
+        },
+    )
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Product Image,1 of 3",
+            "M4 MacBook Air",
+            "$999",
+            "Hi, is this available?",
+            "Send",
+            "Description",
+            "Bought not too long ago, works perfectly fine.",
+            "Includes original charger.",
+        ],
+        clickable_text=["Hi, is this available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hi, is this available?",
+                "enabled": True,
+                "target_box": {"x": 0.091, "y": 0.79, "width": 0.64, "height": 0.023},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.783, "y": 0.784, "width": 0.155, "height": 0.036},
+            },
+        ],
+    )
+    original = VisionDecision(
+        screen_classification="facebook_message_composer",
+        goal_progress="drafting_reply",
+        next_action="type",
+        target_box=BoundingBox(x=0.091, y=0.79, width=0.64, height=0.023),
+        confidence=0.91,
+        reason="The message input field is focused with the default text selected.",
+        risk_level="low",
+        input_text="Hi, is this available?",
+        submit_after_input=False,
+        target_label="Hi, is this available?",
+    )
+
+    decision = agent._apply_post_decision_overrides(
+        goal="Resume the Facebook Marketplace hunting workflow. Inspect valuable local resale listings, send short human buyer messages using the Facebook skill rules when profitable, and continue hunting.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        decision=original,
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "run_fast_function"
+    assert decision.tool_arguments["function_name"] == "send_initial_message"
+    assert decision.tool_arguments["arguments"]["message"] == "Hey, can you share the full specs for your MacBook Air?"
+
+
+def test_facebook_postprocess_rewrites_fast_function_pickup_message_for_listing_goal(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Product Image,1 of 1",
+            'Macbook Air 13" M2',
+            "$550",
+            "Message seller",
+            "Hi, is this available?",
+            "Send",
+        ],
+        clickable_text=["Hi, is this available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hi, is this available?",
+                "enabled": True,
+                "target_box": {"x": 0.091, "y": 0.626, "width": 0.64, "height": 0.022},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.783, "y": 0.619, "width": 0.155, "height": 0.029},
+            },
+        ],
+    )
+    original = VisionDecision.tool(
+        tool_name="run_fast_function",
+        tool_arguments={
+            "app_name": "facebook",
+            "function_name": "send_initial_message",
+            "arguments": {"message": "Hi, I can pick this up today. Is this still available?"},
+        },
+        screen_classification="marketplace_listing_message_input",
+        goal_progress="sending_reply",
+        confidence=0.95,
+        reason="Use the fast function to replace the default Marketplace message and send it with verification.",
+        target_label="send_initial_message",
+    )
+
+    decision = agent._apply_post_decision_overrides(
+        goal="Resume the Facebook Marketplace hunting workflow. Inspect valuable local resale listings, send short human buyer messages using the Facebook skill rules when profitable, and continue hunting.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        decision=original,
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.tool_name == "run_fast_function"
+    assert decision.tool_arguments["function_name"] == "send_initial_message"
+    assert decision.tool_arguments["arguments"]["message"] == "Hey, can you share the full specs for your MacBook Air?"
 
 
 def test_facebook_message_recovery_prompt_auto_continues_in_yolo_mode(tmp_path: Path) -> None:

@@ -18,16 +18,20 @@ from agent_runner.utils import (
 
 DEFAULT_SCREEN_FILE = "screens.json"
 DEFAULT_SELECTOR_FILE = "selectors.json"
+DEFAULT_WORKFLOW_FILE = "workflow.json"
 DEFAULT_STATE_FILE = "state.json"
 DEFAULT_MEMORY_FILE = "memory.md"
 DATA_DIR = "data"
 DEFAULT_BACKUP_JSON_FILE = f"{DATA_DIR}/backup.json"
 DEFAULT_BACKUP_SUMMARY_FILE = f"{DATA_DIR}/backup.md"
 SCRIPTS_DIR = "scripts"
+FAST_FUNCTIONS_DIR = "functions"
 MAX_RECENT_SCREENS = 12
 MAX_BACKUP_ITEMS = 25
 MAX_BACKUP_THREADS = 20
 MAX_THREAD_MESSAGES = 12
+MAX_REPLY_QUEUE = 12
+FAST_FUNCTION_PROMOTION_THRESHOLD = 2
 
 
 class SkillManager:
@@ -53,12 +57,14 @@ class SkillManager:
                 "path": str(app_dir / "SKILL.md"),
                 "screens_path": str(app_dir / DEFAULT_SCREEN_FILE),
                 "selectors_path": str(app_dir / DEFAULT_SELECTOR_FILE),
+                "workflow_path": str(app_dir / DEFAULT_WORKFLOW_FILE),
                 "state_path": str(app_dir / DEFAULT_STATE_FILE),
                 "memory_path": str(app_dir / DEFAULT_MEMORY_FILE),
                 "backup_json_path": str(app_dir / DEFAULT_BACKUP_JSON_FILE),
                 "backup_summary_path": str(app_dir / DEFAULT_BACKUP_SUMMARY_FILE),
                 "screen_count": len(bundle.screens.get("screens", {})),
                 "selector_count": len(bundle.selectors.get("selectors", [])),
+                "workflow_screen_count": len(bundle.workflow.get("screens", {})),
                 "backup_thread_count": len(facebook_backup.get("threads", [])),
                 "backup_item_count": len(facebook_backup.get("contacted_items", [])),
             },
@@ -97,6 +103,7 @@ class SkillManager:
         for path, payload in [
             (app_dir / DEFAULT_SCREEN_FILE, {"screens": {}}),
             (app_dir / DEFAULT_SELECTOR_FILE, {"selectors": []}),
+            (app_dir / DEFAULT_WORKFLOW_FILE, self._default_workflow_payload(app_name=app_name, package_name=package_name)),
             (app_dir / DEFAULT_STATE_FILE, {"app": app_name, "package_name": package_name}),
             (
                 app_dir / DEFAULT_BACKUP_JSON_FILE,
@@ -156,6 +163,26 @@ class SkillManager:
             return []
         return sorted(f.name for f in scripts_dir.iterdir() if f.suffix == ".json" and f.is_file())
 
+    def list_fast_functions(self, app_name: str) -> list[str]:
+        functions_dir = self.skills_root / app_name / FAST_FUNCTIONS_DIR
+        if not functions_dir.exists():
+            return []
+        return sorted(f.name for f in functions_dir.iterdir() if f.suffix == ".json" and f.is_file())
+
+    def read_fast_function(self, app_name: str, function_name: str) -> dict[str, Any]:
+        path = self._fast_function_path(app_name, function_name)
+        if not path.exists():
+            raise FileNotFoundError(f"Fast function '{function_name}' not found for app '{app_name}'.")
+        return load_json(path, default={})
+
+    def save_fast_function(self, app_name: str, function_name: str, function: dict[str, Any]) -> Path:
+        if not function_name.endswith(".json"):
+            function_name = f"{function_name}.json"
+        functions_dir = ensure_directory(self.skills_root / app_name / FAST_FUNCTIONS_DIR)
+        path = functions_dir / function_name
+        dump_json(path, function)
+        return path
+
     def read_script(self, app_name: str, script_name: str) -> dict[str, Any]:
         """Read a saved automation script."""
         path = self._script_path(app_name, script_name)
@@ -184,6 +211,11 @@ class SkillManager:
         if not script_name.endswith(".json"):
             script_name = f"{script_name}.json"
         return self.skills_root / app_name / SCRIPTS_DIR / script_name
+
+    def _fast_function_path(self, app_name: str, function_name: str) -> Path:
+        if not function_name.endswith(".json"):
+            function_name = f"{function_name}.json"
+        return self.skills_root / app_name / FAST_FUNCTIONS_DIR / function_name
 
     def update_after_observation(
         self,
@@ -249,6 +281,12 @@ class SkillManager:
                     for component in components
                     if component.get("component_type") in {"text_input", "search_action"}
                 ][:8],
+                "exploration_memory": {
+                    "last_screen_id": screen_id,
+                    "last_signature": signature,
+                    "last_observed_at": self._now_iso(),
+                    "component_count": len(components),
+                },
             }
         )
         dump_json(bundle.app_dir / DEFAULT_SCREEN_FILE, bundle.screens)
@@ -271,6 +309,16 @@ class SkillManager:
                 ],
             },
         )
+        if not existing_screen:
+            self._queue_event(
+                "screen_learned",
+                {
+                    "app_name": bundle.app_name,
+                    "screen_id": screen_id,
+                    "activity_name": state.activity_name,
+                    "package_name": state.package_name,
+                },
+            )
         return screen_id
 
     def update_after_transition(
@@ -281,33 +329,41 @@ class SkillManager:
         decision: VisionDecision,
         after_state: ScreenState,
     ) -> None:
-        if not self._is_search_transition(decision):
-            return
-        transition = {
-            "from_screen_id": self._screen_id(describe_state_signature(before_state)),
-            "to_screen_id": self._screen_id(describe_state_signature(after_state)),
-            "action": decision.next_action,
-            "input_text": decision.input_text,
-            "submit_after_input": decision.submit_after_input,
-            "trigger_label": decision.target_label,
-            "result_activity": after_state.activity_name,
-            "result_package": after_state.package_name,
-            "result_anchors": after_state.visible_text[:15],
-            "result_clickable_text": after_state.clickable_text[:12],
-        }
-        transitions = bundle.state.setdefault("search_transitions", [])
-        transitions.append(transition)
-        bundle.state["search_transitions"] = transitions[-10:]
-        bundle.state["last_search_transition"] = transition
-        dump_json(bundle.app_dir / DEFAULT_STATE_FILE, bundle.state)
-        self._queue_event(
-            "skill_state_updated",
-            {
-                "app_name": bundle.app_name,
-                "reason": "Recorded search transition in skill state.",
-                "files": [str(bundle.app_dir / DEFAULT_STATE_FILE)],
-            },
-        )
+        changed = False
+        if self._is_search_transition(decision):
+            transition = {
+                "from_screen_id": self._screen_id(describe_state_signature(before_state)),
+                "to_screen_id": self._screen_id(describe_state_signature(after_state)),
+                "action": decision.next_action,
+                "input_text": decision.input_text,
+                "submit_after_input": decision.submit_after_input,
+                "trigger_label": decision.target_label,
+                "result_activity": after_state.activity_name,
+                "result_package": after_state.package_name,
+                "result_anchors": after_state.visible_text[:15],
+                "result_clickable_text": after_state.clickable_text[:12],
+            }
+            transitions = bundle.state.setdefault("search_transitions", [])
+            transitions.append(transition)
+            bundle.state["search_transitions"] = transitions[-10:]
+            bundle.state["last_search_transition"] = transition
+            changed = True
+            self._queue_event(
+                "skill_state_updated",
+                {
+                    "app_name": bundle.app_name,
+                    "reason": "Recorded search transition in skill state.",
+                    "files": [str(bundle.app_dir / DEFAULT_STATE_FILE)],
+                },
+            )
+        changed = self._record_fast_function_observation(
+            bundle,
+            before_state=before_state,
+            decision=decision,
+            after_state=after_state,
+        ) or changed
+        if changed:
+            dump_json(bundle.app_dir / DEFAULT_STATE_FILE, bundle.state)
 
     def update_run_state(
         self,
@@ -370,8 +426,28 @@ class SkillManager:
         if self._update_recent_screens_backup(backup, state):
             changed_sections.append("recent_screens")
 
+        classification = self.classify_state(bundle, state)
+        entities = self.extract_entities(bundle, state, classification.get("screen_name"))
+        app_workflow_changed = self._update_app_workflow_backup(
+            bundle,
+            backup,
+            state,
+            classification=classification,
+            entities=entities,
+        )
+
         if bundle.app_name == "facebook":
-            changed_sections.extend(self._update_facebook_marketplace_backup(backup, state))
+            changed_sections.extend(self._update_facebook_marketplace_backup(bundle, backup, state))
+            app_workflow_changed = self._update_app_workflow_backup(
+                bundle,
+                backup,
+                state,
+                classification=classification,
+                entities=entities,
+            ) or app_workflow_changed
+
+        if app_workflow_changed:
+            changed_sections.append("app_workflow")
 
         if not changed_sections:
             return
@@ -379,7 +455,9 @@ class SkillManager:
         backup["last_updated"] = self._now_iso()
         backup_json_path = bundle.app_dir / DEFAULT_BACKUP_JSON_FILE
         backup_summary_path = bundle.app_dir / DEFAULT_BACKUP_SUMMARY_FILE
+        state_path = bundle.app_dir / DEFAULT_STATE_FILE
         dump_json(backup_json_path, backup)
+        dump_json(state_path, bundle.state)
         bundle.backup_summary = self._render_backup_summary(backup)
         backup_summary_path.write_text(bundle.backup_summary, encoding="utf-8")
         self._queue_event(
@@ -392,11 +470,257 @@ class SkillManager:
                 "thread_count": len(backup.get("facebook_marketplace", {}).get("threads", [])),
                 "contacted_item_count": len(backup.get("facebook_marketplace", {}).get("contacted_items", [])),
                 "inspected_item_count": len(backup.get("facebook_marketplace", {}).get("inspected_items", [])),
+                "workflow_mode": backup.get("app_workflow", {}).get("workflow_state", {}).get("mode"),
+                "workflow_queue_count": len(backup.get("app_workflow", {}).get("workflow_state", {}).get("queue", [])),
+                "facebook_mode": backup.get("facebook_marketplace", {}).get("workflow", {}).get("mode"),
+                "reply_queue_count": len(backup.get("facebook_marketplace", {}).get("workflow", {}).get("reply_queue", [])),
             },
         )
 
+    def classify_state(self, bundle: SkillBundle, state: ScreenState) -> dict[str, Any]:
+        screen_defs = dict(bundle.workflow.get("screens") or {})
+        matches: list[dict[str, Any]] = []
+        for screen_name, definition in screen_defs.items():
+            if not isinstance(definition, dict):
+                continue
+            if self._workflow_condition_matches(bundle, state, definition.get("when") or {}, arguments={}):
+                matches.append(
+                    {
+                        "screen_name": screen_name,
+                        "confidence": float(definition.get("confidence", 1.0)),
+                        "priority": int(definition.get("priority", 0)),
+                        "extractors": list(definition.get("extractors") or []),
+                        "next_recommended_actions": list(definition.get("next_recommended_actions") or []),
+                    }
+                )
+        if not matches:
+            return {
+                "screen_name": None,
+                "confidence": 0.0,
+                "entities": {},
+                "next_recommended_actions": [],
+            }
+        matches.sort(key=lambda item: (-item["priority"], -item["confidence"], str(item["screen_name"])))
+        best = dict(matches[0])
+        best["entities"] = self.extract_entities(bundle, state, best["screen_name"])
+        return best
+
+    def evaluate_condition(
+        self,
+        bundle: SkillBundle,
+        condition: dict[str, Any],
+        state: ScreenState,
+        *,
+        arguments: dict[str, Any] | None = None,
+    ) -> bool:
+        return self._workflow_condition_matches(bundle, state, condition, arguments=arguments or {})
+
+    def extract_entities(
+        self,
+        bundle: SkillBundle,
+        state: ScreenState,
+        screen_name: str | None = None,
+    ) -> dict[str, Any]:
+        extractors: list[str] = []
+        if screen_name:
+            definition = dict((bundle.workflow.get("screens") or {}).get(screen_name) or {})
+            extractors.extend(str(name) for name in list(definition.get("extractors") or []) if str(name))
+        extracted: dict[str, Any] = {}
+        for extractor_name in self._dedupe_strings(extractors):
+            payload = self._run_named_extractor(bundle, extractor_name, state)
+            if payload is not None:
+                extracted[extractor_name] = payload
+        return extracted
+
+    def _update_app_workflow_backup(
+        self,
+        bundle: SkillBundle,
+        backup: dict[str, Any],
+        state: ScreenState,
+        *,
+        classification: dict[str, Any],
+        entities: dict[str, Any],
+    ) -> bool:
+        previous_app_workflow = dict(backup.get("app_workflow") or {})
+        defaults = dict(bundle.workflow.get("workflow_state_defaults") or self._default_workflow_payload(app_name=bundle.app_name).get("workflow_state_defaults") or {})
+        existing = dict((backup.get("app_workflow") or {}).get("workflow_state") or defaults)
+        workflow_state = dict(defaults)
+        workflow_state.update(existing)
+        workflow_state["last_observed_at"] = self._now_iso()
+        workflow_state["screen_name"] = classification.get("screen_name")
+        workflow_state["confidence"] = classification.get("confidence")
+        workflow_state["queue"] = list(workflow_state.get("queue") or [])
+        app_workflow = {
+            "screen_name": classification.get("screen_name"),
+            "confidence": classification.get("confidence"),
+            "entities": entities,
+            "workflow_state": workflow_state,
+        }
+        if bundle.app_name == "facebook":
+            facebook_workflow = dict((backup.get("facebook_marketplace") or {}).get("workflow") or {})
+            if facebook_workflow:
+                workflow_state.update(
+                    {
+                        "mode": facebook_workflow.get("mode", workflow_state.get("mode")),
+                        "mode_reason": facebook_workflow.get("mode_reason", workflow_state.get("mode_reason")),
+                        "queue": list(facebook_workflow.get("reply_queue") or []),
+                        "active_item_key": facebook_workflow.get("active_listing_key"),
+                        "active_thread_key": facebook_workflow.get("active_thread_key"),
+                        "last_mode_switch_at": facebook_workflow.get("last_mode_switch_at"),
+                        "last_observed_at": facebook_workflow.get("last_reply_check_at") or workflow_state.get("last_observed_at"),
+                    }
+                )
+                app_workflow["workflow_state"] = workflow_state
+        previous_mode = str(existing.get("mode") or "")
+        previous_queue = list(existing.get("queue") or [])
+        backup["app_workflow"] = app_workflow
+        bundle.state["workflow_state"] = workflow_state
+        if previous_mode != str(workflow_state.get("mode") or ""):
+            self._queue_event(
+                "app_mode_changed",
+                {
+                    "app_name": bundle.app_name,
+                    "mode": workflow_state.get("mode"),
+                    "previous_mode": previous_mode or None,
+                    "reason": workflow_state.get("mode_reason"),
+                    "queue_length": len(list(workflow_state.get("queue") or [])),
+                    "active_thread_key": workflow_state.get("active_thread_key"),
+                    "active_item_key": workflow_state.get("active_item_key"),
+                },
+            )
+        if len(previous_queue) != len(list(workflow_state.get("queue") or [])):
+            self._queue_event(
+                "app_queue_updated",
+                {
+                    "app_name": bundle.app_name,
+                    "queue_length": len(list(workflow_state.get("queue") or [])),
+                    "screen_name": classification.get("screen_name"),
+                },
+            )
+        return app_workflow != previous_app_workflow
+
     def _queue_event(self, event_type: str, payload: dict[str, Any]) -> None:
         self._pending_events.append({"type": event_type, **payload})
+
+    def _workflow_condition_matches(
+        self,
+        bundle: SkillBundle,
+        state: ScreenState,
+        condition: Any,
+        *,
+        arguments: dict[str, Any],
+        _depth: int = 0,
+    ) -> bool:
+        if _depth > 12:
+            return False
+        if condition is None:
+            return True
+        if isinstance(condition, list):
+            return all(
+                self._workflow_condition_matches(bundle, state, item, arguments=arguments, _depth=_depth + 1)
+                for item in condition
+            )
+        if not isinstance(condition, dict):
+            return False
+        if "predicate" in condition:
+            predicate_name = str(condition.get("predicate") or "")
+            predicate_def = dict((bundle.workflow.get("predicates") or {}).get(predicate_name) or {})
+            if predicate_def:
+                return self._workflow_condition_matches(
+                    bundle,
+                    state,
+                    predicate_def,
+                    arguments=arguments,
+                    _depth=_depth + 1,
+                )
+            if predicate_name:
+                return self._workflow_condition_matches(
+                    bundle,
+                    state,
+                    {"screen_is": predicate_name},
+                    arguments=arguments,
+                    _depth=_depth + 1,
+                )
+        if "all_of" in condition:
+            return all(
+                self._workflow_condition_matches(bundle, state, item, arguments=arguments, _depth=_depth + 1)
+                for item in list(condition.get("all_of") or [])
+            )
+        if "any_of" in condition:
+            return any(
+                self._workflow_condition_matches(bundle, state, item, arguments=arguments, _depth=_depth + 1)
+                for item in list(condition.get("any_of") or [])
+            )
+        if "not" in condition:
+            return not self._workflow_condition_matches(
+                bundle,
+                state,
+                condition.get("not"),
+                arguments=arguments,
+                _depth=_depth + 1,
+            )
+        if "screen_is" in condition:
+            screen_name = str(condition.get("screen_is") or "")
+            definition = dict((bundle.workflow.get("screens") or {}).get(screen_name) or {})
+            return bool(definition) and self._workflow_condition_matches(
+                bundle,
+                state,
+                definition.get("when") or {},
+                arguments=arguments,
+                _depth=_depth + 1,
+            )
+        combined = self._combined_state_text(state)
+        if "text_visible" in condition:
+            needles = condition.get("text_visible")
+            if isinstance(needles, str):
+                needles = [needles]
+            return all(str(needle).casefold() in combined for needle in list(needles or []))
+        if "text_hidden" in condition:
+            needles = condition.get("text_hidden")
+            if isinstance(needles, str):
+                needles = [needles]
+            return all(str(needle).casefold() not in combined for needle in list(needles or []))
+        if "package_is" in condition:
+            return state.package_name == str(condition.get("package_is") or "")
+        if "activity_is" in condition:
+            return state.activity_name == str(condition.get("activity_is") or "")
+        if "activity_contains" in condition:
+            return str(condition.get("activity_contains") or "").casefold() in state.activity_name.casefold()
+        if "argument_text_visible" in condition:
+            value = str(arguments.get(str(condition.get("argument_text_visible") or ""), "")).casefold()
+            return bool(value) and value in combined
+        if "argument_text_hidden" in condition:
+            value = str(arguments.get(str(condition.get("argument_text_hidden") or ""), "")).casefold()
+            return bool(value) and value not in combined
+        return False
+
+    def _run_named_extractor(
+        self,
+        bundle: SkillBundle,
+        extractor_name: str,
+        state: ScreenState,
+    ) -> Any:
+        handlers = {
+            "facebook_thread_snapshot": self._extract_facebook_thread_snapshot,
+            "facebook_listing_snapshot": self._extract_facebook_listing_snapshot,
+            "facebook_marketplace_inbox_threads": self._extract_facebook_marketplace_inbox_threads,
+        }
+        handler = handlers.get(extractor_name)
+        if handler is None:
+            return None
+        return handler(state)
+
+    @staticmethod
+    def _combined_state_text(state: ScreenState) -> str:
+        component_labels = [
+            str(component.get("label") or "")
+            for component in list(state.components or [])[:80]
+            if str(component.get("label") or "").strip()
+        ]
+        return " ".join(
+            item.casefold()
+            for item in [*list(state.visible_text or [])[:80], *list(state.clickable_text or [])[:80], *component_labels]
+        )
 
     def _ensure_defaults(self, app: AppConfig, app_dir: Path) -> None:
         skill_path = app_dir / "SKILL.md"
@@ -405,6 +729,7 @@ class SkillManager:
         for path, payload in [
             (app_dir / DEFAULT_SCREEN_FILE, {"screens": {}}),
             (app_dir / DEFAULT_SELECTOR_FILE, {"selectors": []}),
+            (app_dir / DEFAULT_WORKFLOW_FILE, self._default_workflow_payload(app_name=app.name, package_name=app.package_name)),
             (app_dir / DEFAULT_STATE_FILE, {"app": app.name}),
             (
                 app_dir / DEFAULT_BACKUP_JSON_FILE,
@@ -447,6 +772,10 @@ class SkillManager:
             instructions=(app_dir / "SKILL.md").read_text(encoding="utf-8"),
             screens=load_json(app_dir / DEFAULT_SCREEN_FILE, default={"screens": {}}),
             selectors=load_json(app_dir / DEFAULT_SELECTOR_FILE, default={"selectors": []}),
+            workflow=load_json(
+                app_dir / DEFAULT_WORKFLOW_FILE,
+                default=self._default_workflow_payload(app_name=app_name),
+            ),
             state=load_json(app_dir / DEFAULT_STATE_FILE, default={}),
             memory=(app_dir / DEFAULT_MEMORY_FILE).read_text(encoding="utf-8"),
             backup_data=load_json(
@@ -527,11 +856,50 @@ description: App-specific navigation guidance for the {title} Android workflow.
 - Purchases, destructive settings, account mutations, and irreversible confirmation dialogs.
 """
 
+    def _default_workflow_payload(
+        self,
+        *,
+        app_name: str,
+        package_name: str | None = None,
+    ) -> dict[str, Any]:
+        bundled_workflow = (
+            Path(__file__).resolve().parent.parent
+            / "skills"
+            / "apps"
+            / app_name
+            / DEFAULT_WORKFLOW_FILE
+        )
+        if bundled_workflow.exists():
+            payload = load_json(bundled_workflow, default={})
+            if payload:
+                if package_name and not payload.get("package_name"):
+                    payload["package_name"] = package_name
+                return payload
+        return {
+            "app_name": app_name,
+            "package_name": package_name,
+            "screens": {},
+            "predicates": {},
+            "extractors": {},
+            "function_templates": {},
+            "promotion_rules": [],
+            "workflow_state_defaults": {
+                "mode": "idle",
+                "mode_reason": "default_idle",
+                "queue": [],
+                "active_item_key": None,
+                "active_thread_key": None,
+                "last_mode_switch_at": None,
+                "last_observed_at": None,
+            },
+        }
+
     def _skill_file_path(self, app_name: str, file_name: str, *, create_parent: bool = False) -> Path:
         allowed = {
             "SKILL.md",
             DEFAULT_SCREEN_FILE,
             DEFAULT_SELECTOR_FILE,
+            DEFAULT_WORKFLOW_FILE,
             DEFAULT_STATE_FILE,
             DEFAULT_MEMORY_FILE,
             DEFAULT_BACKUP_JSON_FILE,
@@ -575,7 +943,12 @@ description: App-specific navigation guidance for the {title} Android workflow.
         backup["recent_screens"] = recent[-MAX_RECENT_SCREENS:]
         return True
 
-    def _update_facebook_marketplace_backup(self, backup: dict[str, Any], state: ScreenState) -> list[str]:
+    def _update_facebook_marketplace_backup(
+        self,
+        bundle: SkillBundle,
+        backup: dict[str, Any],
+        state: ScreenState,
+    ) -> list[str]:
         if state.package_name != "com.facebook.katana":
             return []
         facebook = backup.setdefault(
@@ -584,8 +957,16 @@ description: App-specific navigation guidance for the {title} Android workflow.
                 "threads": [],
                 "contacted_items": [],
                 "inspected_items": [],
+                "workflow": self._default_facebook_workflow(),
             },
         )
+        previous_workflow = dict(facebook.get("workflow") or self._default_facebook_workflow())
+        previous_queue_keys = {
+            str(item.get("thread_key") or "")
+            for item in list(previous_workflow.get("reply_queue") or [])
+            if str(item.get("thread_key") or "")
+        }
+        previous_active_thread_key = str(previous_workflow.get("active_thread_key") or "")
         changed_sections: list[str] = []
         thread_snapshot = self._extract_facebook_thread_snapshot(state)
         if thread_snapshot:
@@ -619,7 +1000,350 @@ description: App-specific navigation guidance for the {title} Android workflow.
                 }
                 if self._upsert_contact_record(facebook.setdefault("contacted_items", []), contact_payload):
                     changed_sections.append("contacted_items")
+        inbox_threads = self._extract_facebook_marketplace_inbox_threads(state)
+        for inbox_thread in inbox_threads:
+            if self._upsert_thread_record(facebook, inbox_thread):
+                changed_sections.append("threads")
+            contact_payload = self._thread_to_contact_record(inbox_thread)
+            if self._upsert_contact_record(facebook.setdefault("contacted_items", []), contact_payload):
+                changed_sections.append("contacted_items")
+        if self._sync_facebook_workflow(bundle, facebook, state, thread_snapshot=thread_snapshot, listing_snapshot=listing_snapshot):
+            changed_sections.append("workflow")
+        current_workflow = facebook.get("workflow") or {}
+        current_queue = list(current_workflow.get("reply_queue") or [])
+        current_queue_keys = {
+            str(item.get("thread_key") or "")
+            for item in current_queue
+            if str(item.get("thread_key") or "")
+        }
+        for queued in current_queue:
+            thread_key = str(queued.get("thread_key") or "")
+            if thread_key and thread_key not in previous_queue_keys:
+                self._queue_event(
+                    "facebook_reply_queued",
+                    {
+                        "app_name": bundle.app_name,
+                        "thread_key": thread_key,
+                        "thread_title": queued.get("thread_title"),
+                        "seller_name": queued.get("seller_name"),
+                        "item_title": queued.get("item_title"),
+                        "queue_length": len(current_queue),
+                    },
+                )
+        current_mode = str(current_workflow.get("mode") or "hunt")
+        previous_mode = str(previous_workflow.get("mode") or "hunt")
+        if current_mode != previous_mode:
+            self._queue_event(
+                "facebook_mode_changed",
+                {
+                    "app_name": bundle.app_name,
+                    "mode": current_mode,
+                    "previous_mode": previous_mode,
+                    "reason": current_workflow.get("mode_reason"),
+                    "queue_length": len(current_queue),
+                    "active_thread_key": current_workflow.get("active_thread_key"),
+                    "active_listing_key": current_workflow.get("active_listing_key"),
+                },
+            )
+        current_active_thread_key = str(current_workflow.get("active_thread_key") or "")
+        if current_mode == "reply" and current_active_thread_key and current_active_thread_key != previous_active_thread_key:
+            self._queue_event(
+                "facebook_reply_started",
+                {
+                    "app_name": bundle.app_name,
+                    "thread_key": current_active_thread_key,
+                    "queue_length": len(current_queue),
+                },
+            )
+        if previous_active_thread_key and previous_active_thread_key not in current_queue_keys and current_mode == "hunt":
+            self._queue_event(
+                "facebook_reply_completed",
+                {
+                    "app_name": bundle.app_name,
+                    "thread_key": previous_active_thread_key,
+                    "queue_length": len(current_queue),
+                },
+            )
         return self._dedupe_strings(changed_sections)
+
+    def _record_fast_function_observation(
+        self,
+        bundle: SkillBundle,
+        *,
+        before_state: ScreenState,
+        decision: VisionDecision,
+        after_state: ScreenState,
+    ) -> bool:
+        function_name = self._detect_fast_function_success(
+            bundle,
+            before_state=before_state,
+            decision=decision,
+            after_state=after_state,
+        )
+        if not function_name:
+            return False
+        observations = bundle.state.setdefault("fast_function_observations", {})
+        record = dict(observations.get(function_name) or {})
+        count = int(record.get("success_count") or 0) + 1
+        record.update(
+            {
+                "success_count": count,
+                "last_promoted_at": record.get("last_promoted_at"),
+                "last_seen_at": self._now_iso(),
+            }
+        )
+        observations[function_name] = record
+        if not self._fast_function_path(bundle.app_name, function_name).exists() and count >= FAST_FUNCTION_PROMOTION_THRESHOLD:
+            definition = self._function_template_from_workflow(bundle, function_name)
+            if definition:
+                path = self.save_fast_function(bundle.app_name, function_name, definition)
+                record["last_promoted_at"] = self._now_iso()
+                self._queue_event(
+                    "skill_state_updated",
+                    {
+                        "app_name": bundle.app_name,
+                        "reason": f"Promoted fast function '{function_name}' from repeated successful transitions.",
+                        "files": [str(bundle.app_dir / DEFAULT_STATE_FILE), str(path)],
+                    },
+                )
+        bundle.state["fast_function_observations"] = observations
+        return True
+
+    def _detect_fast_function_success(
+        self,
+        bundle: SkillBundle,
+        *,
+        before_state: ScreenState,
+        decision: VisionDecision,
+        after_state: ScreenState,
+    ) -> str | None:
+        rules = list(bundle.workflow.get("promotion_rules") or [])
+        label = str(decision.target_label or "")
+        for rule in rules:
+            if not isinstance(rule, dict):
+                continue
+            if str(rule.get("action") or "") and str(rule.get("action")) != decision.next_action:
+                continue
+            label_contains = str(rule.get("target_label_contains") or "")
+            if label_contains and label_contains.casefold() not in label.casefold():
+                continue
+            before_condition = rule.get("before")
+            if before_condition and not self._workflow_condition_matches(bundle, before_state, before_condition, arguments={}):
+                continue
+            after_condition = rule.get("after")
+            if after_condition and not self._workflow_condition_matches(bundle, after_state, after_condition, arguments={}):
+                continue
+            function_name = str(rule.get("function_name") or "")
+            if function_name:
+                return function_name
+        return None
+
+    def _function_template_from_workflow(self, bundle: SkillBundle, function_name: str) -> dict[str, Any] | None:
+        template = dict((bundle.workflow.get("function_templates") or {}).get(function_name) or {})
+        return template or None
+
+    def _record_facebook_fast_function_observation(
+        self,
+        bundle: SkillBundle,
+        *,
+        before_state: ScreenState,
+        decision: VisionDecision,
+        after_state: ScreenState,
+    ) -> bool:
+        return self._record_fast_function_observation(
+            bundle,
+            before_state=before_state,
+            decision=decision,
+            after_state=after_state,
+        )
+
+    def _detect_facebook_fast_function_success(
+        self,
+        *,
+        before_state: ScreenState,
+        decision: VisionDecision,
+        after_state: ScreenState,
+    ) -> str | None:
+        bundle = self._bundle_from_dir("facebook", self.skills_root / "facebook")
+        return self._detect_fast_function_success(
+            bundle,
+            before_state=before_state,
+            decision=decision,
+            after_state=after_state,
+        )
+
+    def _facebook_fast_function_definition(self, function_name: str) -> dict[str, Any] | None:
+        bundle = self._bundle_from_dir("facebook", self.skills_root / "facebook")
+        return self._function_template_from_workflow(bundle, function_name)
+
+    def _default_facebook_workflow(self) -> dict[str, Any]:
+        return {
+            "mode": "hunt",
+            "mode_reason": "default_hunt",
+            "reply_queue": [],
+            "active_thread_key": None,
+            "active_listing_key": None,
+            "last_mode_switch_at": None,
+            "last_reply_check_at": None,
+            "handled_thread_keys": [],
+        }
+
+    def _sync_facebook_workflow(
+        self,
+        bundle: SkillBundle,
+        facebook: dict[str, Any],
+        state: ScreenState,
+        *,
+        thread_snapshot: dict[str, Any] | None,
+        listing_snapshot: dict[str, Any] | None,
+    ) -> bool:
+        existing = dict(facebook.get("workflow") or self._default_facebook_workflow())
+        workflow = dict(self._default_facebook_workflow())
+        workflow.update(existing)
+        handled = [
+            str(item)
+            for item in list(workflow.get("handled_thread_keys") or [])
+            if str(item)
+        ][-MAX_BACKUP_THREADS:]
+        workflow["handled_thread_keys"] = handled
+
+        if listing_snapshot:
+            workflow["active_listing_key"] = listing_snapshot.get("item_key")
+        elif not self._extract_facebook_listing_snapshot(state):
+            workflow["active_listing_key"] = None
+
+        if thread_snapshot:
+            workflow["active_thread_key"] = thread_snapshot.get("thread_key")
+            workflow["last_reply_check_at"] = self._now_iso()
+        elif self._facebook_marketplace_inbox_visible_from_state(state):
+            workflow["last_reply_check_at"] = self._now_iso()
+
+        reply_queue = self._build_facebook_reply_queue(facebook, handled_thread_keys=set(handled))
+        workflow["reply_queue"] = reply_queue[:MAX_REPLY_QUEUE]
+        queue_keys = {
+            str(item.get("thread_key") or "")
+            for item in workflow["reply_queue"]
+            if str(item.get("thread_key") or "")
+        }
+
+        desired_mode = "hunt"
+        reason = "default_hunt"
+        active_listing_key = str(workflow.get("active_listing_key") or "")
+        if queue_keys and not active_listing_key:
+            desired_mode = "reply"
+            reason = "actionable_seller_replies"
+        elif active_listing_key:
+            desired_mode = "hunt"
+            reason = "finishing_listing_step"
+        elif workflow["reply_queue"]:
+            desired_mode = "reply"
+            reason = "draining_reply_queue"
+        else:
+            desired_mode = "hunt"
+            reason = "queue_empty"
+
+        if thread_snapshot and not thread_snapshot.get("needs_reply"):
+            thread_key = str(thread_snapshot.get("thread_key") or "")
+            if thread_key:
+                handled = [item for item in handled if item != thread_key]
+                workflow["handled_thread_keys"] = handled[-MAX_BACKUP_THREADS:]
+                if workflow.get("active_thread_key") == thread_key and desired_mode == "hunt":
+                    workflow["active_thread_key"] = None
+        if desired_mode == "reply" and not workflow.get("active_thread_key"):
+            workflow["active_thread_key"] = next(
+                (item.get("thread_key") for item in workflow["reply_queue"] if item.get("thread_key")),
+                None,
+            )
+        if desired_mode == "hunt" and not queue_keys:
+            workflow["active_thread_key"] = None
+
+        if existing.get("mode") != desired_mode:
+            workflow["last_mode_switch_at"] = self._now_iso()
+        else:
+            workflow["last_mode_switch_at"] = existing.get("last_mode_switch_at")
+        workflow["mode"] = desired_mode
+        workflow["mode_reason"] = reason
+
+        if self._facebook_marketplace_inbox_visible_from_state(state):
+            visible_queue_keys = {
+                str(item.get("thread_key") or "")
+                for item in self._extract_facebook_marketplace_inbox_threads(state)
+                if str(item.get("thread_key") or "")
+            }
+            if visible_queue_keys:
+                merged_handled = [item for item in handled if item not in visible_queue_keys]
+                workflow["handled_thread_keys"] = merged_handled[-MAX_BACKUP_THREADS:]
+
+        facebook["workflow"] = workflow
+        bundle.state["facebook_workflow"] = workflow
+        bundle.state["workflow_state"] = {
+            "mode": workflow.get("mode"),
+            "mode_reason": workflow.get("mode_reason"),
+            "queue": list(workflow.get("reply_queue") or []),
+            "active_item_key": workflow.get("active_listing_key"),
+            "active_thread_key": workflow.get("active_thread_key"),
+            "last_mode_switch_at": workflow.get("last_mode_switch_at"),
+            "last_observed_at": workflow.get("last_reply_check_at"),
+        }
+        return workflow != existing
+
+    def _build_facebook_reply_queue(
+        self,
+        facebook: dict[str, Any],
+        *,
+        handled_thread_keys: set[str],
+    ) -> list[dict[str, Any]]:
+        queue: list[dict[str, Any]] = []
+        for thread in list(facebook.get("threads") or []):
+            thread_key = str(thread.get("thread_key") or "")
+            if not thread_key or thread_key in handled_thread_keys:
+                continue
+            if not thread.get("needs_reply"):
+                continue
+            queue.append(
+                {
+                    "thread_key": thread_key,
+                    "thread_title": thread.get("thread_title"),
+                    "seller_name": thread.get("seller_name"),
+                    "item_title": thread.get("item_title"),
+                    "last_inbound_message": thread.get("last_inbound_message"),
+                    "last_updated": thread.get("last_updated"),
+                    "reason": "new_inbound_message" if thread.get("last_inbound_message") else "visible_unread_thread",
+                }
+            )
+        queue.sort(key=lambda item: str(item.get("last_updated") or ""), reverse=True)
+        return queue
+
+    @staticmethod
+    def _facebook_inbound_requires_reply(message: str | None) -> bool:
+        text = str(message or "").strip().casefold()
+        if not text:
+            return False
+        terminal_tokens = [
+            "sold",
+            "no thank you",
+            "no thanks",
+            "not available",
+            "already sold",
+            "pending pickup",
+            "picked up",
+        ]
+        return not any(token in text for token in terminal_tokens)
+
+    @staticmethod
+    def _facebook_thread_has_terminal_notice(values: list[str], *, seller_name: str, item_title: str) -> bool:
+        seller = seller_name.casefold()
+        item = item_title.casefold()
+        for value in values:
+            lowered = str(value or "").strip().casefold()
+            if not lowered:
+                continue
+            if "sold" in lowered or "not available" in lowered or "already sold" in lowered:
+                if seller and seller in lowered:
+                    return True
+                if item and item in lowered:
+                    return True
+        return False
 
     def _extract_facebook_thread_snapshot(self, state: ScreenState) -> dict[str, Any] | None:
         values = self._xml_text_values(state.xml_source)
@@ -662,6 +1386,7 @@ description: App-specific navigation guidance for the {title} Android workflow.
             return None
         last_outbound = next((item["text"] for item in reversed(messages) if item["direction"] == "outbound"), None)
         last_inbound = next((item["text"] for item in reversed(messages) if item["direction"] == "inbound"), None)
+        last_direction = next((item["direction"] for item in reversed(messages)), None)
         seller_rating = next((text.strip() for text in combined if "reviews of " in text), None)
         seen_status = next((text for text in combined if text.startswith("Seen by ")), None)
         location_hint = next(
@@ -673,6 +1398,12 @@ description: App-specific navigation guidance for the {title} Android workflow.
             None,
         )
         thread_key = slugify(f"{seller_name}-{item_title}")
+        terminal_notice = self._facebook_thread_has_terminal_notice(combined, seller_name=seller_name, item_title=item_title)
+        needs_reply = (
+            last_direction == "inbound"
+            and self._facebook_inbound_requires_reply(last_inbound)
+            and not terminal_notice
+        )
         return {
             "thread_key": thread_key,
             "thread_title": header,
@@ -683,9 +1414,100 @@ description: App-specific navigation guidance for the {title} Android workflow.
             "location_hint": location_hint,
             "last_outbound_message": last_outbound,
             "last_inbound_message": last_inbound,
+            "message_status": "seller_replied" if last_inbound else "message_sent",
+            "needs_reply": needs_reply,
             "messages": messages[-MAX_THREAD_MESSAGES:],
             "last_updated": self._now_iso(),
         }
+
+    def _extract_facebook_marketplace_inbox_threads(self, state: ScreenState) -> list[dict[str, Any]]:
+        if not self._facebook_marketplace_inbox_visible_from_state(state):
+            return []
+        components = state.components or extract_ui_components(
+            state.xml_source,
+            width=state.device.width,
+            height=state.device.height,
+        )
+        texts = self._dedupe_strings(self._xml_text_values(state.xml_source) + state.visible_text)
+        previews = [
+            text for text in texts
+            if text
+            and " · " not in text
+            and text.casefold() not in {
+                "marketplace seller inbox",
+                "marketplace buyer inbox",
+                "selling",
+                "buying",
+                "all",
+                "pending offers",
+                "accepted offers",
+                "pending door drop plans",
+            }
+        ]
+        preview_iter = iter(previews)
+        labels: list[str] = []
+        seen_labels: set[str] = set()
+        for component in components:
+            label = str(component.get("label") or "").strip()
+            if " · " not in label or label in seen_labels:
+                continue
+            seen_labels.add(label)
+            labels.append(label)
+        for text in texts:
+            if " · " not in text or text in seen_labels:
+                continue
+            seen_labels.add(text)
+            labels.append(text)
+        records: list[dict[str, Any]] = []
+        for label in labels:
+            lowered = label.casefold()
+            if any(
+                token in lowered
+                for token in ["marketplace seller inbox", "marketplace buyer inbox", "accepted offers", "pending offers"]
+            ):
+                continue
+            seller_name, item_title = [part.strip() for part in label.split(" · ", 1)]
+            if ", " in item_title:
+                item_title = item_title.split(", ", 1)[0].strip()
+            preview = next(preview_iter, None)
+            preview_text = str(preview or "").strip()
+            label_preview = None
+            label_lower = label.casefold()
+            if ", you:" in label_lower:
+                label_preview = "You: " + label.split(", You:", 1)[1].strip()
+            elif ": " in label:
+                label_preview = label.split(": ", 1)[1].strip()
+            unread = "unread" in lowered
+            outbound_preview = False
+            inbound_preview = False
+            last_outbound = None
+            last_inbound = None
+            effective_preview = preview_text or label_preview
+            if effective_preview:
+                if effective_preview.casefold().startswith("you:"):
+                    outbound_preview = True
+                    last_outbound = effective_preview.split(":", 1)[1].strip()
+                else:
+                    inbound_preview = True
+                    last_inbound = effective_preview
+            thread_key = slugify(f"{seller_name}-{item_title}")
+            records.append(
+                {
+                    "thread_key": thread_key,
+                    "thread_title": label,
+                    "seller_name": seller_name,
+                    "item_title": item_title,
+                    "last_outbound_message": last_outbound,
+                    "last_inbound_message": last_inbound,
+                    "message_status": "seller_replied" if inbound_preview or unread else "message_sent",
+                    "needs_reply": bool(
+                        unread or (inbound_preview and self._facebook_inbound_requires_reply(last_inbound))
+                    ),
+                    "messages": [],
+                    "last_updated": self._now_iso(),
+                }
+            )
+        return records[:MAX_BACKUP_THREADS]
 
     def _extract_facebook_listing_snapshot(self, state: ScreenState) -> dict[str, Any] | None:
         texts = self._xml_text_values(state.xml_source)
@@ -715,7 +1537,9 @@ description: App-specific navigation guidance for the {title} Android workflow.
         )
         price = next((text for text in title_texts if text.startswith("$")), None)
         image_label = next((text for text in texts if text.startswith("Product Image")), None)
-        if not (image_label or price or message_sent):
+        detail_tokens = ["description", "message seller", "see conversation", "message sent to seller", "seller", "more options"]
+        has_detail_context = any(token in joined for token in detail_tokens)
+        if not (image_label or message_sent or (price and has_detail_context)):
             return None
         description = next(
             (
@@ -874,6 +1698,7 @@ description: App-specific navigation guidance for the {title} Android workflow.
             "last_inbound_message": thread.get("last_inbound_message"),
             "seen_status": thread.get("seen_status"),
             "message_status": message_status,
+            "needs_reply": bool(thread.get("needs_reply")),
             "last_updated": thread.get("last_updated"),
         }
 
@@ -895,6 +1720,22 @@ description: App-specific navigation guidance for the {title} Android workflow.
             )
         facebook = backup.get("facebook_marketplace")
         if isinstance(facebook, dict):
+            workflow = dict(facebook.get("workflow") or self._default_facebook_workflow())
+            queue = list(workflow.get("reply_queue") or [])[:5]
+            lines.extend(["", "## Workflow"])
+            lines.append(f"- Mode: {workflow.get('mode') or 'hunt'}")
+            if workflow.get("mode_reason"):
+                lines.append(f"- Mode reason: {workflow.get('mode_reason')}")
+            if workflow.get("active_thread_key"):
+                lines.append(f"- Active thread: {workflow.get('active_thread_key')}")
+            if workflow.get("active_listing_key"):
+                lines.append(f"- Active listing: {workflow.get('active_listing_key')}")
+            lines.append(f"- Reply queue: {len(list(workflow.get('reply_queue') or []))}")
+            if queue:
+                for item in queue:
+                    lines.append(
+                        f"  - {item.get('thread_title') or item.get('item_title') or item.get('thread_key')} | {item.get('reason') or 'actionable_reply'}"
+                    )
             lines.extend(["", "## Contacted items"])
             contacted = list(facebook.get("contacted_items") or [])[:5]
             if not contacted:
@@ -909,6 +1750,8 @@ description: App-specific navigation guidance for the {title} Android workflow.
                 lines.append(f"- {' | '.join(parts)}")
                 if item.get("last_inbound_message"):
                     lines.append(f"  Last reply: {item['last_inbound_message']}")
+                if item.get("needs_reply") is True:
+                    lines.append("  Action: reply needed")
             lines.extend(["", "## Thread summaries"])
             threads = list(facebook.get("threads") or [])[:4]
             if not threads:
@@ -919,6 +1762,8 @@ description: App-specific navigation guidance for the {title} Android workflow.
                     lines.append(f"  You: {thread['last_outbound_message']}")
                 if thread.get("last_inbound_message"):
                     lines.append(f"  Seller: {thread['last_inbound_message']}")
+                if thread.get("needs_reply") is True:
+                    lines.append("  Status: needs reply")
             lines.extend(["", "## Inspected items"])
             inspected = list(facebook.get("inspected_items") or [])[:5]
             if not inspected:
@@ -942,6 +1787,40 @@ description: App-specific navigation guidance for the {title} Android workflow.
             return ET.fromstring(xml_source)
         except ET.ParseError:
             return None
+
+    @staticmethod
+    def _facebook_marketplace_inbox_visible_from_state(state: ScreenState) -> bool:
+        combined = " ".join(list(state.visible_text or [])[:40] + list(state.clickable_text or [])[:40]).casefold()
+        return "marketplace seller inbox" in combined and "marketplace buyer inbox" in combined
+
+    @staticmethod
+    def _facebook_home_feed_visible_from_state(state: ScreenState) -> bool:
+        combined = " ".join(list(state.visible_text or [])[:40] + list(state.clickable_text or [])[:40]).casefold()
+        return "marketplace, tab 4 of 6" in combined and "home, tab 1 of 6" in combined
+
+    @staticmethod
+    def _facebook_marketplace_feed_visible_from_state(state: ScreenState) -> bool:
+        combined = " ".join(list(state.visible_text or [])[:40] + list(state.clickable_text or [])[:40]).casefold()
+        return (
+            "sell" in combined
+            and ("for you" in combined or "local" in combined)
+            and ("what do you want to buy?" in combined or "tap to view your marketplace account" in combined)
+        )
+
+    @staticmethod
+    def _facebook_listing_detail_visible_from_state(state: ScreenState) -> bool:
+        combined = " ".join(list(state.visible_text or [])[:40] + list(state.clickable_text or [])[:40]).casefold()
+        return "product image" in combined and "close" in combined
+
+    @staticmethod
+    def _facebook_message_thread_visible_from_state(state: ScreenState) -> bool:
+        combined = " ".join(list(state.visible_text or [])[:50] + list(state.clickable_text or [])[:50]).casefold()
+        return "marketplace listing" in combined and ("view seller profile" in combined or "you started this chat" in combined)
+
+    @staticmethod
+    def _facebook_message_inbox_visible_from_state(state: ScreenState) -> bool:
+        combined = " ".join(list(state.visible_text or [])[:50] + list(state.clickable_text or [])[:50]).casefold()
+        return "chats" in combined and "marketplace" in combined
 
     def _xml_text_values(self, xml_source: str) -> list[str]:
         root = self._xml_root(xml_source)

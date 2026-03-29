@@ -78,6 +78,44 @@ def make_facebook_thread_state() -> ScreenState:
     )
 
 
+def make_facebook_sold_thread_state() -> ScreenState:
+    app = APP_REGISTRY["facebook"]
+    device = DeviceInfo(
+        serial="10.0.0.206:43337",
+        width=1080,
+        height=2400,
+        density=440,
+        orientation="portrait",
+        package_name=app.package_name,
+        activity_name=".ThreadActivity",
+    )
+    return ScreenState(
+        screenshot_path=Path("/tmp/facebook-sold-thread.png"),
+        hierarchy_path=Path("/tmp/facebook-sold-thread.xml"),
+        screenshot_sha256="facebooksoldhash",
+        xml_source="""
+        <hierarchy>
+          <node class="android.view.ViewGroup" text="Jesse · Prebuilt Gaming pc 5060ti" content-desc="Jesse · Prebuilt Gaming pc 5060ti" />
+          <node class="android.view.ViewGroup" text="Marketplace listing" content-desc="Marketplace listing" />
+          <node class="android.view.ViewGroup" text="Owen, 600?" content-desc="Owen, 600?" />
+          <node class="android.view.ViewGroup" text="Jesse, I'll take 700 cash right now." content-desc="Jesse, I'll take 700 cash right now." />
+          <node class="android.view.ViewGroup" text="Jesse sold Prebuilt Gaming pc 5060ti." content-desc="Jesse sold Prebuilt Gaming pc 5060ti." />
+        </hierarchy>
+        """,
+        visible_text=[
+            "Jesse · Prebuilt Gaming pc 5060ti",
+            "Marketplace listing",
+            "Owen, 600?",
+            "Jesse, I'll take 700 cash right now.",
+            "Jesse sold Prebuilt Gaming pc 5060ti.",
+        ],
+        clickable_text=["Jesse · Prebuilt Gaming pc 5060ti"],
+        package_name=app.package_name,
+        activity_name=".ThreadActivity",
+        device=device,
+    )
+
+
 def make_facebook_marketplace_inbox_state() -> ScreenState:
     app = APP_REGISTRY["facebook"]
     device = DeviceInfo(
@@ -119,6 +157,66 @@ def make_facebook_marketplace_inbox_state() -> ScreenState:
             "Accepted Offers",
             "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens",
         ],
+        package_name=app.package_name,
+        activity_name=device.activity_name,
+        device=device,
+    )
+
+
+def make_facebook_home_feed_state() -> ScreenState:
+    app = APP_REGISTRY["facebook"]
+    device = DeviceInfo(
+        serial="10.0.0.206:43337",
+        width=1080,
+        height=2400,
+        density=440,
+        orientation="portrait",
+        package_name=app.package_name,
+        activity_name=".LoginActivity",
+    )
+    return ScreenState(
+        screenshot_path=Path("/tmp/facebook-home.png"),
+        hierarchy_path=Path("/tmp/facebook-home.xml"),
+        screenshot_sha256="facebookhomehash",
+        xml_source="<hierarchy />",
+        visible_text=[
+            "Home, tab 1 of 6",
+            "Marketplace, tab 4 of 6",
+            "Sell",
+            "For you",
+            "Local",
+        ],
+        clickable_text=["Marketplace, tab 4 of 6", "Home, tab 1 of 6"],
+        package_name=app.package_name,
+        activity_name=device.activity_name,
+        device=device,
+    )
+
+
+def make_facebook_marketplace_feed_state() -> ScreenState:
+    app = APP_REGISTRY["facebook"]
+    device = DeviceInfo(
+        serial="10.0.0.206:43337",
+        width=1080,
+        height=2400,
+        density=440,
+        orientation="portrait",
+        package_name=app.package_name,
+        activity_name=".LoginActivity",
+    )
+    return ScreenState(
+        screenshot_path=Path("/tmp/facebook-feed.png"),
+        hierarchy_path=Path("/tmp/facebook-feed.xml"),
+        screenshot_sha256="facebookfeedhash",
+        xml_source="<hierarchy />",
+        visible_text=[
+            "Sell",
+            "For you",
+            "Local",
+            "What do you want to buy?",
+            "Tap to view your Marketplace account",
+        ],
+        clickable_text=["Sell", "For you", "Local", "What do you want to buy?"],
         package_name=app.package_name,
         activity_name=device.activity_name,
         device=device,
@@ -219,6 +317,33 @@ def test_skill_manager_records_search_transition(tmp_path: Path) -> None:
     assert bundle.state["last_search_transition"]["submit_after_input"] is True
 
 
+def test_skill_manager_promotes_repeated_facebook_fast_function(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    before_state = make_facebook_home_feed_state()
+    after_state = make_facebook_marketplace_feed_state()
+    decision = VisionDecision(
+        screen_classification="facebook_home_feed",
+        goal_progress="navigating_to_marketplace",
+        next_action="tap",
+        target_box=BoundingBox(0.5, 0.03, 0.16, 0.05),
+        confidence=0.9,
+        reason="Open Marketplace.",
+        risk_level="low",
+        target_label="Marketplace, tab 4 of 6",
+    )
+
+    manager.update_after_transition(bundle, before_state=before_state, decision=decision, after_state=after_state)
+    assert not (bundle.app_dir / "functions" / "open_marketplace_feed.json").exists()
+
+    manager.update_after_transition(bundle, before_state=before_state, decision=decision, after_state=after_state)
+
+    function_path = bundle.app_dir / "functions" / "open_marketplace_feed.json"
+    assert function_path.exists()
+    payload = manager.read_fast_function("facebook", "open_marketplace_feed")
+    assert payload["script_name"] == "open_marketplace_direct"
+
+
 def test_skill_manager_updates_facebook_backup_from_thread_state(tmp_path: Path) -> None:
     manager = SkillManager(tmp_path)
     bundle = manager.load_skill(APP_REGISTRY["facebook"])
@@ -238,8 +363,24 @@ def test_skill_manager_updates_facebook_backup_from_thread_state(tmp_path: Path)
         == "Yes, available for pickup in West Seattle off 49th Ave SW near Juneau"
     )
     assert facebook_backup["contacted_items"][0]["message_status"] == "seller_confirmed_available"
+    assert facebook_backup["threads"][0]["needs_reply"] is True
+    assert facebook_backup["workflow"]["mode"] == "reply"
+    assert len(facebook_backup["workflow"]["reply_queue"]) == 1
+    assert bundle.state["facebook_workflow"]["mode"] == "reply"
+    assert bundle.state["workflow_state"]["mode"] == "reply"
+    assert bundle.backup_data["app_workflow"]["workflow_state"]["mode"] == "reply"
     assert "West Seattle" in bundle.backup_summary
     assert "Canon RF 35mm f/1.8 Macro IS STM Lens" in bundle.backup_summary
+
+
+def test_skill_manager_classifies_screen_from_workflow(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+
+    classification = manager.classify_state(bundle, make_facebook_marketplace_feed_state())
+
+    assert classification["screen_name"] == "facebook_marketplace_feed"
+    assert classification["confidence"] > 0.9
 
 
 def test_skill_manager_does_not_treat_marketplace_inbox_as_listing(tmp_path: Path) -> None:
@@ -252,4 +393,117 @@ def test_skill_manager_does_not_treat_marketplace_inbox_as_listing(tmp_path: Pat
 
     facebook_backup = bundle.backup_data["facebook_marketplace"]
 
+    assert facebook_backup["inspected_items"] == []
+
+
+def test_skill_manager_extracts_actionable_marketplace_inbox_threads(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.consume_events()
+    state = make_facebook_marketplace_inbox_state()
+
+    manager.update_backup(bundle, state)
+
+    facebook_backup = bundle.backup_data["facebook_marketplace"]
+    assert facebook_backup["threads"][0]["thread_title"] == "Joshua · Canon RF 35mm f/1.8 Macro IS STM Lens"
+    assert facebook_backup["threads"][0]["needs_reply"] is True
+    assert facebook_backup["workflow"]["mode"] == "reply"
+    assert facebook_backup["workflow"]["reply_queue"][0]["thread_key"] == facebook_backup["threads"][0]["thread_key"]
+    assert "Reply queue: 1" in bundle.backup_summary
+
+
+def test_skill_manager_marketplace_inbox_marks_you_preview_as_not_needing_reply(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.consume_events()
+    app = APP_REGISTRY["facebook"]
+    device = DeviceInfo(
+        serial="10.0.0.206:43337",
+        width=1080,
+        height=2400,
+        density=440,
+        orientation="portrait",
+        package_name=app.package_name,
+        activity_name=".activity.react.ImmersiveReactActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/facebook-marketplace-inbox-you.png"),
+        hierarchy_path=Path("/tmp/facebook-marketplace-inbox-you.xml"),
+        screenshot_sha256="facebookinboxyouhash",
+        xml_source="""
+        <hierarchy>
+          <node class="android.widget.Button" text="Marketplace Seller Inbox" content-desc="Marketplace Seller Inbox" />
+          <node class="android.widget.Button" text="Marketplace Buyer Inbox" content-desc="Marketplace Buyer Inbox" />
+          <node class="android.widget.Button" text="Joshua · PC, Read, You: Hi, is this available?" content-desc="Joshua · PC, Read, You: Hi, is this available?" />
+        </hierarchy>
+        """,
+        visible_text=[
+            "Marketplace Seller Inbox",
+            "Marketplace Buyer Inbox",
+            "Joshua · PC, Read, You: Hi, is this available?",
+        ],
+        clickable_text=["Joshua · PC, Read, You: Hi, is this available?"],
+        package_name=app.package_name,
+        activity_name=device.activity_name,
+        device=device,
+    )
+
+    manager.update_backup(bundle, state)
+
+    facebook_backup = bundle.backup_data["facebook_marketplace"]
+    assert facebook_backup["threads"][0]["last_outbound_message"] == "Hi, is this available?"
+    assert facebook_backup["threads"][0]["needs_reply"] is False
+    assert facebook_backup["workflow"]["reply_queue"] == []
+
+
+def test_skill_manager_marks_sold_thread_as_not_needing_reply(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.consume_events()
+    state = make_facebook_sold_thread_state()
+
+    manager.update_backup(bundle, state)
+
+    facebook_backup = bundle.backup_data["facebook_marketplace"]
+    assert facebook_backup["threads"][0]["last_inbound_message"] == "I'll take 700 cash right now."
+    assert facebook_backup["threads"][0]["needs_reply"] is False
+    assert facebook_backup["workflow"]["reply_queue"] == []
+
+
+def test_skill_manager_does_not_treat_marketplace_feed_as_listing_snapshot(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.consume_events()
+    app = APP_REGISTRY["facebook"]
+    device = DeviceInfo(
+        serial="10.0.0.206:43337",
+        width=1080,
+        height=2400,
+        density=440,
+        orientation="portrait",
+        package_name=app.package_name,
+        activity_name=".LoginActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/facebook-marketplace-feed.png"),
+        hierarchy_path=Path("/tmp/facebook-marketplace-feed.xml"),
+        screenshot_sha256="facebookfeedhash",
+        xml_source="""
+        <hierarchy>
+          <node class="android.view.View" text="Sell" content-desc="Sell" />
+          <node class="android.view.View" text="For you" content-desc="For you" />
+          <node class="android.view.View" text="$500 · Gaming Pc" content-desc="$500 · Gaming Pc" />
+          <node class="android.view.View" text="$100 · Nintendo switch" content-desc="$100 · Nintendo switch" />
+        </hierarchy>
+        """,
+        visible_text=["Sell", "For you", "$500 · Gaming Pc", "$100 · Nintendo switch"],
+        clickable_text=["$500 · Gaming Pc", "$100 · Nintendo switch", "Marketplace, tab 4 of 6"],
+        package_name=app.package_name,
+        activity_name=device.activity_name,
+        device=device,
+    )
+
+    manager.update_backup(bundle, state)
+
+    facebook_backup = bundle.backup_data["facebook_marketplace"]
     assert facebook_backup["inspected_items"] == []

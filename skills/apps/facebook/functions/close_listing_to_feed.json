@@ -1,0 +1,22 @@
+{
+  "name": "close_listing_to_feed",
+  "description": "Close the current Marketplace listing and return to the Marketplace feed.",
+  "args": [],
+  "steps": [
+    {
+      "action": "tap",
+      "target_label": "Close"
+    }
+  ],
+  "preconditions": [
+    {
+      "predicate": "facebook_listing_detail_visible"
+    }
+  ],
+  "postconditions": [
+    {
+      "predicate": "facebook_marketplace_feed_visible"
+    }
+  ],
+  "fallback_policy": "fallback_to_slow_path"
+}

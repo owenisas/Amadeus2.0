@@ -258,6 +258,7 @@ class SkillBundle:
     instructions: str
     screens: dict[str, Any]
     selectors: dict[str, Any]
+    workflow: dict[str, Any]
     state: dict[str, Any]
     memory: str
     backup_data: dict[str, Any]

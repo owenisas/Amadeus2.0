@@ -1,0 +1,31 @@
+{
+  "name": "send_initial_message",
+  "description": "Replace the default Marketplace opener with the provided buyer message and send it.",
+  "args": [
+    {
+      "name": "message",
+      "required": true
+    }
+  ],
+  "steps": [
+    {
+      "action": "type",
+      "input_text": "{{message}}"
+    },
+    {
+      "action": "tap",
+      "target_label": "Send"
+    }
+  ],
+  "preconditions": [
+    {
+      "predicate": "facebook_listing_detail_visible"
+    }
+  ],
+  "postconditions": [
+    {
+      "predicate": "facebook_listing_message_sent"
+    }
+  ],
+  "fallback_policy": "fallback_to_slow_path"
+}

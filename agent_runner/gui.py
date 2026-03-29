@@ -198,7 +198,7 @@ class DashboardRuntime:
         app = get_app_config(app_name) if app_name else None
         bundle = self.skill_manager.load_skill(app) if app else None
         current_state = None
-        if tool_name in {"tap", "swipe", "run_script"}:
+        if tool_name in {"tap", "swipe", "run_script", "run_fast_function"}:
             current_state = self._capture_idle_state(force_refresh=True)
         with self.adapter.session_lock():
             result = self.tool_executor.execute(

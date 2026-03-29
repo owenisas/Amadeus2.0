@@ -196,6 +196,41 @@ def _format_live_event(event: dict[str, Any]) -> str | None:
             f"{prefix} backup_updated app={event.get('app_name')} "
             f"sections={sections} path={event.get('path')}"
         )
+    if event_type == "screen_learned":
+        return (
+            f"{prefix} screen_learned app={event.get('app_name')} "
+            f"screen_id={event.get('screen_id')} activity={event.get('activity_name')}"
+        )
+    if event_type == "app_mode_changed":
+        return (
+            f"{prefix} app_mode_changed app={event.get('app_name')} mode={event.get('mode')} "
+            f"prev={event.get('previous_mode')} queue={event.get('queue_length')} "
+            f"reason={_clip(event.get('reason'), 140)}"
+        )
+    if event_type == "app_queue_updated":
+        return (
+            f"{prefix} app_queue_updated app={event.get('app_name')} "
+            f"queue={event.get('queue_length')} screen={event.get('screen_name')}"
+        )
+    if event_type == "facebook_mode_changed":
+        return (
+            f"{prefix} facebook_mode_changed mode={event.get('mode')} prev={event.get('previous_mode')} "
+            f"queue={event.get('queue_length')} reason={_clip(event.get('reason'), 140)}"
+        )
+    if event_type == "facebook_reply_queued":
+        return (
+            f"{prefix} facebook_reply_queued thread={_clip(event.get('thread_title'), 80)} "
+            f"queue={event.get('queue_length')}"
+        )
+    if event_type == "facebook_reply_started":
+        return f"{prefix} facebook_reply_started thread={event.get('thread_key')} queue={event.get('queue_length')}"
+    if event_type == "facebook_reply_completed":
+        return f"{prefix} facebook_reply_completed thread={event.get('thread_key')} queue={event.get('queue_length')}"
+    if event_type == "facebook_reply_skipped":
+        return (
+            f"{prefix} facebook_reply_skipped thread={event.get('thread_key')} "
+            f"reason={_clip(event.get('reason'), 140)}"
+        )
     if event_type == "decision_made":
         decision = dict(event.get("decision") or {})
         meta = dict(event.get("decision_meta") or {})
@@ -247,6 +282,13 @@ def _format_live_event(event: dict[str, Any]) -> str | None:
             return (
                 f"{prefix} tool=run_script ok={event.get('ok')} "
                 f"app={output.get('app_name')} script={output.get('script_name')} "
+                f"executed={output.get('steps_executed')} skipped={output.get('steps_skipped')}"
+            )
+        if tool_name == "run_fast_function":
+            return (
+                f"{prefix} tool=run_fast_function ok={event.get('ok')} "
+                f"app={output.get('app_name')} function={output.get('function_name')} "
+                f"verified={output.get('verified')} fallback={output.get('fallback_used')} "
                 f"executed={output.get('steps_executed')} skipped={output.get('steps_skipped')}"
             )
         return f"{prefix} tool={tool_name} ok={event.get('ok')} args={_clip(event.get('tool_arguments'), 120)}"

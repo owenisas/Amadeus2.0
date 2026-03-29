@@ -156,13 +156,25 @@ class AndroidAdapter:
 
     def wake_device(self) -> None:
         power = self._adb(["shell", "dumpsys", "power"], check=False)
-        if "mWakefulness=Asleep" not in (power.stdout or ""):
-            return
-        self._adb(["shell", "input", "keyevent", "224"], check=False)
-        time.sleep(0.5)
+        power_text = power.stdout or ""
+        if "mWakefulness=Asleep" in power_text or "Display Power: state=OFF" in power_text:
+            self._adb(["shell", "input", "keyevent", "224"], check=False)
+            time.sleep(0.5)
         self._adb(["shell", "wm", "dismiss-keyguard"], check=False)
         self._adb(["shell", "input", "keyevent", "82"], check=False)
+        self._apply_runtime_device_preferences()
         time.sleep(0.5)
+
+    def _apply_runtime_device_preferences(self) -> None:
+        # Keep agent runs dim and quiet so unattended control is less disruptive.
+        preference_commands = [
+            ["shell", "settings", "put", "system", "screen_brightness_mode", "0"],
+            ["shell", "settings", "put", "system", "screen_brightness", "0"],
+            ["shell", "settings", "put", "system", "haptic_feedback_enabled", "0"],
+            ["shell", "settings", "put", "system", "vibrate_on", "0"],
+        ]
+        for command in preference_commands:
+            self._adb(command, check=False)
 
     def launch_app(self, package_name: str, activity: str | None = None) -> None:
         self.wake_device()
@@ -194,6 +206,18 @@ class AndroidAdapter:
                 ) from exc
         self.wait_for_stable_ui(1.5)
 
+    @staticmethod
+    def _adb_safe_text_arg(text: str) -> str:
+        escaped = []
+        for char in text:
+            if char == " ":
+                escaped.append("%s")
+            elif char in {"\\", "'", "\"", ",", "?", "!", "&", "(", ")", "<", ">", "|", ";", "$", "`"}:
+                escaped.append(f"\\{char}")
+            else:
+                escaped.append(char)
+        return "".join(escaped)
+
     def reset_app(self, package_name: str, activity: str | None = None) -> None:
         self._adb(["shell", "am", "force-stop", package_name], check=False)
         time.sleep(0.75)
@@ -224,10 +248,14 @@ class AndroidAdapter:
             self._driver.get_screenshot_as_file(str(screenshot_path))
             xml_source = self._driver.page_source
         except Exception as exc:
-            if not self._is_secure_surface_error(str(exc)):
+            message = str(exc)
+            if self._is_recoverable_session_error(message):
+                xml_source = self._capture_via_adb(screenshot_path)
+            elif self._is_secure_surface_error(message):
+                screenshot_path.write_bytes(self.PLACEHOLDER_PNG)
+                xml_source = self._uiautomator_dump_xml()
+            else:
                 raise
-            screenshot_path.write_bytes(self.PLACEHOLDER_PNG)
-            xml_source = self._uiautomator_dump_xml()
         hierarchy_path.write_text(xml_source, encoding="utf-8")
         density = self._wm_density()
         visible_text, clickable_text = extract_visible_text(xml_source)
@@ -257,6 +285,18 @@ class AndroidAdapter:
             components=components,
         )
 
+    def _capture_via_adb(self, screenshot_path: Path) -> str:
+        self._adb_screencap_png(screenshot_path)
+        return self._uiautomator_dump_xml()
+
+    def _adb_screencap_png(self, screenshot_path: Path) -> None:
+        remote_path = f"/sdcard/{screenshot_path.name}"
+        self._adb(["shell", "screencap", "-p", remote_path], check=True, timeout=30.0)
+        pull_result = self._adb(["pull", remote_path, str(screenshot_path)], check=False, timeout=30.0)
+        self._adb(["shell", "rm", "-f", remote_path], check=False, timeout=10.0)
+        if pull_result.returncode != 0 or not screenshot_path.exists():
+            raise RuntimeError("Failed to capture screenshot via adb screencap.")
+
     def perform(self, decision: VisionDecision, state: ScreenState) -> None:
         self.connect()
         assert self._driver is not None
@@ -265,13 +305,7 @@ class AndroidAdapter:
             if not decision.target_box:
                 raise RuntimeError("Tap action requires a target box.")
             resolved_box = self._resolve_tap_box(decision.target_box, state)
-            pixel_box = denormalize_box(resolved_box, state.device.width, state.device.height)
-            center_x = pixel_box.x + (pixel_box.width / 2.0)
-            center_y = pixel_box.y + (pixel_box.height / 2.0)
-            self._driver.execute_script(
-                "mobile: clickGesture",
-                {"x": int(center_x), "y": int(center_y)},
-            )
+            self._execute_tap_method("appium_raw", resolved_box, state)
         elif decision.next_action == "swipe":
             if decision.target_box:
                 swipe_box = decision.target_box.clamp()
@@ -320,7 +354,7 @@ class AndroidAdapter:
                 except Exception:
                     typed_with_active_element = False
             if not typed_with_active_element:
-                safe_text = decision.input_text.replace(" ", "%s")
+                safe_text = self._adb_safe_text_arg(decision.input_text)
                 self._adb(["shell", "input", "text", safe_text], check=True)
             if decision.submit_after_input:
                 self._adb(["shell", "input", "keyevent", "66"], check=True)
@@ -448,10 +482,18 @@ class AndroidAdapter:
             pixel_box = denormalize_box(tap_box, state.device.width, state.device.height)
             center_x = pixel_box.x + (pixel_box.width / 2.0)
             center_y = pixel_box.y + (pixel_box.height / 2.0)
-            self._driver.execute_script(
-                "mobile: clickGesture",
-                {"x": int(center_x), "y": int(center_y)},
-            )
+            try:
+                self._driver.execute_script(
+                    "mobile: clickGesture",
+                    {"x": int(center_x), "y": int(center_y)},
+                )
+            except Exception as exc:
+                if not self._is_recoverable_session_error(str(exc)):
+                    raise
+                self._adb(
+                    ["shell", "input", "tap", str(int(center_x)), str(int(center_y))],
+                    check=True,
+                )
             return
         if method_name.startswith("adb_"):
             pixel_box = denormalize_box(tap_box, state.device.width, state.device.height)
@@ -593,6 +635,7 @@ class AndroidAdapter:
             token in lowered
             for token in [
                 "instrumentation process cannot be initialized",
+                "instrumentation process is not running",
                 "socket hang up",
                 "could not proxy command",
             ]

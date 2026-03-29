@@ -156,6 +156,17 @@ class AgentToolExecutor:
                 mutates_skills=False,
             ),
             AgentToolSpec(
+                name="run_fast_function",
+                description=(
+                    "Execute a named app-local fast function backed by scripts or steps, "
+                    "then verify the expected postcondition. On verification failure, "
+                    "return control to the normal agent loop with a refreshed state."
+                ),
+                requires_state=True,
+                mutates_device=True,
+                mutates_skills=False,
+            ),
+            AgentToolSpec(
                 name="list_scripts",
                 description="List all saved automation scripts for the current app.",
                 requires_state=False,
@@ -190,6 +201,7 @@ class AgentToolExecutor:
             "bootstrap_skill": self._bootstrap_skill,
             "save_script": self._save_script,
             "run_script": self._run_script,
+            "run_fast_function": self._run_fast_function,
             "list_scripts": self._list_scripts,
         }
         try:
@@ -578,6 +590,165 @@ class AgentToolExecutor:
                 ok=True,
                 output={"app_name": app_name, "script_name": script_name, "steps_executed": 0, "message": "Script has no steps."},
             )
+        executed, skipped, last_state = self._execute_script_steps(
+            app_name=app_name,
+            steps=steps,
+            run_dir=run_dir,
+            current_state=current_state,
+            app=app,
+            skill=skill,
+        )
+        return ToolExecutionResult(
+            tool_name="run_script",
+            ok=True,
+            output={
+                "app_name": app_name,
+                "script_name": script_name,
+                "steps_executed": executed,
+                "steps_skipped": skipped,
+                "total_steps": len(steps),
+            },
+            refresh_state=True,
+        )
+
+    def _run_fast_function(
+        self,
+        arguments: dict[str, Any],
+        *,
+        run_dir: Path,
+        current_state: ScreenState | None,
+        app: AppConfig | None,
+        skill: SkillBundle | None,
+    ) -> ToolExecutionResult:
+        app_name = str(arguments.get("app_name") or (app.name if app else skill.app_name if skill else ""))
+        function_name = str(arguments.get("function_name") or arguments.get("name") or "")
+        call_arguments = arguments.get("arguments") or {}
+        if isinstance(call_arguments, str):
+            call_arguments = json.loads(call_arguments)
+        if not app_name or not function_name:
+            raise ValueError("run_fast_function requires app_name and function_name.")
+        function = self.skill_manager.read_fast_function(app_name, function_name)
+        state = current_state or self.android_adapter.capture_state(run_dir)
+        resolved_skill = skill or (self.skill_manager.load_skill(app) if app is not None else None)
+        if resolved_skill is None and app_name:
+            app_dir = self.skill_manager.skills_root / app_name
+            if app_dir.exists():
+                resolved_skill = self.skill_manager._bundle_from_dir(app_name, app_dir)
+        if not self._fast_function_preconditions_match(app_name, function, state, call_arguments, skill=resolved_skill):
+            return ToolExecutionResult(
+                tool_name="run_fast_function",
+                ok=True,
+                output={
+                    "app_name": app_name,
+                    "function_name": function_name,
+                    "verified": False,
+                    "fallback_used": True,
+                    "failure_reason": "precondition_failed",
+                    "steps_executed": 0,
+                    "steps_skipped": 0,
+                    "captured_state_ref": {
+                        "screenshot_path": str(state.screenshot_path),
+                        "hierarchy_path": str(state.hierarchy_path),
+                    },
+                },
+                captured_state=state,
+            )
+        steps_source: list[dict[str, Any]]
+        if function.get("script_name"):
+            script = self.skill_manager.read_script(app_name, str(function.get("script_name")))
+            steps_source = list(script.get("steps", []))
+        else:
+            steps_source = list(function.get("steps") or [])
+        steps = [self._substitute_step_arguments(step, call_arguments) for step in steps_source]
+        executed, skipped, last_state = self._execute_script_steps(
+            app_name=app_name,
+            steps=steps,
+            run_dir=run_dir,
+            current_state=state,
+            app=app,
+            skill=skill,
+        )
+        verified, verification_reason = self._fast_function_postconditions_match(
+            app_name=app_name,
+            function=function,
+            state=last_state,
+            arguments=call_arguments,
+            skill=resolved_skill,
+        )
+        return ToolExecutionResult(
+            tool_name="run_fast_function",
+            ok=True,
+            output={
+                "app_name": app_name,
+                "function_name": function_name,
+                "arguments": call_arguments,
+                "verified": verified,
+                "verification_reason": verification_reason,
+                "fallback_used": not verified,
+                "steps_executed": executed,
+                "steps_skipped": skipped,
+                "captured_state_ref": {
+                    "screenshot_path": str(last_state.screenshot_path) if last_state else None,
+                    "hierarchy_path": str(last_state.hierarchy_path) if last_state else None,
+                },
+            },
+            refresh_state=not verified,
+            captured_state=last_state,
+        )
+
+    def _list_scripts(
+        self,
+        arguments: dict[str, Any],
+        *,
+        run_dir: Path,
+        current_state: ScreenState | None,
+        app: AppConfig | None,
+        skill: SkillBundle | None,
+    ) -> ToolExecutionResult:
+        app_name = str(arguments.get("app_name") or (app.name if app else skill.app_name if skill else ""))
+        if not app_name:
+            raise ValueError("list_scripts requires app_name.")
+        scripts = self.skill_manager.list_scripts(app_name)
+        return ToolExecutionResult(
+            tool_name="list_scripts",
+            ok=True,
+            output={"app_name": app_name, "scripts": scripts},
+        )
+
+    def _is_safe_adb_command(self, args: list[str]) -> bool:
+        if not args:
+            return False
+        lowered = " ".join(args).casefold()
+        if any(token in lowered for token in self.BLOCKED_ADB_TOKENS):
+            return False
+        return any(tuple(args[: len(pattern)]) == pattern for pattern in self.SAFE_ADB_PATTERNS)
+
+    def _adb_command_changes_ui(self, args: list[str]) -> bool:
+        return any(
+            tuple(args[: len(pattern)]) == pattern
+            for pattern in [
+                ("shell", "input"),
+                ("shell", "am", "start"),
+                ("shell", "monkey"),
+            ]
+        )
+
+    def _script_step_needs_fresh_state(self, step: dict[str, Any]) -> bool:
+        action = str(step.get("action", "")).strip()
+        return action in {"tap", "type", "swipe", "back", "home", "run_script"} or any(
+            key in step for key in ("only_if_activity_name", "only_if_visible_text")
+        )
+
+    def _execute_script_steps(
+        self,
+        *,
+        app_name: str,
+        steps: list[dict[str, Any]],
+        run_dir: Path,
+        current_state: ScreenState | None,
+        app: AppConfig | None,
+        skill: SkillBundle | None,
+    ) -> tuple[int, int, ScreenState | None]:
         executed = 0
         skipped = 0
         last_state = current_state
@@ -602,13 +773,7 @@ class AgentToolExecutor:
                     self.android_adapter.reset_app(pkg, step.get("activity"))
             elif action == "tap":
                 label = step.get("target_label")
-                target_box = BoundingBox.from_dict(step.get("target_box"))
-                if label and last_state:
-                    # Look up the label in current screen components
-                    for component in last_state.components:
-                        if str(component.get("label", "")).casefold() == label.casefold():
-                            target_box = BoundingBox.from_dict(component.get("target_box"))
-                            break
+                target_box = self._resolve_step_target_box(step, last_state)
                 if target_box is None:
                     raise ValueError(
                         f"Script step 'tap' requires target_box or a resolvable target_label. Step: {json.dumps(step)}"
@@ -635,12 +800,13 @@ class AgentToolExecutor:
                             screen_classification="script_type",
                             goal_progress="scripted",
                             next_action="type",
-                            target_box=None,
+                            target_box=self._resolve_step_target_box(step, last_state, prefer_text_input=True),
                             confidence=1.0,
                             reason=f"Script step: type '{text[:30]}'",
                             risk_level="low",
                             input_text=text,
                             submit_after_input=submit,
+                            target_label=step.get("target_label"),
                         ),
                         last_state or self.android_adapter.capture_state(run_dir),
                     )
@@ -687,7 +853,6 @@ class AgentToolExecutor:
                 wait_secs = float(step.get("wait_seconds", 2.0))
                 self.android_adapter.wait_for_stable_ui(wait_secs)
             elif action == "run_script":
-                # Nested script execution
                 nested_name = str(step.get("script_name", ""))
                 if nested_name:
                     self._run_script(
@@ -698,65 +863,83 @@ class AgentToolExecutor:
                         skill=skill,
                     )
             executed += 1
-            # Recapture state after each mutating action
             if action not in {"wait"}:
                 last_state = self.android_adapter.capture_state(run_dir)
             previous_action = action
-        return ToolExecutionResult(
-            tool_name="run_script",
-            ok=True,
-            output={
-                "app_name": app_name,
-                "script_name": script_name,
-                "steps_executed": executed,
-                "steps_skipped": skipped,
-                "total_steps": len(steps),
-            },
-            refresh_state=True,
-        )
+        return executed, skipped, last_state
 
-    def _list_scripts(
+    def _resolve_step_target_box(
         self,
+        step: dict[str, Any],
+        state: ScreenState | None,
+        *,
+        prefer_text_input: bool = False,
+    ) -> BoundingBox | None:
+        target_box = BoundingBox.from_dict(step.get("target_box"))
+        if state is None:
+            return target_box
+        label = str(step.get("target_label") or "").strip()
+        if label:
+            for component in state.components:
+                if str(component.get("label", "")).casefold() == label.casefold():
+                    return BoundingBox.from_dict(component.get("target_box"))
+        if prefer_text_input:
+            text_inputs = [
+                component for component in state.components
+                if str(component.get("component_type") or "") == "text_input"
+                and component.get("enabled", True)
+            ]
+            if len(text_inputs) == 1:
+                return BoundingBox.from_dict(text_inputs[0].get("target_box"))
+        return target_box
+
+    def _substitute_step_arguments(self, payload: dict[str, Any], arguments: dict[str, Any]) -> dict[str, Any]:
+        def substitute(value: Any) -> Any:
+            if isinstance(value, str):
+                result = value
+                for key, arg_value in arguments.items():
+                    result = result.replace(f"{{{{{key}}}}}", str(arg_value))
+                return result
+            if isinstance(value, list):
+                return [substitute(item) for item in value]
+            if isinstance(value, dict):
+                return {key: substitute(item) for key, item in value.items()}
+            return value
+        return substitute(dict(payload))
+
+    def _fast_function_preconditions_match(
+        self,
+        app_name: str,
+        function: dict[str, Any],
+        state: ScreenState,
         arguments: dict[str, Any],
         *,
-        run_dir: Path,
-        current_state: ScreenState | None,
-        app: AppConfig | None,
         skill: SkillBundle | None,
-    ) -> ToolExecutionResult:
-        app_name = str(arguments.get("app_name") or (app.name if app else skill.app_name if skill else ""))
-        if not app_name:
-            raise ValueError("list_scripts requires app_name.")
-        scripts = self.skill_manager.list_scripts(app_name)
-        return ToolExecutionResult(
-            tool_name="list_scripts",
-            ok=True,
-            output={"app_name": app_name, "scripts": scripts},
-        )
-
-    def _is_safe_adb_command(self, args: list[str]) -> bool:
-        if not args:
+    ) -> bool:
+        preconditions = list(function.get("preconditions") or [])
+        if skill is None:
             return False
-        lowered = " ".join(args).casefold()
-        if any(token in lowered for token in self.BLOCKED_ADB_TOKENS):
-            return False
-        return any(tuple(args[: len(pattern)]) == pattern for pattern in self.SAFE_ADB_PATTERNS)
-
-    def _adb_command_changes_ui(self, args: list[str]) -> bool:
-        return any(
-            tuple(args[: len(pattern)]) == pattern
-            for pattern in [
-                ("shell", "input"),
-                ("shell", "am", "start"),
-                ("shell", "monkey"),
-            ]
+        return all(
+            self.skill_manager.evaluate_condition(skill, predicate, state, arguments=arguments)
+            for predicate in preconditions
         )
 
-    def _script_step_needs_fresh_state(self, step: dict[str, Any]) -> bool:
-        action = str(step.get("action", "")).strip()
-        return action in {"tap", "type", "swipe", "back", "home", "run_script"} or any(
-            key in step for key in ("only_if_activity_name", "only_if_visible_text")
-        )
+    def _fast_function_postconditions_match(
+        self,
+        *,
+        app_name: str,
+        function: dict[str, Any],
+        state: ScreenState | None,
+        arguments: dict[str, Any],
+        skill: SkillBundle | None,
+    ) -> tuple[bool, str]:
+        if state is None or skill is None:
+            return False, "missing_state"
+        postconditions = list(function.get("postconditions") or [])
+        for predicate in postconditions:
+            if not self.skill_manager.evaluate_condition(skill, predicate, state, arguments=arguments):
+                return False, str(predicate.get("predicate") or "postcondition_failed")
+        return True, "verified"
 
     def _script_step_matches(self, step: dict[str, Any], state: ScreenState | None) -> bool:
         if state is None:

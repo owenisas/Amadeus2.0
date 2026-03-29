@@ -1,47 +1,17 @@
 {
   "app_name": "fivesurveys",
-  "last_updated": "2026-03-22T20:20:41-07:00",
+  "last_updated": "2026-03-26T16:59:11-07:00",
   "package_name": "com.fivesurveys.mobile",
   "recent_screens": [
     {
       "activity_name": ".MainActivity",
       "clickable_text": [
         "Claim Reward",
-        "Surveys",
-        "More"
+        "Take Survey"
       ],
-      "last_seen_at": "2026-03-22T17:04:40-07:00",
+      "last_seen_at": "2026-03-26T16:48:44-07:00",
       "package_name": "com.fivesurveys.mobile",
-      "screen_id": "com-fivesurveys-mobile-mainactivity-ebd50c89ec4c8aff",
-      "seen_count": 1,
-      "visible_text": [
-        "Five Surveys",
-        "Current Balance",
-        "0.00",
-        "Claim Reward",
-        "Surveys",
-        "More"
-      ]
-    },
-    {
-      "activity_name": ".MainActivity",
-      "clickable_text": [
-        "Claim Reward",
-        "Best Games",
-        "My Games0",
-        "Cook & Merge | $ 605.65 | USD",
-        "Animals & Coins | $ 562.26 | USD",
-        "RAID: Shadow Legends | $ 284.00 | USD",
-        "5 | (110) | Take Survey | Start your first survey",
-        "Take Survey",
-        "5 | (110) | Take Survey",
-        "New | Take Survey",
-        "5 | (249) | Take Survey",
-        "4.5 | (110) | Take Survey"
-      ],
-      "last_seen_at": "2026-03-22T17:15:15-07:00",
-      "package_name": "com.fivesurveys.mobile",
-      "screen_id": "com-fivesurveys-mobile-mainactivity-7c545cef47b67e8e",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-af997ad10c5f87d2",
       "seen_count": 1,
       "visible_text": [
         "Five Surveys",
@@ -50,33 +20,76 @@
         "Claim Reward",
         "Complete 5 surveys and get $ 5.00 USD",
         "$ 5.00 USD",
-        "Best Games",
-        "My Games0",
-        "Cook & Merge",
-        "$ 605.65",
-        "USD",
-        "Animals & Coins"
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(94)",
+        "New"
       ]
     },
     {
       "activity_name": ".MainActivity",
       "clickable_text": [
         "Claim Reward",
-        "Best Games",
-        "My Games0",
-        "Cook & Merge | $ 605.65 | USD",
-        "Animals & Coins | $ 562.26 | USD",
-        "RAID: Shadow Legends | $ 284.00 | USD",
-        "5 | (110) | Start your first survey",
-        "5 | (110)",
-        "Qualification | Just a few questions before the survey | Enter your birthday | 0.0",
-        "0.0",
-        "Select Month",
-        "Select Day"
+        "Take Survey",
+        "Enter Year"
       ],
-      "last_seen_at": "2026-03-22T17:18:20-07:00",
+      "last_seen_at": "2026-03-26T16:52:40-07:00",
       "package_name": "com.fivesurveys.mobile",
-      "screen_id": "com-fivesurveys-mobile-mainactivity-18291292a9394b4e",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-bf992b39e80cf60c",
+      "seen_count": 5,
+      "visible_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(94)",
+        "New"
+      ]
+    },
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "Enter Year"
+      ],
+      "last_seen_at": "2026-03-26T16:52:59-07:00",
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-7164d9ee16239a9a",
+      "seen_count": 1,
+      "visible_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(94)",
+        "New"
+      ]
+    },
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "Enter Year"
+      ],
+      "last_seen_at": "2026-03-26T16:53:31-07:00",
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-4fd882a40cb05878",
       "seen_count": 2,
       "visible_text": [
         "Five Surveys",
@@ -85,33 +98,22 @@
         "Claim Reward",
         "Complete 5 surveys and get $ 5.00 USD",
         "$ 5.00 USD",
-        "Best Games",
-        "My Games0",
-        "Cook & Merge",
-        "$ 605.65",
-        "USD",
-        "Animals & Coins"
+        "5",
+        "(110)",
+        "Take Survey",
+        "Start your first survey",
+        "(94)",
+        "New"
       ]
     },
     {
       "activity_name": ".MainActivity",
       "clickable_text": [
-        "Claim Reward",
-        "Best Games",
-        "My Games0",
-        "Cook & Merge | $ 605.65 | USD",
-        "Animals & Coins | $ 562.26 | USD",
-        "RAID: Shadow Legends | $ 284.00 | USD",
-        "5 | (110) | Take Survey | Start your first survey",
-        "Take Survey",
-        "5 | (110) | Take Survey",
-        "New | Take Survey",
-        "5 | (249) | Take Survey",
-        "4.5 | (110) | Take Survey"
+        "Claim Reward"
       ],
-      "last_seen_at": "2026-03-22T17:23:15-07:00",
+      "last_seen_at": "2026-03-26T16:53:54-07:00",
       "package_name": "com.fivesurveys.mobile",
-      "screen_id": "com-fivesurveys-mobile-mainactivity-de9fa7d3d55e5695",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-ebb95de11513a06d",
       "seen_count": 2,
       "visible_text": [
         "Five Surveys",
@@ -120,64 +122,122 @@
         "Claim Reward",
         "Complete 5 surveys and get $ 5.00 USD",
         "$ 5.00 USD",
-        "Best Games",
-        "My Games0",
-        "Cook & Merge",
-        "$ 605.65",
-        "USD",
-        "Animals & Coins"
-      ]
-    },
-    {
-      "activity_name": ".MainActivity",
-      "clickable_text": [
-        "Claim Reward",
-        "Best Games",
-        "My Games0",
-        "Cook & Merge | $ 605.65 | USD",
-        "Animals & Coins | $ 562.26 | USD",
-        "RAID: Shadow Legends | $ 284.00 | USD",
-        "5 | (110) | Take Survey | Start your first survey",
-        "Take Survey",
-        "5 | (194) | Take Survey",
-        "4.5 | (40) | Take Survey",
-        "New | Take Survey",
-        "5 | (110) | Take Survey"
-      ],
-      "last_seen_at": "2026-03-22T17:50:34-07:00",
-      "package_name": "com.fivesurveys.mobile",
-      "screen_id": "com-fivesurveys-mobile-mainactivity-119a24a3bfdefa5c",
-      "seen_count": 1,
-      "visible_text": [
-        "Five Surveys",
-        "Current Balance",
-        "$ 0.00 USD",
-        "Claim Reward",
-        "Complete 5 surveys and get $ 5.00 USD",
-        "$ 5.00 USD",
-        "Best Games",
-        "My Games0",
-        "Cook & Merge",
-        "$ 605.65",
-        "USD",
-        "Animals & Coins"
-      ]
-    },
-    {
-      "activity_name": ".MainActivity",
-      "clickable_text": [
-        "Claim Reward",
-        "Best Games",
-        "My Games0",
         "Home",
         "Surveys",
         "Games",
         "More"
+      ]
+    },
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey"
       ],
-      "last_seen_at": "2026-03-22T20:19:12-07:00",
+      "last_seen_at": "2026-03-26T16:54:21-07:00",
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-0111a5efe20e5538",
+      "seen_count": 1,
+      "visible_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Animals & Coins",
+        "$ 562.26",
+        "USD",
+        "Sunshine Island"
+      ]
+    },
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey"
+      ],
+      "last_seen_at": "2026-03-26T16:55:28-07:00",
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-075882a46d38f585",
+      "seen_count": 1,
+      "visible_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Animals & Coins",
+        "$ 562.26",
+        "USD",
+        "Sunshine Island"
+      ]
+    },
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey",
+        "Enter Year"
+      ],
+      "last_seen_at": "2026-03-26T16:56:29-07:00",
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-80ab8f946fdba787",
+      "seen_count": 1,
+      "visible_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Animals & Coins",
+        "$ 562.26",
+        "USD",
+        "Sunshine Island"
+      ]
+    },
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Claim Reward",
+        "Enter Year"
+      ],
+      "last_seen_at": "2026-03-26T16:56:46-07:00",
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-fde2a3239ff6863d",
+      "seen_count": 4,
+      "visible_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Animals & Coins",
+        "$ 562.26",
+        "USD",
+        "Sunshine Island"
+      ]
+    },
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Claim Reward"
+      ],
+      "last_seen_at": "2026-03-26T16:58:23-07:00",
       "package_name": "com.fivesurveys.mobile",
       "screen_id": "com-fivesurveys-mobile-mainactivity-357fa037dcae0fea",
-      "seen_count": 1,
+      "seen_count": 3,
       "visible_text": [
         "Five Surveys",
         "Current Balance",
@@ -196,23 +256,37 @@
     {
       "activity_name": ".MainActivity",
       "clickable_text": [
-        "Claim Reward",
-        "5 | (110) | Take Survey | Start your first survey",
-        "Take Survey",
-        "4.5 | (110) | Take Survey",
-        "5 | (110) | Take Survey",
-        "5 | (104) | Take Survey",
-        "5 | (101) | Take Survey",
-        "New | Take Survey",
-        "4 | (52) | Take Survey",
-        "5 | (330)",
-        "New",
-        "Home"
+        "Claim Reward"
       ],
-      "last_seen_at": "2026-03-22T20:20:41-07:00",
+      "last_seen_at": "2026-03-26T16:58:54-07:00",
       "package_name": "com.fivesurveys.mobile",
-      "screen_id": "com-fivesurveys-mobile-mainactivity-c5386fb19c7355fd",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-68a52c2b08eaaace",
       "seen_count": 2,
+      "visible_text": [
+        "Five Surveys",
+        "Current Balance",
+        "$ 0.00 USD",
+        "Claim Reward",
+        "Complete 5 surveys and get $ 5.00 USD",
+        "$ 5.00 USD",
+        "Best Games",
+        "My Games0",
+        "Animals & Coins",
+        "$ 562.26",
+        "USD",
+        "11469"
+      ]
+    },
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Claim Reward",
+        "Take Survey"
+      ],
+      "last_seen_at": "2026-03-26T16:59:11-07:00",
+      "package_name": "com.fivesurveys.mobile",
+      "screen_id": "com-fivesurveys-mobile-mainactivity-7786afc1e35c83d1",
+      "seen_count": 1,
       "visible_text": [
         "Five Surveys",
         "Current Balance",
@@ -224,8 +298,8 @@
         "(110)",
         "Take Survey",
         "Start your first survey",
-        "4.5",
-        "(104)"
+        "New",
+        "(94)"
       ]
     }
   ]

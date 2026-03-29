@@ -1,12 +1,48 @@
 {
   "app_name": "moneytime",
+  "last_updated": "2026-03-26T01:13:36-07:00",
   "observed_at": "2026-03-25",
+  "package_name": "com.money.time",
+  "recent_screens": [
+    {
+      "activity_name": ".MainActivity",
+      "clickable_text": [
+        "Fill the Loyalty Progress before the end of the timer: \n1h 46m 22s",
+        "0\n/ 350000\nMONIES",
+        "$0.88\nCASHOUT",
+        "Daily streak\nCome back tomorrow to continue!\nDay 1\nDay 2\nDay 3\n...\nDay 10",
+        "Rewards\nGranted\n89 893 244\nSword Slash",
+        "Rewards\nGranted\n89 502 926\nBall Sort Puzzle",
+        "Home\nTab 1 of 4",
+        "Games\nTab 2 of 4",
+        "Offers\nTab 3 of 4",
+        "Cashout\nTab 4 of 4"
+      ],
+      "last_seen_at": "2026-03-26T01:13:36-07:00",
+      "package_name": "com.money.time",
+      "screen_id": "com-money-time-mainactivity-bd9a4e6fba1385a1",
+      "seen_count": 1,
+      "visible_text": [
+        "Fill the Loyalty Progress before the end of the timer: \n1h 46m 22s",
+        "0\n/ 350000\nMONIES",
+        "$0.88\nCASHOUT",
+        "Daily streak\nCome back tomorrow to continue!\nDay 1\nDay 2\nDay 3\n...\nDay 10",
+        "Top Earners Games",
+        "Rewards\nGranted\n89 893 244\nSword Slash",
+        "Rewards\nGranted\n89 502 926\nBall Sort Puzzle",
+        "Home\nTab 1 of 4",
+        "Games\nTab 2 of 4",
+        "Offers\nTab 3 of 4",
+        "Cashout\nTab 4 of 4"
+      ]
+    }
+  ],
   "summary": {
+    "cashout_amount": "$0.00",
+    "earning_window_remaining": "0h 59m 49s",
     "installed": true,
     "onboarding_complete": true,
-    "cashout_amount": "$0.00",
     "pending_monies": "85519 / 350000",
-    "earning_window_remaining": "0h 59m 49s",
     "tracked_games": [
       "Sword Slash",
       "Ball Sort Puzzle",

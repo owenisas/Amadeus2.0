@@ -344,3 +344,128 @@ def test_run_script_executes_conditional_back_when_prompt_present(tmp_path: Path
     assert result.output["steps_skipped"] == 0
     assert adapter.resets == [("com.facebook.katana", ".activity.FbMainTabActivity")]
     assert adapter.performed_actions == ["back", "tap"]
+
+
+def test_run_fast_function_executes_steps_and_verifies_success(tmp_path: Path) -> None:
+    run_dir = tmp_path / "runs"
+    before_state = _make_state(
+        run_dir,
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=["Close", "Product Image,1 of 3", "Hi, is this available?", "Send"],
+        clickable_text=["Hi, is this available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hi, is this available?",
+                "target_box": {"x": 0.09, "y": 0.72, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "target_box": {"x": 0.78, "y": 0.78, "width": 0.15, "height": 0.03},
+            },
+        ],
+    )
+    after_state = _make_state(
+        run_dir,
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=["Close", "Product Image,1 of 3", "Message sent to seller", "See conversation"],
+        clickable_text=["See conversation", "Close"],
+    )
+    adapter = ScriptAdapter([before_state, before_state, before_state, after_state])
+    skill_manager = SkillManager(tmp_path / "skills")
+    executor = AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager)
+    skill_manager.save_fast_function(
+        "facebook",
+        "send_initial_message",
+        {
+            "name": "send_initial_message",
+            "description": "Send a message",
+            "args": [{"name": "message", "required": True}],
+            "steps": [
+                {"action": "type", "input_text": "{{message}}"},
+                {"action": "tap", "target_label": "Send"},
+            ],
+            "preconditions": [{"predicate": "facebook_listing_detail_visible"}],
+            "postconditions": [{"predicate": "facebook_listing_message_sent"}],
+            "fallback_policy": "fallback_to_slow_path",
+        },
+    )
+
+    result = executor.execute(
+        tool_name="run_fast_function",
+        arguments={"app_name": "facebook", "function_name": "send_initial_message", "arguments": {"message": "Can you do $350? Thanks"}},
+        run_dir=run_dir,
+        current_state=before_state,
+        app=APP_REGISTRY["facebook"],
+        skill=None,
+    )
+
+    assert result.ok is True
+    assert result.output["function_name"] == "send_initial_message"
+    assert result.output["verified"] is True
+    assert result.output["fallback_used"] is False
+    assert result.output["captured_state_ref"]["screenshot_path"].endswith("fake.png")
+    assert adapter.performed_actions == ["type", "tap"]
+
+
+def test_run_fast_function_falls_back_when_verification_fails(tmp_path: Path) -> None:
+    run_dir = tmp_path / "runs"
+    before_state = _make_state(
+        run_dir,
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=["Close", "Product Image,1 of 3", "Hi, is this available?", "Send"],
+        clickable_text=["Hi, is this available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hi, is this available?",
+                "target_box": {"x": 0.09, "y": 0.72, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "target_box": {"x": 0.78, "y": 0.78, "width": 0.15, "height": 0.03},
+            },
+        ],
+    )
+    unchanged_state = _make_state(
+        run_dir,
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=["Close", "Product Image,1 of 3", "Hi, is this available?", "Send"],
+        clickable_text=["Hi, is this available?", "Send"],
+        components=before_state.components,
+    )
+    adapter = ScriptAdapter([before_state, before_state, before_state, unchanged_state])
+    skill_manager = SkillManager(tmp_path / "skills")
+    executor = AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager)
+    skill_manager.save_fast_function(
+        "facebook",
+        "send_initial_message",
+        {
+            "name": "send_initial_message",
+            "description": "Send a message",
+            "args": [{"name": "message", "required": True}],
+            "steps": [
+                {"action": "type", "input_text": "{{message}}"},
+                {"action": "tap", "target_label": "Send"},
+            ],
+            "preconditions": [{"predicate": "facebook_listing_detail_visible"}],
+            "postconditions": [{"predicate": "facebook_listing_message_sent"}],
+            "fallback_policy": "fallback_to_slow_path",
+        },
+    )
+
+    result = executor.execute(
+        tool_name="run_fast_function",
+        arguments={"app_name": "facebook", "function_name": "send_initial_message", "arguments": {"message": "Can you do $350? Thanks"}},
+        run_dir=run_dir,
+        current_state=before_state,
+        app=APP_REGISTRY["facebook"],
+        skill=None,
+    )
+
+    assert result.ok is True
+    assert result.output["verified"] is False
+    assert result.output["fallback_used"] is True
+    assert result.output["verification_reason"] == "facebook_listing_message_sent"

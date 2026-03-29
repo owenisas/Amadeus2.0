@@ -1,0 +1,31 @@
+{
+  "name": "send_thread_reply",
+  "description": "Type the provided reply into an open Marketplace thread and send it.",
+  "args": [
+    {
+      "name": "message",
+      "required": true
+    }
+  ],
+  "steps": [
+    {
+      "action": "type",
+      "input_text": "{{message}}"
+    },
+    {
+      "action": "tap",
+      "target_label": "Send"
+    }
+  ],
+  "preconditions": [
+    {
+      "predicate": "facebook_message_thread_visible"
+    }
+  ],
+  "postconditions": [
+    {
+      "predicate": "facebook_thread_reply_sent"
+    }
+  ],
+  "fallback_policy": "fallback_to_slow_path"
+}

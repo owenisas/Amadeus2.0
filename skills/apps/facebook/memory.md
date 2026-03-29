@@ -3,79 +3,79 @@
 - Logged-in phone flow is working on `com.facebook.katana`.
 
 <!-- older entries pruned -->
-
-- Status: completed
-- Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: Yes, available for pickup in West Seattle off 49th Ave SW near Juneau
-- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-fca8b53776fad1e9
-
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-0b2b7a30e880577b
-
-- Status: manual_verification_required
-- Reason: Manual account verification required before automation can continue.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-d1ddbd5f3a5db794
-
-- Status: manual_verification_required
-- Reason: Manual account verification required before automation can continue.
-
-- Status: manual_verification_required
-- Reason: Manual account verification required before automation can continue.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-de4f8cb35ee37c81
-
 - Status: error
 - Reason: App is not installed on the emulator.
 
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-6050558cc7517d35
-
-- Status: max_steps_reached
-- Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-076f56f640052538
+- Status: completed
+- Reason: Facebook Marketplace feed has been scanned and no stronger next listing heuristic was found.
+- Last screen: com-facebook-katana-loginactivity-a4da7b8b7ea50c9a
 
 - Status: max_steps_reached
 - Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-231d715c3dffd346
+- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-da3fe68b8a109a9f
 
-- Status: manual_verification_required
-- Reason: Manual account verification required before automation can continue.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-f2a621ac68ccf7bb
+- Status: manual_login_required
+- Reason: Manual login required before automation can continue.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-e30aa89bd8cc9320
+
+- Status: manual_login_required
+- Reason: Manual login required before automation can continue.
+
+- Status: stalled
+- Reason: Screen did not change after repeated actions.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-f725baa06b62adbc
 
 - Status: completed
-- Reason: Facebook message inbox is visible for read-only inspection.
-- Last screen: com-facebook-katana-com-facebook-messaginginblue-inbox-activities-inboxactivity-f09b5016a712be1f
-
-- Status: error
-- Reason: App is not installed on the emulator.
-
-- Status: error
-- Reason: App is not installed on the emulator.
+- Reason: Gemini request failed (429); heuristic fallback used. {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai
+- Last screen: com-facebook-katana-loginactivity-53bc41af1d12af7a
 
 - Status: max_steps_reached
 - Reason: Max steps reached.
-- Last screen: com-facebook-katana-loginactivity-4e738c377068b729
+- Last screen: com-facebook-katana-loginactivity-175c0881f22bee99
 
-- Status: completed
-- Reason: Gemini request timed out; heuristic fallback used. The read operation timed out
-- Last screen: com-facebook-katana-loginactivity-2c00940f65d54140
+- Status: blocked
+- Reason: Blocked by risk token 'payment'.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-b604c213c784b912
+
+- Status: blocked
+- Reason: Blocked by risk token 'payment'.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-b604c213c784b912
 
 - Status: max_steps_reached
 - Reason: Max steps reached.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-395d4184b67b3a51
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-45bc4ef8b0e53d4a
 
-- Status: completed
-- Reason: Facebook message inbox is visible for read-only inspection.
-- Last screen: com-facebook-katana-activity-react-immersivereactactivity-e09b9ea7bc4bf2bc
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-9af44b81d15ecc7a
 
-- Status: completed
-- Reason: Facebook is visible but no stronger Marketplace heuristic was found.
-- Last screen: com-facebook-katana-com-facebook-messaginginblue-inbox-activities-inboxactivity-67d9f5bf4803897a
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-2eba92a4016c0e54
 
-- Status: completed
-- Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: No
-- Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-b2176a003b6595ee
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-462463444288f557
 
-- Status: completed
-- Reason: Facebook message thread is visible for reading or replying. Latest known seller reply: No
-- Last screen: com-facebook-katana-com-facebook-messaginginblue-threadsettings-surface-activity-mibthreadsettingssurfaceactivity-f3d9fa04c220ec1e
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-462463444288f557
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-2d6d175e01deba86
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-2fafc84b33ea7f31
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-d31a7852e49ee343
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-3fdbf02c02a4fe45

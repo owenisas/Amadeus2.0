@@ -1,0 +1,17 @@
+{
+  "name": "open_marketplace_feed",
+  "description": "Open Facebook Marketplace from the home shell using the fastest stable path.",
+  "args": [],
+  "script_name": "open_marketplace_direct",
+  "preconditions": [
+    {
+      "predicate": "facebook_home_feed_visible"
+    }
+  ],
+  "postconditions": [
+    {
+      "predicate": "facebook_marketplace_feed_visible"
+    }
+  ],
+  "fallback_policy": "fallback_to_slow_path"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "open_messages_from_home",
+  "description": "Open Facebook messages from the home shell using the saved entry path.",
+  "args": [],
+  "script_name": "open_messages_from_home",
+  "preconditions": [
+    {
+      "predicate": "facebook_home_feed_visible"
+    }
+  ],
+  "postconditions": [
+    {
+      "predicate": "facebook_messages_visible"
+    }
+  ],
+  "fallback_policy": "fallback_to_slow_path"
+}

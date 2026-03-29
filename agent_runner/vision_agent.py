@@ -15,6 +15,7 @@ from agent_runner.utils import describe_state_signature, slugify
 
 
 class VisionAgent:
+    GEMINI_TIMEOUT_SECONDS = 60
     LMSTUDIO_TIMEOUT_SECONDS = 120
     ACTION_ALIASES = {
         "click": "tap",
@@ -79,6 +80,7 @@ class VisionAgent:
         self.model = model
         self.lmstudio_base_url = lmstudio_base_url.rstrip("/")
         self.lmstudio_api_key = lmstudio_api_key
+        self.gemini_timeout_seconds = self._resolve_gemini_timeout_seconds()
         self.lmstudio_timeout_seconds = self._resolve_lmstudio_timeout_seconds()
         self.last_decision_meta: dict[str, Any] = {
             "provider": self.provider,
@@ -248,7 +250,7 @@ class VisionAgent:
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=60) as response:
+            with urllib.request.urlopen(request, timeout=self.gemini_timeout_seconds) as response:
                 raw = json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
@@ -739,28 +741,43 @@ class VisionAgent:
         if state.package_name == "com.facebook.katana":
             messaging_goal = self._facebook_goal_allows_marketplace_messaging(goal)
             read_only_message_goal = self._facebook_goal_requests_read_only_message_check(goal)
-            listing_message_goal = self._facebook_goal_targets_listing_message(goal) and not read_only_message_goal
+            explicit_reply_goal = self._facebook_goal_targets_thread_replies(goal)
+            listing_message_goal = (
+                self._facebook_goal_targets_listing_message(goal)
+                and not read_only_message_goal
+                and not explicit_reply_goal
+            )
             search_goal = self._facebook_goal_targets_search(goal)
             value_scan_goal = self._facebook_goal_targets_value_scan(goal)
             clean_start_goal = self._goal_requests_clean_start(goal)
+            heuristic_reply_mode = self._facebook_should_check_inbox(
+                goal=goal,
+                skill=skill,
+                action_history=action_history,
+            )
+            workflow = self._facebook_workflow_state(skill)
+            if explicit_reply_goal or read_only_message_goal:
+                facebook_mode = "reply"
+            else:
+                facebook_mode = str(workflow.get("mode") or ("reply" if heuristic_reply_mode else "hunt"))
             reply_text = self._extract_message_text(goal)
             if not reply_text and listing_message_goal:
                 reply_text = self._facebook_skill_guided_message(goal=goal, state=state, skill=skill) or self._facebook_default_marketplace_message(state, goal=goal)
             send_requested = self._facebook_send_requested(goal) and not read_only_message_goal
             message_input = self._find_facebook_message_input(components)
             send_button = self._find_facebook_send_button(components)
-            should_check_replies = self._facebook_should_check_inbox(
-                goal=goal,
-                skill=skill,
-                action_history=action_history,
-            )
+            should_check_replies = explicit_reply_goal or read_only_message_goal or heuristic_reply_mode
+            if facebook_mode != "reply" and not explicit_reply_goal and not read_only_message_goal:
+                should_check_replies = False
             marketplace_start_ok = (
                 self._facebook_home_shell_visible(state)
                 or self._facebook_home_feed_visible(state)
                 or self._facebook_marketplace_feed_visible(state)
                 or self._facebook_marketplace_search_visible(state)
+                or self._facebook_marketplace_account_visible(state)
                 or self._facebook_backup_prompt_visible(state)
                 or self._facebook_message_recovery_prompt_visible(state)
+                or self._facebook_thread_settings_visible(state)
             )
             if search_goal and self._facebook_listing_detail_visible(state) and (not clean_start_goal or bool(action_history)):
                 marketplace_start_ok = True
@@ -802,6 +819,27 @@ class VisionAgent:
                     goal_progress="awaiting_user_approval",
                     requires_user_approval=True,
                 )
+            if self._facebook_thread_settings_visible(state):
+                return VisionDecision(
+                    screen_classification="facebook_thread_settings",
+                    goal_progress="recovering_to_thread",
+                    next_action="back",
+                    target_box=None,
+                    confidence=0.9,
+                    reason="Back out of Facebook thread settings and return to the conversation or inbox flow.",
+                    risk_level="low",
+                )
+            if facebook_mode == "reply":
+                return self._facebook_reply_mode_decision(
+                    goal=goal,
+                    state=state,
+                    skill=skill,
+                    action_history=action_history,
+                    workflow=workflow,
+                    message_input=message_input,
+                    send_button=send_button,
+                    send_requested=not read_only_message_goal,
+                )
             if value_scan_goal or search_goal or clean_start_goal or listing_message_goal:
                 if self._facebook_marketplace_help_visible(state):
                     return VisionDecision(
@@ -833,7 +871,7 @@ class VisionAgent:
                         reason="Return to the Marketplace feed instead of stopping in the Marketplace inbox during an active scan.",
                         risk_level="low",
                     )
-                if (value_scan_goal or search_goal or clean_start_goal) and self._facebook_message_thread_visible(state):
+                if (value_scan_goal or search_goal or clean_start_goal or listing_message_goal) and self._facebook_message_thread_visible(state):
                     return VisionDecision(
                         screen_classification="facebook_message_thread",
                         goal_progress="recovering_to_marketplace",
@@ -884,6 +922,28 @@ class VisionAgent:
                         risk_level="low",
                         target_label=messages_entry.get("label") or "messages",
                     )
+                if listing_message_goal and self._facebook_listing_detail_visible(state):
+                    description_expander = self._find_facebook_listing_description_expander(components)
+                    if description_expander and not self._recent_target_label_contains(action_history, "see more") and not self._recent_target_label_contains(action_history, "see details"):
+                        return self._tap_decision(
+                            target_box=BoundingBox.from_dict(description_expander.get("target_box")),
+                            screen_classification="facebook_listing_detail",
+                            goal_progress="inspecting_listing",
+                            confidence=0.89,
+                            reason="Expand the listing details before drafting a seller message so specs and condition can be read first.",
+                            risk_level="low",
+                            target_label=description_expander.get("label") or "See details",
+                        )
+                    if self._facebook_should_scroll_listing_details(state, action_history):
+                        return VisionDecision(
+                            screen_classification="facebook_listing_detail",
+                            goal_progress="inspecting_listing",
+                            next_action="swipe",
+                            target_box=self._facebook_detail_scroll_region(),
+                            confidence=0.88,
+                            reason="Scroll slightly within the listing detail before drafting a seller message so lower specs and condition notes are visible.",
+                            risk_level="low",
+                        )
                 if message_input and reply_text and not any(item.get("action") == "type" for item in action_history[-2:]):
                     return VisionDecision(
                         screen_classification="facebook_message_composer",
@@ -991,6 +1051,20 @@ class VisionAgent:
                         )
                 if self._facebook_home_feed_visible(state):
                     if should_check_replies:
+                        if self._facebook_fast_function_exists(skill, "open_messages_from_home"):
+                            return VisionDecision.tool(
+                                tool_name="run_fast_function",
+                                tool_arguments={
+                                    "app_name": skill.app_name,
+                                    "function_name": "open_messages_from_home",
+                                    "arguments": {},
+                                },
+                                screen_classification="facebook_home_feed",
+                                goal_progress="checking_replies",
+                                confidence=0.9,
+                                reason="Use the fast function to open Facebook messages from the home feed before checking Marketplace replies.",
+                                target_label="open_messages_from_home",
+                            )
                         return self._tap_decision_for_label(
                             state=state,
                             skill=skill,
@@ -1002,6 +1076,37 @@ class VisionAgent:
                             risk_level="low",
                         )
                     if value_scan_goal or search_goal or clean_start_goal or listing_message_goal:
+                        if self._facebook_fast_function_exists(skill, "open_marketplace_feed"):
+                            return VisionDecision.tool(
+                                tool_name="run_fast_function",
+                                tool_arguments={
+                                    "app_name": skill.app_name,
+                                    "function_name": "open_marketplace_feed",
+                                    "arguments": {},
+                                },
+                                screen_classification="facebook_home_feed",
+                                goal_progress="navigating_to_marketplace",
+                                confidence=0.9,
+                                reason="Use the fast function to normalize back into the Marketplace feed from the Facebook home shell.",
+                                target_label="open_marketplace_feed",
+                            )
+                        labels = [item.casefold() for item in (state.visible_text[:60] + state.clickable_text[:40])]
+                        labels.extend(
+                            str(component.get("label", "")).casefold()
+                            for component in state.components[:60]
+                            if component.get("label")
+                        )
+                        if not any("marketplace, tab 4 of 6" in item for item in labels):
+                            return self._tap_decision_for_label(
+                                state=state,
+                                skill=skill,
+                                label="Menu",
+                                screen_classification="facebook_home_feed",
+                                goal_progress="opening_menu_for_marketplace",
+                                confidence=0.83,
+                                reason="This home-feed variant does not expose the Marketplace tab directly, so open Menu and continue into Marketplace from there.",
+                                risk_level="low",
+                            )
                         return self._tap_decision_for_label(
                             state=state,
                             skill=skill,
@@ -1024,6 +1129,20 @@ class VisionAgent:
                     )
                 if self._facebook_message_thread_visible(state):
                     if reply_text and message_input:
+                        if self._facebook_fast_function_exists(skill, "send_thread_reply"):
+                            return VisionDecision.tool(
+                                tool_name="run_fast_function",
+                                tool_arguments={
+                                    "app_name": skill.app_name,
+                                    "function_name": "send_thread_reply",
+                                    "arguments": {"message": reply_text},
+                                },
+                                screen_classification="facebook_message_thread",
+                                goal_progress="sending_reply",
+                                confidence=0.9,
+                                reason="Use the fast function to send the reply in the open Marketplace thread with verification.",
+                                target_label="send_thread_reply",
+                            )
                         return VisionDecision(
                             screen_classification="facebook_message_thread",
                             goal_progress="drafting_reply",
@@ -1093,8 +1212,52 @@ class VisionAgent:
                         reason="The goal explicitly targets Marketplace search, so jump from listing detail to the search surface.",
                         risk_level="low",
                     )
+                see_conversation = self._tap_decision_for_label(
+                    state=state,
+                    skill=skill,
+                    label="See conversation",
+                    screen_classification="facebook_listing_detail",
+                    goal_progress="capturing_thread",
+                    confidence=0.9,
+                    reason="Open the conversation after sending so the seller thread is captured and monitored.",
+                    risk_level="low",
+                )
+                if (
+                    see_conversation.next_action == "tap"
+                    and "message sent to seller" in " ".join(state.visible_text[:40]).casefold()
+                    and not self._recent_target_label_contains(action_history, "see conversation")
+                ):
+                    if self._facebook_fast_function_exists(skill, "capture_conversation"):
+                        return VisionDecision.tool(
+                            tool_name="run_fast_function",
+                            tool_arguments={
+                                "app_name": skill.app_name,
+                                "function_name": "capture_conversation",
+                                "arguments": {},
+                            },
+                            screen_classification="facebook_listing_detail",
+                            goal_progress="capturing_thread",
+                            confidence=0.92,
+                            reason="Use the fast function to open and capture the seller conversation after the message was sent.",
+                            target_label="capture_conversation",
+                        )
+                    return see_conversation
                 description_expander = self._find_facebook_listing_description_expander(components)
                 if description_expander and not self._recent_target_label_contains(action_history, "see more"):
+                    if self._facebook_fast_function_exists(skill, "expand_listing_details"):
+                        return VisionDecision.tool(
+                            tool_name="run_fast_function",
+                            tool_arguments={
+                                "app_name": skill.app_name,
+                                "function_name": "expand_listing_details",
+                                "arguments": {},
+                            },
+                            screen_classification="facebook_listing_detail",
+                            goal_progress="inspecting_listing",
+                            confidence=0.9,
+                            reason="Use the fast function to expand the listing details before continuing.",
+                            target_label="expand_listing_details",
+                        )
                     return self._tap_decision(
                         target_box=BoundingBox.from_dict(description_expander.get("target_box")),
                         screen_classification="facebook_listing_detail",
@@ -1128,6 +1291,18 @@ class VisionAgent:
                     confidence=0.91,
                     reason="Back out of the Marketplace listing detail after inspection and continue scanning the feed.",
                     risk_level="low",
+                ) if not self._facebook_fast_function_exists(skill, "close_listing_to_feed") else VisionDecision.tool(
+                    tool_name="run_fast_function",
+                    tool_arguments={
+                        "app_name": skill.app_name,
+                        "function_name": "close_listing_to_feed",
+                        "arguments": {},
+                    },
+                    screen_classification="facebook_listing_detail",
+                    goal_progress="continuing_scan",
+                    confidence=0.92,
+                    reason="Use the fast function to close the listing and return to the Marketplace feed.",
+                    target_label="close_listing_to_feed",
                 )
             if self._facebook_marketplace_feed_visible(state):
                 if search_goal:
@@ -1176,6 +1351,20 @@ class VisionAgent:
                 return VisionDecision.stop("Facebook Marketplace feed has been scanned and no stronger next listing heuristic was found.")
             if self._facebook_home_feed_visible(state):
                 if should_check_replies:
+                    if self._facebook_fast_function_exists(skill, "open_messages_from_home"):
+                        return VisionDecision.tool(
+                            tool_name="run_fast_function",
+                            tool_arguments={
+                                "app_name": skill.app_name,
+                                "function_name": "open_messages_from_home",
+                                "arguments": {},
+                            },
+                            screen_classification="facebook_home_feed",
+                            goal_progress="checking_replies",
+                            confidence=0.89,
+                            reason="Use the fast function to open Messaging before checking Marketplace replies.",
+                            target_label="open_messages_from_home",
+                        )
                     return self._tap_decision_for_label(
                         state=state,
                         skill=skill,
@@ -1185,6 +1374,20 @@ class VisionAgent:
                         confidence=0.86,
                         reason="Check Marketplace-related replies after recent seller outreach before scanning more listings.",
                         risk_level="low",
+                    )
+                if self._facebook_fast_function_exists(skill, "open_marketplace_feed"):
+                    return VisionDecision.tool(
+                        tool_name="run_fast_function",
+                        tool_arguments={
+                            "app_name": skill.app_name,
+                            "function_name": "open_marketplace_feed",
+                            "arguments": {},
+                        },
+                        screen_classification="facebook_home_feed",
+                        goal_progress="navigating_to_marketplace",
+                        confidence=0.9,
+                        reason="Use the fast function to normalize from the Facebook home feed into Marketplace.",
+                        target_label="open_marketplace_feed",
                     )
                 return self._tap_decision_for_label(
                     state=state,
@@ -1198,6 +1401,20 @@ class VisionAgent:
                 )
             if self._facebook_home_shell_visible(state):
                 if should_check_replies:
+                    if self._facebook_fast_function_exists(skill, "open_messages_from_home"):
+                        return VisionDecision.tool(
+                            tool_name="run_fast_function",
+                            tool_arguments={
+                                "app_name": skill.app_name,
+                                "function_name": "open_messages_from_home",
+                                "arguments": {},
+                            },
+                            screen_classification="facebook_home_shell",
+                            goal_progress="checking_replies",
+                            confidence=0.89,
+                            reason="Use the fast function to open Messaging before checking Marketplace replies.",
+                            target_label="open_messages_from_home",
+                        )
                     return self._tap_decision_for_label(
                         state=state,
                         skill=skill,
@@ -1207,6 +1424,20 @@ class VisionAgent:
                         confidence=0.86,
                         reason="Check Marketplace-related replies after recent seller outreach before scanning more listings.",
                         risk_level="low",
+                    )
+                if self._facebook_fast_function_exists(skill, "open_marketplace_feed"):
+                    return VisionDecision.tool(
+                        tool_name="run_fast_function",
+                        tool_arguments={
+                            "app_name": skill.app_name,
+                            "function_name": "open_marketplace_feed",
+                            "arguments": {},
+                        },
+                        screen_classification="facebook_home_shell",
+                        goal_progress="navigating",
+                        confidence=0.9,
+                        reason="Use the fast function to normalize from the Facebook home shell into Marketplace.",
+                        target_label="open_marketplace_feed",
                     )
                 return self._tap_decision_for_label(
                     state=state,
@@ -1694,6 +1925,16 @@ If you cannot proceed safely, return next_action="stop".
             return float(self.LMSTUDIO_TIMEOUT_SECONDS)
         return value if value > 0 else float(self.LMSTUDIO_TIMEOUT_SECONDS)
 
+    def _resolve_gemini_timeout_seconds(self) -> float:
+        raw = os.getenv("GEMINI_TIMEOUT_SECONDS", "").strip()
+        if not raw:
+            return float(self.GEMINI_TIMEOUT_SECONDS)
+        try:
+            value = float(raw)
+        except ValueError:
+            return float(self.GEMINI_TIMEOUT_SECONDS)
+        return value if value > 0 else float(self.GEMINI_TIMEOUT_SECONDS)
+
     def _coerce_decision(
         self,
         payload: dict[str, Any],
@@ -1789,6 +2030,13 @@ If you cannot proceed safely, return next_action="stop".
         *,
         yolo_mode: bool,
     ) -> VisionDecision | None:
+        if state.package_name == "com.facebook.katana" and (
+            self._facebook_home_feed_visible(state)
+            or self._facebook_home_shell_visible(state)
+            or self._facebook_marketplace_feed_visible(state)
+            or self._facebook_marketplace_search_visible(state)
+        ):
+            return None
         text = " ".join(state.visible_text[:60]).casefold()
         clickable = state.clickable_text[:6]
         resource_ids = " ".join(
@@ -1903,10 +2151,79 @@ If you cannot proceed safely, return next_action="stop".
     ) -> VisionDecision:
         if state.package_name != "com.facebook.katana":
             return decision
+        read_only_message_goal = self._facebook_goal_requests_read_only_message_check(goal)
+        listing_message_goal = self._facebook_goal_targets_listing_message(goal) and not read_only_message_goal
+        message_input = self._find_facebook_message_input(state.components)
+        if listing_message_goal and self._facebook_listing_detail_visible(state):
+            description_expander = self._find_facebook_listing_description_expander(state.components)
+            if description_expander and not self._recent_target_label_contains(action_history, "see more") and not self._recent_target_label_contains(action_history, "see details"):
+                if self._facebook_fast_function_exists(skill, "expand_listing_details"):
+                    return VisionDecision.tool(
+                        tool_name="run_fast_function",
+                        tool_arguments={
+                            "app_name": skill.app_name,
+                            "function_name": "expand_listing_details",
+                            "arguments": {},
+                        },
+                        screen_classification=decision.screen_classification or "facebook_listing_detail",
+                        goal_progress="inspecting_listing",
+                        confidence=max(decision.confidence, 0.9),
+                        reason="Use the fast function to expand listing details before drafting a seller message.",
+                        target_label="expand_listing_details",
+                    )
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(description_expander.get("target_box")),
+                    screen_classification=decision.screen_classification or "facebook_listing_detail",
+                    goal_progress="inspecting_listing",
+                    confidence=max(decision.confidence, 0.9),
+                    reason="Expand the listing details before drafting a seller message so the description is read first.",
+                    risk_level="low",
+                    target_label=description_expander.get("label") or "See details",
+                )
+            if self._facebook_should_scroll_listing_details(state, action_history):
+                return VisionDecision(
+                    screen_classification=decision.screen_classification or "facebook_listing_detail",
+                    goal_progress="inspecting_listing",
+                    next_action="swipe",
+                    target_box=self._facebook_detail_scroll_region(),
+                    confidence=max(decision.confidence, 0.88),
+                    reason="Scroll slightly within the listing detail before drafting a seller message so lower notes are visible.",
+                    risk_level="low",
+                )
+        if decision.next_action == "type" and listing_message_goal and message_input:
+            rewritten = self._facebook_finalize_marketplace_message(
+                decision.input_text,
+                state=state,
+                goal=goal,
+            )
+            if rewritten and self._facebook_fast_function_exists(skill, "send_initial_message"):
+                return VisionDecision.tool(
+                    tool_name="run_fast_function",
+                    tool_arguments={
+                        "app_name": skill.app_name,
+                        "function_name": "send_initial_message",
+                        "arguments": {"message": rewritten},
+                    },
+                    screen_classification=decision.screen_classification or "facebook_message_composer",
+                    goal_progress="sending_reply",
+                    confidence=max(decision.confidence, 0.9),
+                    reason="Use the fast function to replace the default Marketplace message and send it with verification.",
+                    target_label="send_initial_message",
+                )
+            if rewritten and rewritten != decision.input_text:
+                return VisionDecision(
+                    screen_classification=decision.screen_classification or "facebook_message_composer",
+                    goal_progress="drafting_reply",
+                    next_action="type",
+                    target_box=decision.target_box or BoundingBox.from_dict(message_input.get("target_box")),
+                    confidence=max(decision.confidence, 0.9),
+                    reason="Rewrite the Marketplace opener to a human-quality message before sending.",
+                    risk_level="low",
+                    input_text=rewritten,
+                    submit_after_input=False,
+                    target_label=message_input.get("label") or decision.target_label or "message input",
+                    )
         if decision.next_action == "tap" and str(decision.target_label or "").casefold() == "send":
-            read_only_message_goal = self._facebook_goal_requests_read_only_message_check(goal)
-            listing_message_goal = self._facebook_goal_targets_listing_message(goal) and not read_only_message_goal
-            message_input = self._find_facebook_message_input(state.components)
             if listing_message_goal and message_input and not any(item.get("action") == "type" for item in action_history[-2:]):
                 reply_text = (
                     self._extract_message_text(goal)
@@ -1914,6 +2231,20 @@ If you cannot proceed safely, return next_action="stop".
                     or self._facebook_default_marketplace_message(state, goal=goal)
                 )
                 if reply_text:
+                    if self._facebook_fast_function_exists(skill, "send_initial_message"):
+                        return VisionDecision.tool(
+                            tool_name="run_fast_function",
+                            tool_arguments={
+                                "app_name": skill.app_name,
+                                "function_name": "send_initial_message",
+                                "arguments": {"message": reply_text},
+                            },
+                            screen_classification=decision.screen_classification or "facebook_message_composer",
+                            goal_progress="sending_reply",
+                            confidence=max(decision.confidence, 0.9),
+                            reason="Use the fast function to replace the default Marketplace message and send it with verification.",
+                            target_label="send_initial_message",
+                        )
                     return VisionDecision(
                         screen_classification=decision.screen_classification or "facebook_message_composer",
                         goal_progress="drafting_reply",
@@ -1926,6 +2257,31 @@ If you cannot proceed safely, return next_action="stop".
                         submit_after_input=False,
                         target_label=message_input.get("label") or "message input",
                     )
+        if (
+            decision.next_action == "tool"
+            and decision.tool_name == "run_fast_function"
+            and listing_message_goal
+            and str(decision.tool_arguments.get("function_name") or "") == "send_initial_message"
+        ):
+            arguments = dict(decision.tool_arguments.get("arguments") or {})
+            rewritten = self._facebook_finalize_marketplace_message(
+                arguments.get("message"),
+                state=state,
+                goal=goal,
+            )
+            if rewritten and rewritten != arguments.get("message"):
+                arguments["message"] = rewritten
+                updated_tool_arguments = dict(decision.tool_arguments)
+                updated_tool_arguments["arguments"] = arguments
+                return VisionDecision.tool(
+                    tool_name="run_fast_function",
+                    tool_arguments=updated_tool_arguments,
+                    screen_classification=decision.screen_classification or "facebook_message_composer",
+                    goal_progress=decision.goal_progress or "sending_reply",
+                    confidence=max(decision.confidence, 0.9),
+                    reason="Rewrite the Marketplace opener to a verified human-quality message before executing the fast send function.",
+                    target_label=decision.target_label or "send_initial_message",
+                )
         return decision
 
     def _auto_approval_popup_decision(
@@ -1935,11 +2291,20 @@ If you cannot proceed safely, return next_action="stop".
         skill: SkillBundle,
         summary: str,
     ) -> VisionDecision | None:
+        if state.package_name == "com.facebook.katana" and (
+            self._facebook_home_feed_visible(state)
+            or self._facebook_home_shell_visible(state)
+            or self._facebook_marketplace_feed_visible(state)
+            or self._facebook_marketplace_search_visible(state)
+        ):
+            return None
         for tokens in (self.YOLO_PRIMARY_ACTION_TOKENS, self.YOLO_SECONDARY_ACTION_TOKENS):
             for token in tokens:
                 for component in state.components[:20]:
                     label = str(component.get("label", "")).strip()
                     if not label or component.get("enabled") is False:
+                        continue
+                    if len(label) > 80 or "\n" in label:
                         continue
                     if token not in label.casefold():
                         continue
@@ -2128,6 +2493,8 @@ If you cannot proceed safely, return next_action="stop".
                 "buy now",
                 "ships for",
                 "payments are processed securely",
+                "message sent to seller",
+                "see conversation",
             ]
         )
 
@@ -2195,8 +2562,32 @@ If you cannot proceed safely, return next_action="stop".
         return has_message_surface and "send" in text
 
     def _facebook_message_inbox_visible(self, state: ScreenState) -> bool:
+        if self._facebook_message_thread_visible(state) or self._facebook_thread_settings_visible(state):
+            return False
         text = " ".join(state.visible_text[:60]).casefold()
         return any(token in text for token in ["messenger", "messages", "chats", "search messenger"])
+
+    def _facebook_marketplace_account_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:80]).casefold()
+        return "view marketplace profile" in text and any(
+            token in text
+            for token in [
+                "saved items",
+                "message",
+                "messages",
+                "recently viewed",
+                "marketplace access",
+            ]
+        )
+
+    def _facebook_thread_settings_visible(self, state: ScreenState) -> bool:
+        text = " ".join(state.visible_text[:80]).casefold()
+        activity = state.activity_name.casefold()
+        if "threadsettingssurfaceactivity" in activity or "threadsettings" in activity:
+            return True
+        return all(token in text for token in ["mute notifications", "chat info"]) and any(
+            token in text for token in ["leave chat", "search in conversation", "read receipts"]
+        )
 
     def _facebook_marketplace_inbox_visible(self, state: ScreenState) -> bool:
         text = " ".join(state.visible_text[:80]).casefold()
@@ -2224,6 +2615,7 @@ If you cannot proceed safely, return next_action="stop".
             if any(
                 token in label
                 for token in [
+                    "message",
                     "still available",
                     "is this available",
                     "type a message",
@@ -2239,7 +2631,15 @@ If you cannot proceed safely, return next_action="stop".
             if component.get("enabled") is False:
                 continue
             label = str(component.get("label", "")).casefold()
-            if "messages" in label and "view marketplace profile" not in label:
+            resource_id = str(component.get("resource_id", "")).casefold()
+            if (
+                (
+                    "messages" in label
+                    or re.search(r"\b\d+\s+message\b", label)
+                    or label.strip().startswith("message")
+                )
+                and "view marketplace profile" not in label
+            ) or "inbox_grid_cell" in resource_id:
                 return component
         return None
 
@@ -2264,6 +2664,360 @@ If you cannot proceed safely, return next_action="stop".
                 best = component
         return best
 
+    @staticmethod
+    def _facebook_workflow_state(skill: SkillBundle) -> dict[str, Any]:
+        generic = skill.state.get("workflow_state")
+        if isinstance(generic, dict) and generic:
+            queue = list(generic.get("queue") or [])
+            if queue or generic.get("mode") or generic.get("active_thread_key") or generic.get("active_item_key"):
+                return {
+                    "mode": generic.get("mode") or "hunt",
+                    "mode_reason": generic.get("mode_reason"),
+                    "reply_queue": queue,
+                    "active_thread_key": generic.get("active_thread_key"),
+                    "active_listing_key": generic.get("active_item_key"),
+                    "last_mode_switch_at": generic.get("last_mode_switch_at"),
+                    "last_reply_check_at": generic.get("last_observed_at"),
+                }
+        facebook = skill.backup_data.get("facebook_marketplace", {})
+        workflow = facebook.get("workflow")
+        if isinstance(workflow, dict):
+            return workflow
+        fallback = skill.state.get("facebook_workflow")
+        return fallback if isinstance(fallback, dict) else {}
+
+    def _facebook_reply_queue(self, skill: SkillBundle) -> list[dict[str, Any]]:
+        workflow = self._facebook_workflow_state(skill)
+        queue = workflow.get("reply_queue")
+        return list(queue) if isinstance(queue, list) else []
+
+    def _facebook_active_thread_record(self, skill: SkillBundle, state: ScreenState | None = None) -> dict[str, Any] | None:
+        facebook = skill.backup_data.get("facebook_marketplace", {})
+        workflow = self._facebook_workflow_state(skill)
+        active_thread_key = str(workflow.get("active_thread_key") or "")
+        threads = list(facebook.get("threads") or [])
+        contacts = list(facebook.get("contacted_items") or [])
+        if state is not None:
+            header = next(
+                (
+                    text
+                    for text in state.visible_text
+                    if " · " in text and "marketplace listing" not in text.casefold() and "reviews of " not in text.casefold()
+                ),
+                None,
+            )
+            if header:
+                for thread in threads:
+                    if str(thread.get("thread_title") or "") == header:
+                        return self._facebook_enrich_thread_with_contact(thread, contacts)
+        if active_thread_key:
+            for thread in threads:
+                if str(thread.get("thread_key") or "") == active_thread_key:
+                    return self._facebook_enrich_thread_with_contact(thread, contacts)
+        queue = self._facebook_reply_queue(skill)
+        if queue:
+            queue_key = str(queue[0].get("thread_key") or "")
+            for thread in threads:
+                if str(thread.get("thread_key") or "") == queue_key:
+                    return self._facebook_enrich_thread_with_contact(thread, contacts)
+        return self._facebook_enrich_thread_with_contact(threads[0], contacts) if threads else None
+
+    @staticmethod
+    def _facebook_enrich_thread_with_contact(thread: dict[str, Any], contacts: list[dict[str, Any]]) -> dict[str, Any]:
+        thread_key = str(thread.get("thread_key") or "")
+        item_title = str(thread.get("item_title") or "")
+        match = next(
+            (
+                item
+                for item in contacts
+                if (thread_key and str(item.get("thread_key") or "") == thread_key)
+                or (item_title and str(item.get("item_title") or "") == item_title)
+            ),
+            None,
+        )
+        if not match:
+            return thread
+        enriched = dict(match)
+        enriched.update(thread)
+        return enriched
+
+    def _find_facebook_marketplace_entry_from_message_inbox(
+        self,
+        components: list[dict[str, Any]],
+    ) -> dict[str, Any] | None:
+        best: dict[str, Any] | None = None
+        best_score = float("-inf")
+        for component in components:
+            if component.get("enabled") is False:
+                continue
+            label = str(component.get("label") or "").strip()
+            lowered = label.casefold()
+            if not label:
+                continue
+            if any(
+                token in lowered
+                for token in [
+                    "chat profile",
+                    "marketplace listing",
+                    "mute notifications",
+                    "read receipts",
+                    "back |",
+                ]
+            ):
+                continue
+            score = 0.0
+            if "marketplace" in lowered:
+                score += 5.0
+            if "unread" in lowered or "new message" in lowered or "new messages" in lowered:
+                score += 4.0
+            if "chat" in lowered or "message" in lowered:
+                score += 1.0
+            if score > best_score:
+                best_score = score
+                best = component
+        return best if best_score > 0 else None
+
+    def _facebook_reply_mode_decision(
+        self,
+        *,
+        goal: str,
+        state: ScreenState,
+        skill: SkillBundle,
+        action_history: list[dict[str, Any]],
+        workflow: dict[str, Any],
+        message_input: dict[str, Any] | None,
+        send_button: dict[str, Any] | None,
+        send_requested: bool,
+    ) -> VisionDecision:
+        if self._facebook_marketplace_help_visible(state) or self._facebook_thread_settings_visible(state):
+            return VisionDecision(
+                screen_classification="facebook_reply_recovery",
+                goal_progress="recovering_to_replies",
+                next_action="back",
+                target_box=None,
+                confidence=0.9,
+                reason="Return from a stale Facebook surface and continue the Marketplace reply workflow.",
+                risk_level="low",
+            )
+        if self._facebook_backup_prompt_visible(state) or self._facebook_message_recovery_prompt_visible(state):
+            return VisionDecision(
+                screen_classification="facebook_reply_recovery",
+                goal_progress="recovering_to_replies",
+                next_action="back",
+                target_box=None,
+                confidence=0.88,
+                reason="Dismiss the transient Facebook prompt and continue the Marketplace reply workflow.",
+                risk_level="low",
+            )
+        if self._facebook_listing_detail_visible(state):
+            return VisionDecision(
+                screen_classification="facebook_listing_detail",
+                goal_progress="switching_to_replies",
+                next_action="back",
+                target_box=None,
+                confidence=0.86,
+                reason="Finish the current listing surface and recover into Marketplace replies before opening any new listing.",
+                risk_level="low",
+            )
+        has_home_shell_actions = any(
+            str(component.get("label") or "") in {"Messaging", "Marketplace, tab 4 of 6"}
+            for component in state.components
+        )
+        if self._facebook_home_feed_visible(state) or has_home_shell_actions:
+            if self._facebook_fast_function_exists(skill, "open_messages_from_home"):
+                return VisionDecision.tool(
+                    tool_name="run_fast_function",
+                    tool_arguments={
+                        "app_name": skill.app_name,
+                        "function_name": "open_messages_from_home",
+                        "arguments": {},
+                    },
+                    screen_classification="facebook_home_feed",
+                    goal_progress="checking_replies",
+                    confidence=0.89,
+                    reason="Use the fast function to open Messaging before draining actionable Marketplace replies.",
+                    target_label="open_messages_from_home",
+                )
+            messaging_entry = self._tap_decision_for_label(
+                state=state,
+                skill=skill,
+                label="Messaging",
+                screen_classification="facebook_home_feed",
+                goal_progress="checking_replies",
+                confidence=0.85,
+                reason="Open Messaging first so the agent can reach actionable Marketplace seller replies.",
+                risk_level="low",
+            )
+            if messaging_entry.next_action == "tap":
+                return messaging_entry
+            return self._tap_decision_for_label(
+                state=state,
+                skill=skill,
+                label="Marketplace, tab 4 of 6",
+                screen_classification="facebook_home_feed",
+                goal_progress="navigating_to_replies",
+                confidence=0.85,
+                reason="Reply mode first re-enters Marketplace before opening seller messages.",
+                risk_level="low",
+            )
+        if self._facebook_marketplace_feed_visible(state) or self._facebook_marketplace_search_visible(state):
+            return self._tap_decision_for_label(
+                state=state,
+                skill=skill,
+                label="Tap to view your Marketplace account",
+                screen_classification="facebook_marketplace_feed",
+                goal_progress="opening_marketplace_account",
+                confidence=0.84,
+                reason="Open the Marketplace account page to reach seller messages in reply mode.",
+                risk_level="low",
+            )
+        messages_entry = self._find_facebook_marketplace_messages_entry(state.components)
+        if messages_entry and not (
+            self._facebook_marketplace_inbox_visible(state) or self._facebook_message_thread_visible(state)
+        ):
+            return self._tap_decision(
+                target_box=BoundingBox.from_dict(messages_entry.get("target_box")),
+                screen_classification="facebook_marketplace_account",
+                goal_progress="opening_messages",
+                confidence=0.87,
+                reason="Open the Marketplace messages row and drain actionable seller replies.",
+                risk_level="low",
+                target_label=messages_entry.get("label") or "messages",
+            )
+        if self._facebook_message_inbox_visible(state):
+            thread_entry = self._find_facebook_inbox_thread_entry(state.components, skill)
+            if thread_entry is not None and not self._recent_target_label_contains(
+                action_history,
+                str(thread_entry.get("label") or ""),
+            ):
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(thread_entry.get("target_box")),
+                    screen_classification="facebook_message_inbox",
+                    goal_progress="opening_reply_thread",
+                    confidence=0.85,
+                    reason="Open the actionable Marketplace seller thread directly from the generic Facebook inbox.",
+                    risk_level="low",
+                    target_label=thread_entry.get("label") or "message thread",
+                )
+            marketplace_entry = self._find_facebook_marketplace_entry_from_message_inbox(state.components)
+            if marketplace_entry is not None:
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(marketplace_entry.get("target_box")),
+                    screen_classification="facebook_message_inbox",
+                    goal_progress="opening_marketplace_inbox",
+                    confidence=0.86,
+                    reason="Open the Marketplace conversation hub from the broader Facebook inbox.",
+                    risk_level="low",
+                    target_label=marketplace_entry.get("label") or "Marketplace",
+                )
+            return VisionDecision(
+                screen_classification="facebook_message_inbox",
+                goal_progress="recovering_to_replies",
+                next_action="back",
+                target_box=None,
+                confidence=0.8,
+                reason="Back out of the generic inbox and re-enter the Marketplace reply path.",
+                risk_level="low",
+            )
+        if self._facebook_marketplace_inbox_visible(state):
+            reply_queue = self._facebook_reply_queue(skill)
+            if workflow.get("mode") == "reply" and not reply_queue:
+                return VisionDecision(
+                    screen_classification="facebook_marketplace_inbox",
+                    goal_progress="returning_to_hunt",
+                    next_action="back",
+                    target_box=None,
+                    confidence=0.82,
+                    reason="No actionable Marketplace replies remain, so return to the hunt flow.",
+                    risk_level="low",
+                )
+            thread_entry = self._find_facebook_marketplace_thread_entry(state.components, skill)
+            if thread_entry is not None and not self._recent_target_label_contains(
+                action_history,
+                str(thread_entry.get("label") or ""),
+            ):
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(thread_entry.get("target_box")),
+                    screen_classification="facebook_marketplace_inbox",
+                    goal_progress="opening_reply_thread",
+                    confidence=0.9,
+                    reason="Open the highest-priority Marketplace seller thread from the actionable reply queue.",
+                    risk_level="low",
+                    target_label=thread_entry.get("label") or "marketplace thread",
+                )
+        if self._facebook_message_thread_visible(state):
+            thread = self._facebook_active_thread_record(skill, state)
+            reply_text = self._extract_message_text(goal)
+            if not reply_text:
+                reply_text = self._facebook_skill_guided_thread_reply(goal=goal, state=state, skill=skill, thread=thread)
+            if not reply_text and thread is not None:
+                reply_text = self._facebook_default_thread_reply(thread)
+            if not send_requested:
+                latest_reply = ""
+                if thread is not None:
+                    latest_reply = str(thread.get("last_inbound_message") or "").strip()
+                if latest_reply:
+                    return VisionDecision.stop(
+                        f"Facebook message thread is visible for reading. Latest known seller reply: {latest_reply}"
+                    )
+                return VisionDecision.stop("Facebook message thread is visible for reading.")
+            if message_input and reply_text and not any(item.get("action") == "type" for item in action_history[-2:]):
+                if self._facebook_fast_function_exists(skill, "send_thread_reply"):
+                    return VisionDecision.tool(
+                        tool_name="run_fast_function",
+                        tool_arguments={
+                            "app_name": skill.app_name,
+                            "function_name": "send_thread_reply",
+                            "arguments": {"message": reply_text},
+                        },
+                        screen_classification="facebook_message_thread",
+                        goal_progress="sending_reply",
+                        confidence=0.9,
+                        reason="Use the fast function to send the seller reply with immediate verification.",
+                        target_label="send_thread_reply",
+                    )
+                return VisionDecision(
+                    screen_classification="facebook_message_thread",
+                    goal_progress="drafting_reply",
+                    next_action="type",
+                    target_box=BoundingBox.from_dict(message_input.get("target_box")),
+                    confidence=0.86,
+                    reason="Draft a seller reply using the Facebook skill policy and current thread context.",
+                    risk_level="low",
+                    input_text=reply_text,
+                    submit_after_input=False,
+                    target_label=message_input.get("label") or "message input",
+                )
+            if send_requested and send_button and any(item.get("action") == "type" for item in action_history[-2:]):
+                return self._tap_decision(
+                    target_box=BoundingBox.from_dict(send_button.get("target_box")),
+                    screen_classification="facebook_message_thread",
+                    goal_progress="sending_reply",
+                    confidence=0.9,
+                    reason="Send the Marketplace seller reply and then return to product hunting.",
+                    risk_level="low",
+                    target_label=send_button.get("label") or "Send",
+                )
+            if thread and not thread.get("needs_reply"):
+                return VisionDecision(
+                    screen_classification="facebook_message_thread",
+                    goal_progress="returning_to_hunt",
+                    next_action="back",
+                    target_box=None,
+                    confidence=0.84,
+                    reason="This seller thread no longer needs a reply, so return to the Marketplace hunt flow.",
+                    risk_level="low",
+                )
+        return VisionDecision(
+            screen_classification="facebook_reply_recovery",
+            goal_progress="recovering_to_replies",
+            next_action="back",
+            target_box=None,
+            confidence=0.74,
+            reason="Recover the Facebook reply workflow toward Marketplace messages.",
+            risk_level="low",
+        )
+
     def _find_facebook_inbox_thread_entry(
         self,
         components: list[dict[str, Any]],
@@ -2271,6 +3025,11 @@ If you cannot proceed safely, return next_action="stop".
     ) -> dict[str, Any] | None:
         threads = list(skill.backup_data.get("facebook_marketplace", {}).get("threads", []))
         contacted = list(skill.backup_data.get("facebook_marketplace", {}).get("contacted_items", []))
+        queued = {
+            str(item.get("thread_key") or ""): item
+            for item in self._facebook_reply_queue(skill)
+            if str(item.get("thread_key") or "")
+        }
         candidates: list[tuple[int, float, dict[str, Any]]] = []
         for component in components:
             if component.get("enabled") is False:
@@ -2307,12 +3066,15 @@ If you cannot proceed safely, return next_action="stop".
                 thread_title = str(thread.get("thread_title") or "")
                 item_title = str(thread.get("item_title") or "")
                 seller_name = str(thread.get("seller_name") or "")
+                thread_key = str(thread.get("thread_key") or "")
                 if thread_title and self._labels_match(thread_title.casefold(), lowered):
                     score += 8
                 if item_title and item_title.casefold() in lowered:
                     score += 5
                 if seller_name and seller_name.casefold() in lowered:
                     score += 3
+                if thread_key and thread_key in queued:
+                    score += 10
             for item in contacted:
                 item_title = str(item.get("item_title") or "")
                 seller_name = str(item.get("seller_name") or "")
@@ -2460,6 +3222,15 @@ If you cannot proceed safely, return next_action="stop".
             "parts only": -7,
             "broken": -7,
             "cracked": -6,
+            "tv": -7,
+            "television": -7,
+            "smart tv": -8,
+            "led tv": -7,
+            "budget gaming pc": -8,
+            "gtx 770": -9,
+            "ddr3": -8,
+            "fortnite": -3,
+            "roblox": -3,
         }
         score = 0.0
         for token, weight in desirable_tokens.items():
@@ -2492,7 +3263,7 @@ If you cannot proceed safely, return next_action="stop".
             if component.get("enabled") is False:
                 continue
             label = str(component.get("label", "")).casefold()
-            if "see more" in label:
+            if "see more" in label or "see details" in label:
                 if best is None or len(label) > len(str(best.get("label", ""))):
                     best = component
         return best
@@ -2611,6 +3382,28 @@ If you cannot proceed safely, return next_action="stop".
             return any(token in lowered for token in message_context_tokens)
         return False
 
+    def _facebook_goal_targets_thread_replies(self, goal: str) -> bool:
+        lowered = goal.casefold()
+        if not self._facebook_goal_allows_marketplace_messaging(goal):
+            return False
+        explicit_tokens = [
+            "check facebook marketplace seller replies",
+            "check seller replies",
+            "check for seller replies",
+            "check marketplace messages",
+            "follow-up replies",
+            "follow up replies",
+            "reply to sellers",
+            "reply to seller",
+            "send follow-up replies",
+            "send follow up replies",
+            "respond to sellers",
+            "respond to seller",
+            "check messages and reply",
+            "check messages then continue hunting",
+        ]
+        return any(token in lowered for token in explicit_tokens)
+
     def _facebook_goal_targets_search(self, goal: str) -> bool:
         lowered = goal.casefold()
         return "marketplace" in lowered and any(
@@ -2712,6 +3505,9 @@ If you cannot proceed safely, return next_action="stop".
     def _facebook_script_exists(self, skill: SkillBundle, script_name: str) -> bool:
         return (skill.app_dir / "scripts" / f"{script_name}.json").exists()
 
+    def _facebook_fast_function_exists(self, skill: SkillBundle, function_name: str) -> bool:
+        return (skill.app_dir / "functions" / f"{function_name}.json").exists()
+
     def _facebook_open_search_script_arguments(self, skill: SkillBundle) -> dict[str, Any]:
         return {
             "app_name": skill.app_name,
@@ -2794,19 +3590,52 @@ If you cannot proceed safely, return next_action="stop".
         title = self._facebook_listing_title(state)
         item_ref = self._facebook_message_item_reference(title)
         ask_price = self._facebook_listing_price(state)
+        candidate: str | None = None
         if goal and (self._facebook_goal_targets_value_scan(goal) or self._facebook_goal_targets_profit_bargain(goal)):
             missing_details = self._facebook_missing_listing_details(state)
             if missing_details:
-                return self._facebook_missing_details_message(item_ref=item_ref, missing_details=missing_details)
+                candidate = self._facebook_missing_details_message(item_ref=item_ref, missing_details=missing_details)
+                return self._facebook_finalize_marketplace_message(
+                    candidate,
+                    state=state,
+                    goal=goal,
+                    allow_default_fallback=False,
+                )
         if goal and self._facebook_goal_targets_profit_bargain(goal):
             target_offer = self._facebook_profitable_offer_price(title=title, ask_price=ask_price)
             if target_offer is not None and ask_price is not None and target_offer < ask_price:
-                return self._facebook_bargain_message(item_ref=item_ref, offer_price=target_offer)
+                candidate = self._facebook_bargain_message(item_ref=item_ref, offer_price=target_offer)
+                return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal)
         if item_ref:
-            return f"Hey, is your {item_ref} still available?"
+            candidate = f"Hey, is your {item_ref} still available?"
+            return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal)
         if self._facebook_listing_detail_visible(state):
-            return "Hey, interested in this. Still available?"
-        return None
+            candidate = "Hey, interested in this. Still available?"
+            return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal)
+        return candidate
+
+    def _facebook_default_thread_reply(self, thread: dict[str, Any]) -> str | None:
+        inbound = str(thread.get("last_inbound_message") or "").strip()
+        item_ref = self._facebook_message_item_reference(thread.get("item_title"))
+        lowered = inbound.casefold()
+        ask_price = self._coerce_price(thread.get("price"))
+        target_offer = self._facebook_profitable_offer_price(title=thread.get("item_title"), ask_price=ask_price)
+        outbound = str(thread.get("last_outbound_message") or "").strip().casefold()
+        if not inbound:
+            return None
+        if "pickup only" in lowered:
+            return "Hey, what’s the pickup address or nearest cross streets?"
+        if any(token in lowered for token in ["don't have a car", "dont have a car", "can't meet", "cant meet", "cannot meet"]):
+            return "Where are you located?"
+        if "available" in lowered or lowered in {"yes", "yep", "still available", "it js", "it is"}:
+            if target_offer is not None and "$" not in outbound:
+                return self._facebook_direct_counter_message(offer_price=target_offer)
+            return "Can we meet in Bothell?"
+        if "$" in lowered or any(token in lowered for token in ["can do", "could do", "lowest", "best price"]):
+            return "Can we meet in Bothell?"
+        if "where" in lowered and ("meet" in lowered or "pickup" in lowered):
+            return "Bothell works best for me."
+        return "Where are you located?"
 
     def _facebook_skill_guided_message(self, *, goal: str, state: ScreenState, skill: SkillBundle) -> str | None:
         if self.provider == "gemini" and not self.api_key:
@@ -2822,6 +3651,8 @@ If you cannot proceed safely, return next_action="stop".
             "Do not paste the full listing title. Use a short natural item reference.\n"
             "If the ask is too high for a profitable flip, make a direct offer first.\n"
             "If specs or condition are still unclear, ask about them instead of guessing.\n"
+            "After price agreement, default to asking 'Can we meet in Bothell?' before asking for location details.\n"
+            "Use one concrete offer number when bargaining. Avoid robotic phrasing and avoid 'pick it up today' unless timing is already established.\n"
             "Keep it to one sentence, plain text only, under 22 words, no quotes, no extra commentary.\n\n"
             f"Goal:\n{goal}\n\n"
             f"Skill instructions:\n{skill.instructions[:5000]}\n\n"
@@ -2830,8 +3661,47 @@ If you cannot proceed safely, return next_action="stop".
             f"Visible screen text:\n{json.dumps(visible, ensure_ascii=True)}\n"
         )
         if self.provider == "lmstudio":
-            return self._lmstudio_text_message(prompt)
-        return self._gemini_text_message(prompt)
+            raw = self._lmstudio_text_message(prompt)
+        else:
+            raw = self._gemini_text_message(prompt)
+        return self._facebook_finalize_marketplace_message(raw, state=state, goal=goal)
+
+    def _facebook_skill_guided_thread_reply(
+        self,
+        *,
+        goal: str,
+        state: ScreenState,
+        skill: SkillBundle,
+        thread: dict[str, Any] | None,
+    ) -> str | None:
+        if thread is None:
+            return None
+        if self.provider == "gemini" and not self.api_key:
+            return None
+        if self.provider == "lmstudio" and not (self.lmstudio_base_url and self.model):
+            return None
+        visible = [text for text in state.visible_text[:20] if text]
+        prompt = (
+            "Draft one short human Facebook Marketplace seller reply.\n"
+            "Use the app skill instructions as the policy source.\n"
+            "Keep it to one sentence, plain text only, under 22 words, no quotes.\n"
+            "Do not paste the full listing title. Use a short natural item reference.\n"
+            "If the seller confirmed availability, continue with a direct counteroffer or 'Can we meet in Bothell?' according to the skill.\n"
+            "If they say pickup only, ask for the address or nearest cross streets.\n\n"
+            f"Goal:\n{goal}\n\n"
+            f"Skill instructions:\n{skill.instructions[:5000]}\n\n"
+            f"Thread title:\n{thread.get('thread_title') or '(unknown)'}\n\n"
+            f"Item title:\n{thread.get('item_title') or '(unknown)'}\n\n"
+            f"Latest outbound:\n{thread.get('last_outbound_message') or '(none)'}\n\n"
+            f"Latest inbound:\n{thread.get('last_inbound_message') or '(none)'}\n\n"
+            f"Visible thread text:\n{json.dumps(visible, ensure_ascii=True)}\n"
+        )
+        if self.provider == "lmstudio":
+            raw = self._lmstudio_text_message(prompt)
+        else:
+            raw = self._gemini_text_message(prompt)
+        cleaned = self._facebook_clean_message(raw)
+        return cleaned if cleaned else self._facebook_default_thread_reply(thread)
 
     def _facebook_should_check_inbox(
         self,
@@ -2914,8 +3784,154 @@ If you cannot proceed safely, return next_action="stop".
     @staticmethod
     def _facebook_bargain_message(*, item_ref: str | None, offer_price: int) -> str:
         if item_ref:
-            return f"Hey, if it's in good shape, would you take ${offer_price} for your {item_ref}?"
-        return f"Hey, if it's in good shape, would you take ${offer_price}?"
+            return f"Hey, if it's in good shape, would you take ${offer_price} for your {item_ref}? Thanks"
+        return f"Hey, if it's in good shape, would you take ${offer_price}? Thanks"
+
+    @staticmethod
+    def _facebook_direct_counter_message(*, offer_price: int) -> str:
+        return f"Can you do ${offer_price}? Thanks"
+
+    def _facebook_finalize_marketplace_message(
+        self,
+        candidate: str | None,
+        *,
+        state: ScreenState,
+        goal: str | None,
+        allow_default_fallback: bool = True,
+    ) -> str | None:
+        cleaned = self._facebook_clean_message(candidate)
+        if self._facebook_message_quality_ok(cleaned, state=state):
+            return cleaned
+        if not allow_default_fallback:
+            return cleaned
+        title = self._facebook_listing_title(state)
+        item_ref = self._facebook_message_item_reference(title)
+        ask_price = self._facebook_listing_price(state)
+        missing_details = self._facebook_missing_listing_details(state)
+        if missing_details:
+            fallback = self._facebook_clean_message(
+                self._facebook_missing_details_message(item_ref=item_ref, missing_details=missing_details)
+            )
+            if self._facebook_message_quality_ok(fallback, state=state):
+                return fallback
+        if goal and self._facebook_goal_targets_profit_bargain(goal):
+            target_offer = self._facebook_profitable_offer_price(title=title, ask_price=ask_price)
+            if target_offer is not None:
+                fallback = self._facebook_bargain_message(item_ref=item_ref, offer_price=target_offer)
+                fallback = self._facebook_clean_message(fallback)
+                if self._facebook_message_quality_ok(fallback, state=state):
+                    return fallback
+        if item_ref:
+            fallback = self._facebook_clean_message(f"Hey, is your {item_ref} still available?")
+            if self._facebook_message_quality_ok(fallback, state=state):
+                return fallback
+        fallback = self._facebook_clean_message("Hey, interested in this. Still available?")
+        return fallback if self._facebook_message_quality_ok(fallback, state=state) else None
+
+    @staticmethod
+    def _facebook_clean_message(message: str | None) -> str | None:
+        if not message:
+            return None
+        cleaned = re.sub(r"\s+", " ", str(message)).strip().strip('"').strip("'")
+        if not cleaned:
+            return None
+        cleaned = VisionAgent._facebook_normalize_message_casing(cleaned)
+        return cleaned or None
+
+    @staticmethod
+    def _facebook_normalize_message_casing(message: str) -> str:
+        needs_normalization = any(
+            pattern.search(message)
+            for pattern in (
+                re.compile(r"[A-Z]{4,}"),
+                re.compile(r"\b[a-z]+[A-Z][a-z]+\b"),
+                re.compile(r"\b[A-Z][a-z]+[A-Z]+\b"),
+            )
+        )
+        if not needs_normalization:
+            return message
+
+        normalized = message.lower()
+        replacements = {
+            r"\biphone\b": "iPhone",
+            r"\bipad\b": "iPad",
+            r"\bimac\b": "iMac",
+            r"\bmacbook\b": "MacBook",
+            r"\bmac mini\b": "Mac mini",
+            r"\bmac studio\b": "Mac Studio",
+            r"\bair\b": "Air",
+            r"\bpro\b": "Pro",
+            r"\bram\b": "RAM",
+            r"\bssd\b": "SSD",
+            r"\bgpu\b": "GPU",
+            r"\bcpu\b": "CPU",
+            r"\brtc\b": "RTC",
+            r"\brtx\b": "RTX",
+            r"\bgtx\b": "GTX",
+            r"\boled\b": "OLED",
+            r"\buhd\b": "UHD",
+            r"\bpc\b": "PC",
+            r"\bm1\b": "M1",
+            r"\bm2\b": "M2",
+            r"\bm3\b": "M3",
+            r"\bm4\b": "M4",
+        }
+        for pattern, replacement in replacements.items():
+            normalized = re.sub(pattern, replacement, normalized)
+        normalized = normalized[:1].upper() + normalized[1:] if normalized else normalized
+        normalized = re.sub(r"(?<=\?\s)thanks\b", "Thanks", normalized, flags=re.IGNORECASE)
+        return normalized
+
+    def _facebook_message_quality_ok(self, message: str | None, *, state: ScreenState) -> bool:
+        if not message:
+            return False
+        lowered = message.casefold().strip()
+        if lowered in {"hi, is this available?", "hello, is this still available?", "is this still available?"}:
+            return False
+        if any(
+            token in lowered
+            for token in [
+                "pick up today",
+                "pickup today",
+                "pick it up today",
+                "pick this up today",
+                "i can pick up",
+                "i can pick this up",
+                "meet up today",
+            ]
+        ):
+            return False
+        if len(lowered.split()) < 3:
+            return False
+        if len(lowered) < 10:
+            return False
+        title = (self._facebook_listing_title(state) or "").strip()
+        title_lower = title.casefold()
+        if title_lower and lowered == title_lower:
+            return False
+        item_ref = (self._facebook_message_item_reference(title) or "").casefold()
+        if item_ref and lowered in {item_ref, f"hey, {item_ref}", f"hi, {item_ref}"}:
+            return False
+        if title_lower and lowered in title_lower:
+            return False
+        if lowered.replace("$", "").strip() in {"i7", "m1", "m2", "m3", "m4", "rtx", "ryzen"}:
+            return False
+        if len(lowered) > 90:
+            return False
+        return True
+
+    @staticmethod
+    def _coerce_price(value: Any) -> int | None:
+        if value is None:
+            return None
+        text = str(value)
+        match = re.search(r"\$?([\d,]+)", text)
+        if not match:
+            return None
+        try:
+            return int(match.group(1).replace(",", ""))
+        except ValueError:
+            return None
 
     def _facebook_missing_listing_details(self, state: ScreenState) -> list[str]:
         missing: list[str] = []
@@ -3032,23 +4048,27 @@ If you cannot proceed safely, return next_action="stop".
         lowered = title.casefold().replace("-", " ")
         compact = re.sub(r"\s+", " ", lowered)
         specific_rules: list[tuple[tuple[str, ...], int]] = [
-            (("macbook air", "m2", "13", "16gb", "256gb"), 450),
-            (("macbook air", "m2", "13-inch", "16gb", "256gb"), 450),
+            (("macbook air", "m1", "8gb", "256gb"), 230),
+            (("macbook air", "m2", "8gb", "256gb"), 325),
+            (("macbook air", "m2", "13", "16gb", "256gb"), 425),
+            (("macbook air", "m2", "13-inch", "16gb", "256gb"), 425),
         ]
         for tokens, ceiling in specific_rules:
             if all(token in compact for token in tokens):
                 return ceiling if ask_price > ceiling else None
 
-        high_value_tokens = [
-            "iphone",
-            "macbook",
-            "imac",
-            "mac mini",
-            "rtx",
-            "gaming pc",
+        category_rules: list[tuple[tuple[str, ...], int, float]] = [
+            (("macbook air", "macbook pro"), 300, 0.58),
+            (("iphone",), 250, 0.58),
+            (("imac", "mac mini"), 300, 0.62),
+            (("rtx", "gaming pc", "gaming laptop", "laptop"), 350, 0.60),
+            (("camera", "canon", "sony", "nikon", "lens"), 400, 0.65),
+            (("monitor", "oled", "ultrawide"), 200, 0.55),
         ]
-        if ask_price >= 500 and any(token in compact for token in high_value_tokens):
-            candidate = self._round_offer_price(ask_price * 0.7)
+        for tokens, min_ask, ratio in category_rules:
+            if ask_price < min_ask or not any(token in compact for token in tokens):
+                continue
+            candidate = self._round_offer_price(ask_price * ratio)
             if candidate <= ask_price - 50:
                 return candidate
         return None
@@ -3056,6 +4076,9 @@ If you cannot proceed safely, return next_action="stop".
     @staticmethod
     def _facebook_listing_has_visible_specs(state: ScreenState) -> bool:
         text = " ".join(state.visible_text[:40]).casefold()
+        if any(token in text for token in ["macbook", "imac", "mac mini", "mac studio"]):
+            capacity_matches = re.findall(r"\b\d{1,4}\s?gb\b|\b\d(?:\.\d+)?\s?tb\b", text)
+            return len(capacity_matches) >= 2
         spec_patterns = [
             r"\b\d{1,3}\s?gb\b",
             r"\b\d(?:\.\d+)?\s?(?:tb|inch|in)\b",

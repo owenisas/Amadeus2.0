@@ -1,0 +1,22 @@
+{
+  "name": "capture_conversation",
+  "description": "Open the seller conversation from a post-send listing detail so the thread is captured.",
+  "args": [],
+  "steps": [
+    {
+      "action": "tap",
+      "target_label": "See conversation"
+    }
+  ],
+  "preconditions": [
+    {
+      "predicate": "facebook_listing_message_sent_surface"
+    }
+  ],
+  "postconditions": [
+    {
+      "predicate": "facebook_message_thread_visible"
+    }
+  ],
+  "fallback_policy": "fallback_to_slow_path"
+}

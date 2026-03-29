@@ -84,6 +84,32 @@ def simplify_events(events: list[dict[str, Any]], *, limit: int = 20) -> list[di
                     entry[key] = event.get(key)
             if event.get("sections") is not None:
                 entry["sections"] = list(event.get("sections") or [])
+        elif event_type in {
+            "app_mode_changed",
+            "app_queue_updated",
+            "facebook_mode_changed",
+            "facebook_reply_queued",
+            "facebook_reply_started",
+            "facebook_reply_completed",
+            "facebook_reply_skipped",
+        }:
+            for key in (
+                "app_name",
+                "mode",
+                "previous_mode",
+                "reason",
+                "screen_name",
+                "thread_key",
+                "thread_title",
+                "seller_name",
+                "item_title",
+                "queue_length",
+                "active_thread_key",
+                "active_item_key",
+                "active_listing_key",
+            ):
+                if event.get(key) is not None:
+                    entry[key] = event.get(key)
         elif event_type == "tap_retry_attempted":
             for key in ("method", "changed", "target_label", "error", "screenshot_path", "hierarchy_path"):
                 if event.get(key) is not None:
