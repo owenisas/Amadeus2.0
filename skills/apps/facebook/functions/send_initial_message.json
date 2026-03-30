@@ -10,7 +10,8 @@
   "steps": [
     {
       "action": "type",
-      "input_text": "{{message}}"
+      "input_text": "{{message}}",
+      "verify_visible_text": "{{message}}"
     },
     {
       "action": "tap",
@@ -26,6 +27,9 @@
     {
       "predicate": "facebook_listing_message_sent"
     }
+  ],
+  "followup_functions": [
+    "capture_conversation"
   ],
   "fallback_policy": "fallback_to_slow_path"
 }

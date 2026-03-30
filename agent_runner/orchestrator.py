@@ -216,6 +216,7 @@ class Orchestrator:
                             "decision_context": getattr(self.vision_agent, "last_decision_context", None),
                         },
                     )
+                    self._flush_vision_events(context_log_path=context_log_path, step=step)
                     last_screen_id = self.skill_manager.update_after_observation(bundle, state, decision)
                     self._flush_skill_events(context_log_path=context_log_path, step=step)
                     interrupted = self._interrupt_result(
@@ -594,6 +595,23 @@ class Orchestrator:
     ) -> None:
         for event in self.skill_manager.consume_events():
             event_type = str(event.get("type") or "skill_event")
+            payload = {key: value for key, value in event.items() if key != "type"}
+            if step is not None and payload.get("step") is None:
+                payload["step"] = step
+            self._emit_event(event_type, payload)
+            self._append_context_log(context_log_path, {"type": event_type, **payload})
+
+    def _flush_vision_events(
+        self,
+        *,
+        context_log_path: Path,
+        step: int | None = None,
+    ) -> None:
+        consume = getattr(self.vision_agent, "consume_events", None)
+        if consume is None:
+            return
+        for event in consume():
+            event_type = str(event.get("type") or "vision_event")
             payload = {key: value for key, value in event.items() if key != "type"}
             if step is not None and payload.get("step") is None:
                 payload["step"] = step

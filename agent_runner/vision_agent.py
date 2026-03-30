@@ -17,6 +17,7 @@ from agent_runner.utils import describe_state_signature, slugify
 class VisionAgent:
     GEMINI_TIMEOUT_SECONDS = 60
     LMSTUDIO_TIMEOUT_SECONDS = 120
+    NVIDIA_TIMEOUT_SECONDS = 120
     ACTION_ALIASES = {
         "click": "tap",
         "press": "tap",
@@ -74,14 +75,21 @@ class VisionAgent:
         *,
         lmstudio_base_url: str = "http://127.0.0.1:1234/v1",
         lmstudio_api_key: str | None = None,
+        nvidia_base_url: str = "https://integrate.api.nvidia.com/v1",
+        nvidia_api_key: str | None = None,
+        nvidia_model: str = "qwen/qwen3.5-397b-a17b",
     ) -> None:
         self.provider = provider.strip().casefold() or "gemini"
         self.api_key = api_key
         self.model = model
         self.lmstudio_base_url = lmstudio_base_url.rstrip("/")
         self.lmstudio_api_key = lmstudio_api_key
+        self.nvidia_base_url = nvidia_base_url.rstrip("/")
+        self.nvidia_api_key = nvidia_api_key
+        self.nvidia_model = nvidia_model
         self.gemini_timeout_seconds = self._resolve_gemini_timeout_seconds()
         self.lmstudio_timeout_seconds = self._resolve_lmstudio_timeout_seconds()
+        self.nvidia_timeout_seconds = self._resolve_nvidia_timeout_seconds()
         self.last_decision_meta: dict[str, Any] = {
             "provider": self.provider,
             "model": self.model,
@@ -95,6 +103,7 @@ class VisionAgent:
             "response_text": None,
             "response_payload": None,
         }
+        self._pending_events: list[dict[str, Any]] = []
 
     def decide(
         self,
@@ -107,6 +116,7 @@ class VisionAgent:
         available_tools: list[dict[str, Any]] | None = None,
         yolo_mode: bool = False,
     ) -> VisionDecision:
+        self._pending_events.clear()
         self.last_decision_context = {
             "provider": self.provider,
             "model": self.model,
@@ -162,6 +172,14 @@ class VisionAgent:
         if yolo_mode:
             return self._apply_yolo_overrides(state=state, skill=skill, decision=decision)
         return decision
+
+    def consume_events(self) -> list[dict[str, Any]]:
+        events = self._pending_events[:]
+        self._pending_events.clear()
+        return events
+
+    def _queue_event(self, event_type: str, payload: dict[str, Any]) -> None:
+        self._pending_events.append({"type": event_type, **payload})
 
     def _gemini_decision(
         self,
@@ -254,6 +272,21 @@ class VisionAgent:
                 raw = json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
+            nvidia_decision = self._nvidia_fallback_decision(
+                prompt=prompt,
+                state=state,
+                skill=skill,
+                goal=goal,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools,
+                yolo_mode=yolo_mode,
+                fallback_source="gemini_http_fallback",
+                detail=detail[:500],
+                status_code=exc.code,
+            )
+            if nvidia_decision is not None:
+                return nvidia_decision
             fallback = self._heuristic_decision(
                 goal=goal,
                 state=state,
@@ -268,6 +301,20 @@ class VisionAgent:
             self._set_decision_context(source="gemini_http_fallback", prompt=prompt, response_text=detail[:500])
             return fallback
         except (TimeoutError, socket.timeout) as exc:
+            nvidia_decision = self._nvidia_fallback_decision(
+                prompt=prompt,
+                state=state,
+                skill=skill,
+                goal=goal,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools,
+                yolo_mode=yolo_mode,
+                fallback_source="gemini_timeout_fallback",
+                detail=str(exc),
+            )
+            if nvidia_decision is not None:
+                return nvidia_decision
             fallback = self._heuristic_decision(
                 goal=goal,
                 state=state,
@@ -282,6 +329,20 @@ class VisionAgent:
             self._set_decision_context(source="gemini_timeout_fallback", prompt=prompt, response_text=str(exc))
             return fallback
         except urllib.error.URLError as exc:
+            nvidia_decision = self._nvidia_fallback_decision(
+                prompt=prompt,
+                state=state,
+                skill=skill,
+                goal=goal,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools,
+                yolo_mode=yolo_mode,
+                fallback_source="gemini_network_fallback",
+                detail=str(exc.reason),
+            )
+            if nvidia_decision is not None:
+                return nvidia_decision
             fallback = self._heuristic_decision(
                 goal=goal,
                 state=state,
@@ -300,6 +361,20 @@ class VisionAgent:
         try:
             decision_payload = json.loads(text)
         except json.JSONDecodeError:
+            nvidia_decision = self._nvidia_fallback_decision(
+                prompt=prompt,
+                state=state,
+                skill=skill,
+                goal=goal,
+                system_instruction=system_instruction,
+                action_history=action_history,
+                available_tools=available_tools,
+                yolo_mode=yolo_mode,
+                fallback_source="gemini_non_json_fallback",
+                detail=text[:500],
+            )
+            if nvidia_decision is not None:
+                return nvidia_decision
             fallback = self._heuristic_decision(
                 goal=goal,
                 state=state,
@@ -352,7 +427,7 @@ class VisionAgent:
                 )
                 try:
                     with urllib.request.urlopen(request, timeout=self.lmstudio_timeout_seconds) as response:
-                        raw = self._read_lmstudio_response(response)
+                        raw = self._read_openai_compatible_response(response)
                         break
                 except urllib.error.HTTPError as exc:
                     detail = exc.read().decode("utf-8", errors="replace")
@@ -446,6 +521,74 @@ class VisionAgent:
         self._set_decision_context(source="lmstudio_model", prompt=prompt, response_text=text, response_payload=raw)
         return self._coerce_decision(decision_payload, state=state, skill=skill)
 
+    def _nvidia_fallback_decision(
+        self,
+        *,
+        prompt: str,
+        state: ScreenState,
+        skill: SkillBundle,
+        goal: str,
+        system_instruction: str,
+        action_history: list[dict[str, Any]],
+        available_tools: list[dict[str, Any]],
+        yolo_mode: bool,
+        fallback_source: str,
+        detail: str,
+        status_code: int | None = None,
+    ) -> VisionDecision | None:
+        if not self.nvidia_api_key:
+            return None
+        try:
+            raw = self._nvidia_chat_completion(prompt)
+            text = self._extract_lmstudio_text(raw)
+            decision_payload = json.loads(self._extract_json_object(text))
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, socket.timeout, json.JSONDecodeError, ValueError):
+            return None
+        self._set_decision_meta(
+            source="nvidia_fallback_model",
+            provider="nvidia",
+            model=self.nvidia_model,
+            upstream_source=fallback_source,
+            upstream_detail=detail[:180],
+            status_code=status_code,
+        )
+        self._set_decision_context(
+            source="nvidia_fallback_model",
+            prompt=prompt,
+            response_text=text,
+            response_payload=raw,
+            provider="nvidia",
+            model=self.nvidia_model,
+        )
+        return self._coerce_decision(decision_payload, state=state, skill=skill)
+
+    def _nvidia_chat_completion(self, prompt: str) -> dict[str, Any]:
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.nvidia_api_key}",
+            "Accept": "text/event-stream",
+        }
+        payload = {
+            "model": self.nvidia_model,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 16384,
+            "temperature": 0.60,
+            "top_p": 0.95,
+            "top_k": 20,
+            "presence_penalty": 0,
+            "repetition_penalty": 1,
+            "stream": True,
+            "chat_template_kwargs": {"enable_thinking": True},
+        }
+        request = urllib.request.Request(
+            url=f"{self.nvidia_base_url}/chat/completions",
+            data=json.dumps(payload).encode("utf-8"),
+            headers=headers,
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=self.nvidia_timeout_seconds) as response:
+            return self._read_openai_compatible_response(response)
+
     def _set_decision_meta(self, *, source: str, **extra: Any) -> None:
         self.last_decision_meta = {
             "provider": self.provider,
@@ -461,10 +604,12 @@ class VisionAgent:
         prompt: str | None = None,
         response_text: str | None = None,
         response_payload: dict[str, Any] | None = None,
+        provider: str | None = None,
+        model: str | None = None,
     ) -> None:
         self.last_decision_context = {
-            "provider": self.provider,
-            "model": self.model,
+            "provider": provider or self.provider,
+            "model": model or self.model,
             "source": source,
             "prompt": prompt,
             "response_text": response_text,
@@ -761,8 +906,13 @@ class VisionAgent:
             else:
                 facebook_mode = str(workflow.get("mode") or ("reply" if heuristic_reply_mode else "hunt"))
             reply_text = self._extract_message_text(goal)
-            if not reply_text and listing_message_goal:
-                reply_text = self._facebook_skill_guided_message(goal=goal, state=state, skill=skill) or self._facebook_default_marketplace_message(state, goal=goal)
+            if listing_message_goal:
+                reply_text = self._facebook_build_initial_message(
+                    goal=goal,
+                    state=state,
+                    skill=skill,
+                    candidate=reply_text,
+                )
             send_requested = self._facebook_send_requested(goal) and not read_only_message_goal
             message_input = self._find_facebook_message_input(components)
             send_button = self._find_facebook_send_button(components)
@@ -1815,7 +1965,7 @@ If you cannot proceed safely, return next_action="stop".
             return "\n".join(part for part in parts if part)
         return str(content)
 
-    def _read_lmstudio_response(self, response: Any) -> dict[str, Any]:
+    def _read_openai_compatible_response(self, response: Any) -> dict[str, Any]:
         body = response.read()
         text = body.decode("utf-8", errors="replace")
         content_type = ""
@@ -1823,10 +1973,10 @@ If you cannot proceed safely, return next_action="stop".
         if headers is not None:
             content_type = str(headers.get("Content-Type", ""))
         if "text/event-stream" in content_type.casefold() or text.lstrip().startswith("data:"):
-            return self._parse_lmstudio_sse_payload(text)
+            return self._parse_openai_compatible_sse_payload(text)
         return json.loads(text)
 
-    def _parse_lmstudio_sse_payload(self, text: str) -> dict[str, Any]:
+    def _parse_openai_compatible_sse_payload(self, text: str) -> dict[str, Any]:
         content_parts: list[str] = []
         reasoning_parts: list[str] = []
         last_chunk: dict[str, Any] | None = None
@@ -1934,6 +2084,16 @@ If you cannot proceed safely, return next_action="stop".
         except ValueError:
             return float(self.GEMINI_TIMEOUT_SECONDS)
         return value if value > 0 else float(self.GEMINI_TIMEOUT_SECONDS)
+
+    def _resolve_nvidia_timeout_seconds(self) -> float:
+        raw = os.getenv("NVIDIA_TIMEOUT_SECONDS", "").strip()
+        if not raw:
+            return float(self.NVIDIA_TIMEOUT_SECONDS)
+        try:
+            value = float(raw)
+        except ValueError:
+            return float(self.NVIDIA_TIMEOUT_SECONDS)
+        return value if value > 0 else float(self.NVIDIA_TIMEOUT_SECONDS)
 
     def _coerce_decision(
         self,
@@ -2195,6 +2355,7 @@ If you cannot proceed safely, return next_action="stop".
                 decision.input_text,
                 state=state,
                 goal=goal,
+                mode="initial",
             )
             if rewritten and self._facebook_fast_function_exists(skill, "send_initial_message"):
                 return VisionDecision.tool(
@@ -2226,9 +2387,7 @@ If you cannot proceed safely, return next_action="stop".
         if decision.next_action == "tap" and str(decision.target_label or "").casefold() == "send":
             if listing_message_goal and message_input and not any(item.get("action") == "type" for item in action_history[-2:]):
                 reply_text = (
-                    self._extract_message_text(goal)
-                    or self._facebook_skill_guided_message(goal=goal, state=state, skill=skill)
-                    or self._facebook_default_marketplace_message(state, goal=goal)
+                        self._facebook_build_initial_message(goal=goal, state=state, skill=skill)
                 )
                 if reply_text:
                     if self._facebook_fast_function_exists(skill, "send_initial_message"):
@@ -2264,10 +2423,11 @@ If you cannot proceed safely, return next_action="stop".
             and str(decision.tool_arguments.get("function_name") or "") == "send_initial_message"
         ):
             arguments = dict(decision.tool_arguments.get("arguments") or {})
-            rewritten = self._facebook_finalize_marketplace_message(
-                arguments.get("message"),
-                state=state,
+            rewritten = self._facebook_build_initial_message(
                 goal=goal,
+                state=state,
+                skill=skill,
+                candidate=arguments.get("message"),
             )
             if rewritten and rewritten != arguments.get("message"):
                 arguments["message"] = rewritten
@@ -2947,11 +3107,13 @@ If you cannot proceed safely, return next_action="stop".
                 )
         if self._facebook_message_thread_visible(state):
             thread = self._facebook_active_thread_record(skill, state)
-            reply_text = self._extract_message_text(goal)
-            if not reply_text:
-                reply_text = self._facebook_skill_guided_thread_reply(goal=goal, state=state, skill=skill, thread=thread)
-            if not reply_text and thread is not None:
-                reply_text = self._facebook_default_thread_reply(thread)
+            reply_text = self._facebook_build_reply_message(
+                goal=goal,
+                state=state,
+                skill=skill,
+                thread=thread,
+                candidate=self._extract_message_text(goal),
+            )
             if not send_requested:
                 latest_reply = ""
                 if thread is not None:
@@ -3586,6 +3748,24 @@ If you cannot proceed safely, return next_action="stop".
         ]
         return any(token in lowered for token in instruction_tokens)
 
+    def _facebook_build_initial_message(
+        self,
+        *,
+        goal: str,
+        state: ScreenState,
+        skill: SkillBundle,
+        candidate: str | None = None,
+    ) -> str | None:
+        finalized = self._facebook_finalize_marketplace_message(
+            candidate,
+            state=state,
+            goal=goal,
+            mode="initial",
+        )
+        if finalized:
+            return finalized
+        return self._facebook_default_marketplace_message(state, goal=goal)
+
     def _facebook_default_marketplace_message(self, state: ScreenState, *, goal: str | None = None) -> str | None:
         title = self._facebook_listing_title(state)
         item_ref = self._facebook_message_item_reference(title)
@@ -3599,20 +3779,44 @@ If you cannot proceed safely, return next_action="stop".
                     candidate,
                     state=state,
                     goal=goal,
+                    mode="initial",
                     allow_default_fallback=False,
                 )
-        if goal and self._facebook_goal_targets_profit_bargain(goal):
-            target_offer = self._facebook_profitable_offer_price(title=title, ask_price=ask_price)
-            if target_offer is not None and ask_price is not None and target_offer < ask_price:
-                candidate = self._facebook_bargain_message(item_ref=item_ref, offer_price=target_offer)
-                return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal)
+        target_offer = self._facebook_profitable_offer_price(title=title, ask_price=ask_price)
+        if target_offer is not None and ask_price is not None and target_offer < ask_price:
+            candidate = self._facebook_bargain_message(item_ref=item_ref, offer_price=target_offer)
+            return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal, mode="initial")
         if item_ref:
             candidate = f"Hey, is your {item_ref} still available?"
-            return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal)
+            return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal, mode="initial")
         if self._facebook_listing_detail_visible(state):
             candidate = "Hey, interested in this. Still available?"
-            return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal)
+            return self._facebook_finalize_marketplace_message(candidate, state=state, goal=goal, mode="initial")
         return candidate
+
+    def _facebook_build_reply_message(
+        self,
+        *,
+        goal: str,
+        state: ScreenState,
+        skill: SkillBundle,
+        thread: dict[str, Any] | None,
+        candidate: str | None = None,
+    ) -> str | None:
+        finalized = self._facebook_finalize_marketplace_message(
+            candidate,
+            state=state,
+            goal=goal,
+            mode="reply",
+        )
+        if finalized:
+            return finalized
+        if thread is None:
+            return None
+        return (
+            self._facebook_default_thread_reply(thread)
+            or self._facebook_skill_guided_thread_reply(goal=goal, state=state, skill=skill, thread=thread)
+        )
 
     def _facebook_default_thread_reply(self, thread: dict[str, Any]) -> str | None:
         inbound = str(thread.get("last_inbound_message") or "").strip()
@@ -3664,7 +3868,7 @@ If you cannot proceed safely, return next_action="stop".
             raw = self._lmstudio_text_message(prompt)
         else:
             raw = self._gemini_text_message(prompt)
-        return self._facebook_finalize_marketplace_message(raw, state=state, goal=goal)
+        return self._facebook_finalize_marketplace_message(raw, state=state, goal=goal, mode="initial")
 
     def _facebook_skill_guided_thread_reply(
         self,
@@ -3700,7 +3904,7 @@ If you cannot proceed safely, return next_action="stop".
             raw = self._lmstudio_text_message(prompt)
         else:
             raw = self._gemini_text_message(prompt)
-        cleaned = self._facebook_clean_message(raw)
+        cleaned = self._facebook_finalize_marketplace_message(raw, state=state, goal=goal, mode="reply")
         return cleaned if cleaned else self._facebook_default_thread_reply(thread)
 
     def _facebook_should_check_inbox(
@@ -3751,7 +3955,7 @@ If you cannot proceed safely, return next_action="stop".
             with urllib.request.urlopen(request, timeout=30) as response:
                 raw = json.loads(response.read().decode("utf-8"))
         except Exception:
-            return None
+            return self._nvidia_text_message(prompt)
         text = self._extract_text(raw).strip()
         text = re.sub(r"\s+", " ", text).strip().strip('"').strip("'")
         return text or None
@@ -3774,7 +3978,18 @@ If you cannot proceed safely, return next_action="stop".
         )
         try:
             with urllib.request.urlopen(request, timeout=min(self.lmstudio_timeout_seconds, 30)) as response:
-                raw = self._read_lmstudio_response(response)
+                raw = self._read_openai_compatible_response(response)
+        except Exception:
+            return None
+        text = self._extract_lmstudio_text(raw).strip()
+        text = re.sub(r"\s+", " ", text).strip().strip('"').strip("'")
+        return text or None
+
+    def _nvidia_text_message(self, prompt: str) -> str | None:
+        if not self.nvidia_api_key:
+            return None
+        try:
+            raw = self._nvidia_chat_completion(prompt)
         except Exception:
             return None
         text = self._extract_lmstudio_text(raw).strip()
@@ -3797,36 +4012,50 @@ If you cannot proceed safely, return next_action="stop".
         *,
         state: ScreenState,
         goal: str | None,
+        mode: str = "initial",
         allow_default_fallback: bool = True,
     ) -> str | None:
         cleaned = self._facebook_clean_message(candidate)
-        if self._facebook_message_quality_ok(cleaned, state=state):
+        rejection_reason = self._facebook_message_quality_rejection_reason(cleaned, state=state, mode=mode)
+        if rejection_reason is None:
             return cleaned
+        if cleaned:
+            self._queue_event(
+                "message_candidate_rejected",
+                {
+                    "app_name": "facebook",
+                    "mode": mode,
+                    "attempted_outbound_text": cleaned,
+                    "rejection_reason": rejection_reason,
+                },
+            )
         if not allow_default_fallback:
-            return cleaned
+            return None
         title = self._facebook_listing_title(state)
         item_ref = self._facebook_message_item_reference(title)
         ask_price = self._facebook_listing_price(state)
+        if mode == "reply":
+            reply_fallback = self._facebook_clean_message("Where are you located?")
+            return reply_fallback if self._facebook_message_quality_ok(reply_fallback, state=state, mode=mode) else None
         missing_details = self._facebook_missing_listing_details(state)
         if missing_details:
             fallback = self._facebook_clean_message(
                 self._facebook_missing_details_message(item_ref=item_ref, missing_details=missing_details)
             )
-            if self._facebook_message_quality_ok(fallback, state=state):
+            if self._facebook_message_quality_ok(fallback, state=state, mode=mode):
                 return fallback
-        if goal and self._facebook_goal_targets_profit_bargain(goal):
-            target_offer = self._facebook_profitable_offer_price(title=title, ask_price=ask_price)
-            if target_offer is not None:
-                fallback = self._facebook_bargain_message(item_ref=item_ref, offer_price=target_offer)
-                fallback = self._facebook_clean_message(fallback)
-                if self._facebook_message_quality_ok(fallback, state=state):
-                    return fallback
+        target_offer = self._facebook_profitable_offer_price(title=title, ask_price=ask_price)
+        if target_offer is not None:
+            fallback = self._facebook_bargain_message(item_ref=item_ref, offer_price=target_offer)
+            fallback = self._facebook_clean_message(fallback)
+            if self._facebook_message_quality_ok(fallback, state=state, mode=mode):
+                return fallback
         if item_ref:
             fallback = self._facebook_clean_message(f"Hey, is your {item_ref} still available?")
-            if self._facebook_message_quality_ok(fallback, state=state):
+            if self._facebook_message_quality_ok(fallback, state=state, mode=mode):
                 return fallback
         fallback = self._facebook_clean_message("Hey, interested in this. Still available?")
-        return fallback if self._facebook_message_quality_ok(fallback, state=state) else None
+        return fallback if self._facebook_message_quality_ok(fallback, state=state, mode=mode) else None
 
     @staticmethod
     def _facebook_clean_message(message: str | None) -> str | None:
@@ -3882,12 +4111,21 @@ If you cannot proceed safely, return next_action="stop".
         normalized = re.sub(r"(?<=\?\s)thanks\b", "Thanks", normalized, flags=re.IGNORECASE)
         return normalized
 
-    def _facebook_message_quality_ok(self, message: str | None, *, state: ScreenState) -> bool:
+    def _facebook_message_quality_ok(self, message: str | None, *, state: ScreenState, mode: str = "initial") -> bool:
+        return self._facebook_message_quality_rejection_reason(message, state=state, mode=mode) is None
+
+    def _facebook_message_quality_rejection_reason(
+        self,
+        message: str | None,
+        *,
+        state: ScreenState,
+        mode: str = "initial",
+    ) -> str | None:
         if not message:
-            return False
+            return "empty_message"
         lowered = message.casefold().strip()
         if lowered in {"hi, is this available?", "hello, is this still available?", "is this still available?"}:
-            return False
+            return "generic_availability_fallback"
         if any(
             token in lowered
             for token in [
@@ -3900,25 +4138,40 @@ If you cannot proceed safely, return next_action="stop".
                 "meet up today",
             ]
         ):
-            return False
+            return "premature_logistics"
         if len(lowered.split()) < 3:
-            return False
+            return "too_short"
         if len(lowered) < 10:
-            return False
+            return "too_short"
         title = (self._facebook_listing_title(state) or "").strip()
         title_lower = title.casefold()
         if title_lower and lowered == title_lower:
-            return False
+            return "full_title_paste"
         item_ref = (self._facebook_message_item_reference(title) or "").casefold()
         if item_ref and lowered in {item_ref, f"hey, {item_ref}", f"hi, {item_ref}"}:
-            return False
+            return "title_fragment"
         if title_lower and lowered in title_lower:
-            return False
+            return "title_fragment"
         if lowered.replace("$", "").strip() in {"i7", "m1", "m2", "m3", "m4", "rtx", "ryzen"}:
-            return False
+            return "single_token_junk"
         if len(lowered) > 90:
-            return False
-        return True
+            return "too_long"
+        if mode == "initial" and "$" in lowered and any(
+            token in lowered
+            for token in [
+                "spec",
+                "condition",
+                "storage",
+                "battery health",
+                "ram",
+                "ssd",
+                "issue",
+                "scratch",
+                "dent",
+            ]
+        ):
+            return "mixed_offer_and_info_request"
+        return None
 
     @staticmethod
     def _coerce_price(value: Any) -> int | None:

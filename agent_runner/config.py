@@ -11,6 +11,8 @@ DEFAULT_MODEL_PROVIDER = "gemini"
 DEFAULT_GEMINI_MODEL = "gemini-3.1-pro-preview"
 DEFAULT_LMSTUDIO_MODEL = "qwen3.5-35b-a3b-uncensored-hauhaucs-aggressive"
 DEFAULT_LMSTUDIO_BASE_URL = "http://127.0.0.1:1234/v1"
+DEFAULT_NVIDIA_MODEL = "qwen/qwen3.5-397b-a17b"
+DEFAULT_NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
 DEFAULT_APPIUM_URL = "http://127.0.0.1:4723"
 DEFAULT_DEVICE_SERIAL = "emulator-5554"
 DEFAULT_RUNS_DIR = Path("runs")
@@ -29,6 +31,9 @@ class RuntimeConfig:
     lmstudio_api_key: str | None
     lmstudio_model: str
     lmstudio_base_url: str
+    nvidia_api_key: str | None
+    nvidia_model: str
+    nvidia_base_url: str
     runs_dir: Path
     skills_dir: Path
     system_skill_file: Path
@@ -43,6 +48,7 @@ def load_runtime_config() -> RuntimeConfig:
         model_provider = DEFAULT_MODEL_PROVIDER
     gemini_model = os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
     lmstudio_model = os.environ.get("LMSTUDIO_MODEL", DEFAULT_LMSTUDIO_MODEL)
+    nvidia_model = os.environ.get("NVIDIA_MODEL", DEFAULT_NVIDIA_MODEL)
     model_name = os.environ.get("AGENT_RUNNER_MODEL_NAME") or (
         lmstudio_model if model_provider == "lmstudio" else gemini_model
     )
@@ -62,6 +68,9 @@ def load_runtime_config() -> RuntimeConfig:
         lmstudio_api_key=os.environ.get("LMSTUDIO_API_KEY"),
         lmstudio_model=lmstudio_model,
         lmstudio_base_url=os.environ.get("LMSTUDIO_BASE_URL", DEFAULT_LMSTUDIO_BASE_URL).rstrip("/"),
+        nvidia_api_key=os.environ.get("NVIDIA_API_KEY"),
+        nvidia_model=nvidia_model,
+        nvidia_base_url=os.environ.get("NVIDIA_BASE_URL", DEFAULT_NVIDIA_BASE_URL).rstrip("/"),
         runs_dir=Path(os.environ.get("AGENT_RUNNER_RUNS_DIR", DEFAULT_RUNS_DIR)),
         skills_dir=Path(os.environ.get("AGENT_RUNNER_SKILLS_DIR", DEFAULT_SKILLS_DIR)),
         system_skill_file=Path(os.environ.get("AGENT_RUNNER_SYSTEM_SKILL_FILE", DEFAULT_SYSTEM_SKILL_FILE)),

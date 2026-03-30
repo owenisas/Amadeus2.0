@@ -3,14 +3,6 @@
 - Logged-in phone flow is working on `com.facebook.katana`.
 
 <!-- older entries pruned -->
-- Status: error
-- Reason: App is not installed on the emulator.
-
-- Status: completed
-- Reason: Facebook Marketplace feed has been scanned and no stronger next listing heuristic was found.
-- Last screen: com-facebook-katana-loginactivity-a4da7b8b7ea50c9a
-
-- Status: max_steps_reached
 - Reason: Max steps reached.
 - Last screen: com-facebook-katana-com-facebook-messaging-msys-thread-fragment-msysthreadviewactivity-da3fe68b8a109a9f
 
@@ -79,3 +71,11 @@
 - Status: max_steps_reached
 - Reason: Max steps reached.
 - Last screen: com-facebook-katana-activity-react-immersivereactactivity-3fdbf02c02a4fe45
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-loginactivity-b8f766f51c8c3063
+
+- Status: max_steps_reached
+- Reason: Max steps reached.
+- Last screen: com-facebook-katana-activity-react-immersivereactactivity-95259a88f4accbf6

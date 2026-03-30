@@ -366,15 +366,59 @@ def test_run_fast_function_executes_steps_and_verifies_success(tmp_path: Path) -
             },
         ],
     )
+    typed_state = _make_state(
+        run_dir,
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=["Close", "Product Image,1 of 3", "Can you do $350? Thanks", "Send"],
+        clickable_text=["Can you do $350? Thanks", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Can you do $350? Thanks",
+                "target_box": {"x": 0.09, "y": 0.72, "width": 0.64, "height": 0.03},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "target_box": {"x": 0.78, "y": 0.78, "width": 0.15, "height": 0.03},
+            },
+        ],
+    )
     after_state = _make_state(
         run_dir,
         activity_name=".activity.react.ImmersiveReactActivity",
         visible_text=["Close", "Product Image,1 of 3", "Message sent to seller", "See conversation"],
         clickable_text=["See conversation", "Close"],
+        components=[
+            {
+                "component_type": "button",
+                "label": "See conversation",
+                "target_box": {"x": 0.5, "y": 0.85, "width": 0.3, "height": 0.04},
+            }
+        ],
     )
-    adapter = ScriptAdapter([before_state, before_state, before_state, after_state])
+    thread_state = _make_state(
+        run_dir,
+        activity_name=".activity.react.MSYSThreadViewActivity",
+        visible_text=["Marketplace listing", "You started this chat", "Can you do $350? Thanks", "Message"],
+        clickable_text=["Message"],
+    )
+    adapter = ScriptAdapter([before_state, typed_state, typed_state, typed_state, after_state, after_state, thread_state])
     skill_manager = SkillManager(tmp_path / "skills")
     executor = AgentToolExecutor(android_adapter=adapter, skill_manager=skill_manager)
+    skill_manager.save_fast_function(
+        "facebook",
+        "capture_conversation",
+        {
+            "name": "capture_conversation",
+            "description": "Capture the open seller thread",
+            "args": [],
+            "steps": [{"action": "tap", "target_label": "See conversation"}],
+            "preconditions": [{"predicate": "facebook_listing_message_sent_surface"}],
+            "postconditions": [{"predicate": "facebook_message_thread_visible"}],
+            "fallback_policy": "fallback_to_slow_path",
+        },
+    )
     skill_manager.save_fast_function(
         "facebook",
         "send_initial_message",
@@ -383,11 +427,12 @@ def test_run_fast_function_executes_steps_and_verifies_success(tmp_path: Path) -
             "description": "Send a message",
             "args": [{"name": "message", "required": True}],
             "steps": [
-                {"action": "type", "input_text": "{{message}}"},
+                {"action": "type", "input_text": "{{message}}", "verify_visible_text": "{{message}}"},
                 {"action": "tap", "target_label": "Send"},
             ],
             "preconditions": [{"predicate": "facebook_listing_detail_visible"}],
             "postconditions": [{"predicate": "facebook_listing_message_sent"}],
+            "followup_functions": ["capture_conversation"],
             "fallback_policy": "fallback_to_slow_path",
         },
     )
@@ -406,7 +451,7 @@ def test_run_fast_function_executes_steps_and_verifies_success(tmp_path: Path) -
     assert result.output["verified"] is True
     assert result.output["fallback_used"] is False
     assert result.output["captured_state_ref"]["screenshot_path"].endswith("fake.png")
-    assert adapter.performed_actions == ["type", "tap"]
+    assert adapter.performed_actions == ["type", "tap", "tap"]
 
 
 def test_run_fast_function_falls_back_when_verification_fails(tmp_path: Path) -> None:
@@ -447,7 +492,7 @@ def test_run_fast_function_falls_back_when_verification_fails(tmp_path: Path) ->
             "description": "Send a message",
             "args": [{"name": "message", "required": True}],
             "steps": [
-                {"action": "type", "input_text": "{{message}}"},
+                {"action": "type", "input_text": "{{message}}", "verify_visible_text": "{{message}}"},
                 {"action": "tap", "target_label": "Send"},
             ],
             "preconditions": [{"predicate": "facebook_listing_detail_visible"}],
@@ -468,4 +513,11 @@ def test_run_fast_function_falls_back_when_verification_fails(tmp_path: Path) ->
     assert result.ok is True
     assert result.output["verified"] is False
     assert result.output["fallback_used"] is True
-    assert result.output["verification_reason"] == "facebook_listing_message_sent"
+    assert result.output["verification_reason"] == "verify_visible_text_failed:Can you do $350? Thanks"
+
+    events = skill_manager.consume_events()
+    assert any(
+        event["type"] == "post_send_verification_failed"
+        and event["attempted_outbound_text"] == "Can you do $350? Thanks"
+        for event in events
+    )

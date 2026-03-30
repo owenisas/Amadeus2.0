@@ -660,20 +660,71 @@ class AgentToolExecutor:
         else:
             steps_source = list(function.get("steps") or [])
         steps = [self._substitute_step_arguments(step, call_arguments) for step in steps_source]
-        executed, skipped, last_state = self._execute_script_steps(
-            app_name=app_name,
-            steps=steps,
-            run_dir=run_dir,
-            current_state=state,
-            app=app,
-            skill=skill,
-        )
+        try:
+            executed, skipped, last_state = self._execute_script_steps(
+                app_name=app_name,
+                steps=steps,
+                run_dir=run_dir,
+                current_state=state,
+                app=app,
+                skill=skill,
+            )
+        except Exception as exc:
+            failed_state = self.android_adapter.capture_state(run_dir)
+            self._queue_fast_function_events(
+                app_name=app_name,
+                function_name=function_name,
+                arguments=call_arguments,
+                verified=False,
+                verification_reason=str(exc),
+            )
+            return ToolExecutionResult(
+                tool_name="run_fast_function",
+                ok=True,
+                output={
+                    "app_name": app_name,
+                    "function_name": function_name,
+                    "arguments": call_arguments,
+                    "verified": False,
+                    "verification_reason": str(exc),
+                    "fallback_used": True,
+                    "steps_executed": 0,
+                    "steps_skipped": 0,
+                    "captured_state_ref": {
+                        "screenshot_path": str(failed_state.screenshot_path),
+                        "hierarchy_path": str(failed_state.hierarchy_path),
+                    },
+                },
+                refresh_state=True,
+                captured_state=failed_state,
+            )
         verified, verification_reason = self._fast_function_postconditions_match(
             app_name=app_name,
             function=function,
             state=last_state,
             arguments=call_arguments,
             skill=resolved_skill,
+        )
+        if verified:
+            for followup_name in list(function.get("followup_functions") or []):
+                followup_result = self._run_fast_function(
+                    {"app_name": app_name, "function_name": str(followup_name), "arguments": {}},
+                    run_dir=run_dir,
+                    current_state=last_state,
+                    app=app,
+                    skill=resolved_skill,
+                )
+                last_state = followup_result.captured_state or last_state
+                if not bool((followup_result.output or {}).get("verified")):
+                    verified = False
+                    verification_reason = f"followup_{followup_name}_failed"
+                    break
+        self._queue_fast_function_events(
+            app_name=app_name,
+            function_name=function_name,
+            arguments=call_arguments,
+            verified=verified,
+            verification_reason=verification_reason,
         )
         return ToolExecutionResult(
             tool_name="run_fast_function",
@@ -695,6 +746,45 @@ class AgentToolExecutor:
             refresh_state=not verified,
             captured_state=last_state,
         )
+
+    def _queue_fast_function_events(
+        self,
+        *,
+        app_name: str,
+        function_name: str,
+        arguments: dict[str, Any],
+        verified: bool,
+        verification_reason: str,
+    ) -> None:
+        self.skill_manager._queue_event(  # noqa: SLF001
+            "function_executed",
+            {
+                "app_name": app_name,
+                "function_name": function_name,
+                "arguments": arguments,
+                "verified": verified,
+                "fallback_used": not verified,
+                "verification_reason": verification_reason,
+            },
+        )
+        if function_name in {"send_initial_message", "send_thread_reply"} and not verified:
+            self.skill_manager._queue_event(  # noqa: SLF001
+                "post_send_verification_failed",
+                {
+                    "app_name": app_name,
+                    "function_name": function_name,
+                    "attempted_outbound_text": str(arguments.get("message") or ""),
+                    "verification_reason": verification_reason,
+                },
+            )
+        if function_name == "capture_conversation" and verified:
+            self.skill_manager._queue_event(  # noqa: SLF001
+                "conversation_capture_verified",
+                {
+                    "app_name": app_name,
+                    "thread_key": str(arguments.get("thread_key") or "") or None,
+                },
+            )
 
     def _list_scripts(
         self,
@@ -810,6 +900,16 @@ class AgentToolExecutor:
                         ),
                         last_state or self.android_adapter.capture_state(run_dir),
                     )
+                    if step.get("verify_visible_text"):
+                        verification_text = str(step.get("verify_visible_text") or "")
+                        last_state = self.android_adapter.capture_state(run_dir)
+                        if not self._state_contains_text(last_state, verification_text):
+                            raise ValueError(f"verify_visible_text_failed:{verification_text}")
+            elif action == "verify_text_visible":
+                verification_text = str(step.get("text") or step.get("target_label") or "")
+                if verification_text:
+                    if not self._state_contains_text(last_state, verification_text):
+                        raise ValueError(f"verify_text_visible_failed:{verification_text}")
             elif action == "swipe":
                 self.android_adapter.perform(
                     VisionDecision(
@@ -971,3 +1071,19 @@ class AgentToolExecutor:
             for needle in needles
             for haystack in lowered_haystacks
         )
+
+    @staticmethod
+    def _state_contains_text(state: ScreenState | None, text: str) -> bool:
+        if state is None or not text:
+            return False
+        needle = text.casefold()
+        haystacks = [
+            *state.visible_text,
+            *state.clickable_text,
+            *[
+                str(component.get("label", ""))
+                for component in state.components
+                if str(component.get("label", "")).strip()
+            ],
+        ]
+        return any(needle in str(entry).casefold() for entry in haystacks)

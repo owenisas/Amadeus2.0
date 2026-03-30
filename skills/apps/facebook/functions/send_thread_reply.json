@@ -10,7 +10,8 @@
   "steps": [
     {
       "action": "type",
-      "input_text": "{{message}}"
+      "input_text": "{{message}}",
+      "verify_visible_text": "{{message}}"
     },
     {
       "action": "tap",

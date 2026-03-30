@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from datetime import datetime
+import json
 from pathlib import Path
+import re
 from typing import Any
 from xml.etree import ElementTree as ET
 
@@ -972,6 +974,24 @@ description: App-specific navigation guidance for the {title} Android workflow.
         if thread_snapshot:
             if self._upsert_thread_record(facebook, thread_snapshot):
                 changed_sections.append("threads")
+            if thread_snapshot.get("filtered_message_count"):
+                self._queue_event(
+                    "thread_snapshot_filtered",
+                    {
+                        "app_name": bundle.app_name,
+                        "thread_key": thread_snapshot.get("thread_key"),
+                        "filtered_count": thread_snapshot.get("filtered_message_count"),
+                    },
+                )
+            self._queue_event(
+                "conversation_capture_verified",
+                {
+                    "app_name": bundle.app_name,
+                    "thread_key": thread_snapshot.get("thread_key"),
+                    "persisted_outbound_text": thread_snapshot.get("last_outbound_message"),
+                    "persisted_inbound_text": thread_snapshot.get("last_inbound_message"),
+                },
+            )
             contacted_item = self._thread_to_contact_record(thread_snapshot)
             if self._upsert_contact_record(facebook.setdefault("contacted_items", []), contacted_item):
                 changed_sections.append("contacted_items")
@@ -992,7 +1012,8 @@ description: App-specific navigation guidance for the {title} Android workflow.
                     "price": listing_snapshot.get("price"),
                     "image_label": listing_snapshot.get("image_label"),
                     "location_hint": listing_snapshot.get("location_hint"),
-                    "last_outbound_message": listing_snapshot.get("draft_or_message"),
+                    "draft_message": listing_snapshot.get("draft_message"),
+                    "last_outbound_message": None,
                     "last_inbound_message": None,
                     "seller_rating": listing_snapshot.get("seller_rating"),
                     "message_status": "sent",
@@ -1007,6 +1028,16 @@ description: App-specific navigation guidance for the {title} Android workflow.
             contact_payload = self._thread_to_contact_record(inbox_thread)
             if self._upsert_contact_record(facebook.setdefault("contacted_items", []), contact_payload):
                 changed_sections.append("contacted_items")
+        repaired_fields = self._repair_facebook_backup(facebook)
+        if repaired_fields:
+            changed_sections.extend(repaired_fields)
+            self._queue_event(
+                "backup_repair_applied",
+                {
+                    "app_name": bundle.app_name,
+                    "fields": repaired_fields,
+                },
+            )
         if self._sync_facebook_workflow(bundle, facebook, state, thread_snapshot=thread_snapshot, listing_snapshot=listing_snapshot):
             changed_sections.append("workflow")
         current_workflow = facebook.get("workflow") or {}
@@ -1345,6 +1376,56 @@ description: App-specific navigation guidance for the {title} Android workflow.
                     return True
         return False
 
+    @staticmethod
+    def _facebook_message_source_kind(text: str | None, *, item_title: str | None = None) -> str:
+        lowered = str(text or "").strip().casefold()
+        if not lowered:
+            return "unknown"
+        if any(
+            token in lowered
+            for token in [
+                "meta may use technology to review marketplace messages",
+                "to help identify and reduce scams and fraud",
+                "seen by ",
+                "marketplace listing",
+                "view seller profile",
+                "message sent to seller",
+                "see conversation",
+                "product image",
+                "reviews of ",
+                "you started this chat",
+                "open camera",
+                "open photo gallery",
+                "open audio recorder",
+            ]
+        ):
+            return "system_banner"
+        if lowered in {"read", "unread", "send", "message", "reply", "seller", "buyer"}:
+            return "system_banner"
+        if re.fullmatch(r"\d+\s*(?:m|h|d|w|mo|yr|yrs|hr|hrs|mins?)", lowered):
+            return "system_banner"
+        if lowered in {"￼", "..."}:
+            return "system_banner"
+        if item_title and str(item_title).strip() and lowered == str(item_title).strip().casefold():
+            return "listing_meta"
+        if item_title and str(item_title).strip() and lowered in str(item_title).strip().casefold():
+            return "listing_meta"
+        if any(
+            token in lowered
+            for token in [
+                "description",
+                "seller details",
+                "mark an item as sold",
+                "get help on marketplace",
+            ]
+        ):
+            return "listing_meta"
+        return "thread_bubble"
+
+    def _facebook_valid_persisted_message(self, text: str | None, *, item_title: str | None = None) -> bool:
+        source_kind = self._facebook_message_source_kind(text, item_title=item_title)
+        return source_kind == "thread_bubble" and bool(str(text or "").strip())
+
     def _extract_facebook_thread_snapshot(self, state: ScreenState) -> dict[str, Any] | None:
         values = self._xml_text_values(state.xml_source)
         combined = self._dedupe_strings(values + state.visible_text)
@@ -1366,6 +1447,8 @@ description: App-specific navigation guidance for the {title} Android workflow.
         seller_name, item_title = [part.strip() for part in header.split(" · ", 1)]
         messages: list[dict[str, str]] = []
         seen_messages: set[tuple[str, str]] = set()
+        filtered_message_count = 0
+        system_messages: list[str] = []
         for text in combined:
             if ", " not in text or text == header:
                 continue
@@ -1374,14 +1457,26 @@ description: App-specific navigation guidance for the {title} Android workflow.
                 continue
             if not self._is_probable_thread_message(speaker, body):
                 continue
-            if body.casefold().startswith("view seller profile"):
+            source_kind = self._facebook_message_source_kind(body, item_title=item_title)
+            if source_kind != "thread_bubble":
+                filtered_message_count += 1
+                if body not in system_messages:
+                    system_messages.append(body)
                 continue
             key = (speaker.casefold(), body)
             if key in seen_messages:
                 continue
             seen_messages.add(key)
             direction = "inbound" if self._speaker_matches_name(speaker, seller_name) else "outbound"
-            messages.append({"speaker": speaker, "direction": direction, "text": body})
+            messages.append(
+                {
+                    "speaker": speaker,
+                    "direction": direction,
+                    "role": direction,
+                    "text": body,
+                    "source_kind": source_kind,
+                }
+            )
         if not messages:
             return None
         last_outbound = next((item["text"] for item in reversed(messages) if item["direction"] == "outbound"), None)
@@ -1417,6 +1512,9 @@ description: App-specific navigation guidance for the {title} Android workflow.
             "message_status": "seller_replied" if last_inbound else "message_sent",
             "needs_reply": needs_reply,
             "messages": messages[-MAX_THREAD_MESSAGES:],
+            "message_bubbles": messages[-MAX_THREAD_MESSAGES:],
+            "system_messages": system_messages[-MAX_THREAD_MESSAGES:],
+            "filtered_message_count": filtered_message_count,
             "last_updated": self._now_iso(),
         }
 
@@ -1484,7 +1582,10 @@ description: App-specific navigation guidance for the {title} Android workflow.
             last_inbound = None
             effective_preview = preview_text or label_preview
             if effective_preview:
-                if effective_preview.casefold().startswith("you:"):
+                source_kind = self._facebook_message_source_kind(effective_preview, item_title=item_title)
+                if source_kind != "thread_bubble":
+                    effective_preview = ""
+                elif effective_preview.casefold().startswith("you:"):
                     outbound_preview = True
                     last_outbound = effective_preview.split(":", 1)[1].strip()
                 else:
@@ -1504,6 +1605,8 @@ description: App-specific navigation guidance for the {title} Android workflow.
                         unread or (inbound_preview and self._facebook_inbound_requires_reply(last_inbound))
                     ),
                     "messages": [],
+                    "message_bubbles": [],
+                    "system_messages": [],
                     "last_updated": self._now_iso(),
                 }
             )
@@ -1576,14 +1679,15 @@ description: App-specific navigation guidance for the {title} Android workflow.
             ),
             None,
         )
-        draft_or_message = next(
-            (
-                text.split(",", 1)[1].strip()
-                for text in texts
-                if ", " in text and item_title and item_title in text
-            ),
-            None,
-        )
+        draft_message = None
+        for component in state.components:
+            if str(component.get("component_type") or "") != "text_input":
+                continue
+            label = str(component.get("label") or "").strip()
+            if not label or not self._facebook_valid_persisted_message(label, item_title=item_title):
+                continue
+            draft_message = label
+            break
         snapshot = {
             "item_key": slugify(item_title or f"{state.activity_name}-{price or 'listing'}"),
             "item_title": item_title,
@@ -1594,7 +1698,7 @@ description: App-specific navigation guidance for the {title} Android workflow.
             "seller_rating": seller_rating,
             "location_hint": location_hint,
             "message_status": "sent" if message_sent else None,
-            "draft_or_message": draft_or_message,
+            "draft_message": draft_message,
             "last_updated": self._now_iso(),
         }
         return snapshot
@@ -1697,10 +1801,82 @@ description: App-specific navigation guidance for the {title} Android workflow.
             "last_outbound_message": thread.get("last_outbound_message"),
             "last_inbound_message": thread.get("last_inbound_message"),
             "seen_status": thread.get("seen_status"),
+            "draft_message": thread.get("draft_message"),
             "message_status": message_status,
             "needs_reply": bool(thread.get("needs_reply")),
             "last_updated": thread.get("last_updated"),
         }
+
+    def _repair_facebook_backup(self, facebook: dict[str, Any]) -> list[str]:
+        changed: list[str] = []
+        for collection_name in ("threads", "contacted_items"):
+            records = list(facebook.get(collection_name) or [])
+            collection_changed = False
+            for record in records:
+                item_title = str(record.get("item_title") or "")
+                original = json.loads(json.dumps(record))
+                filtered_messages: list[dict[str, Any]] = []
+                system_messages: list[str] = list(record.get("system_messages") or [])
+                for message in list(record.get("messages") or []):
+                    text = str(message.get("text") or "").strip()
+                    source_kind = str(message.get("source_kind") or self._facebook_message_source_kind(text, item_title=item_title))
+                    if source_kind == "thread_bubble" and text:
+                        normalized = dict(message)
+                        normalized["text"] = text
+                        normalized["source_kind"] = source_kind
+                        normalized.setdefault("role", normalized.get("direction"))
+                        filtered_messages.append(normalized)
+                    elif text and text not in system_messages:
+                        system_messages.append(text)
+                record["messages"] = filtered_messages[-MAX_THREAD_MESSAGES:]
+                record["message_bubbles"] = filtered_messages[-MAX_THREAD_MESSAGES:]
+                record["system_messages"] = system_messages[-MAX_THREAD_MESSAGES:]
+                outbound = str(record.get("last_outbound_message") or "").strip()
+                inbound = str(record.get("last_inbound_message") or "").strip()
+                if not self._facebook_valid_persisted_message(outbound, item_title=item_title):
+                    outbound = next(
+                        (msg["text"] for msg in reversed(filtered_messages) if msg.get("direction") == "outbound"),
+                        None,
+                    )
+                    record["last_outbound_message"] = outbound
+                if not self._facebook_valid_persisted_message(inbound, item_title=item_title):
+                    inbound = next(
+                        (msg["text"] for msg in reversed(filtered_messages) if msg.get("direction") == "inbound"),
+                        None,
+                    )
+                    record["last_inbound_message"] = inbound
+                if collection_name == "threads":
+                    terminal_notice = self._facebook_thread_has_terminal_notice(
+                        [
+                            str(value)
+                            for value in system_messages
+                            + [
+                                str(record.get("thread_title") or ""),
+                                str(record.get("last_inbound_message") or ""),
+                                str(record.get("message_status") or ""),
+                            ]
+                        ],
+                        seller_name=str(record.get("seller_name") or ""),
+                        item_title=item_title,
+                    )
+                    if filtered_messages:
+                        last_direction = next((msg.get("direction") for msg in reversed(filtered_messages)), None)
+                        computed_needs_reply = bool(
+                            last_direction == "inbound"
+                            and self._facebook_inbound_requires_reply(record.get("last_inbound_message"))
+                            and not terminal_notice
+                        )
+                        record["needs_reply"] = bool(record.get("needs_reply")) and computed_needs_reply
+                    elif not self._facebook_valid_persisted_message(record.get("last_inbound_message"), item_title=item_title):
+                        record["needs_reply"] = False
+                    else:
+                        record["needs_reply"] = bool(record.get("needs_reply")) and not terminal_notice
+                if original != record:
+                    collection_changed = True
+            if collection_changed:
+                facebook[collection_name] = records
+                changed.append(collection_name)
+        return changed
 
     def _render_backup_summary(self, backup: dict[str, Any]) -> str:
         title = str(backup.get("app_name") or "App").replace("-", " ").title()

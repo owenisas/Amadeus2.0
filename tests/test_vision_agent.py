@@ -865,6 +865,136 @@ def test_gemini_timeout_falls_back_to_heuristic(tmp_path: Path, monkeypatch) -> 
     assert agent.last_decision_meta["source"] == "gemini_timeout_fallback"
 
 
+def test_gemini_http_429_falls_back_to_nvidia_model(tmp_path: Path, monkeypatch) -> None:
+    agent = VisionAgent(
+        "fake-api-key",
+        "gemini-3.1-pro-preview",
+        provider="gemini",
+        nvidia_api_key="nvidia-key",
+        nvidia_model="qwen/qwen3.5-397b-a17b",
+        nvidia_base_url="https://integrate.api.nvidia.com/v1",
+    )
+    bundle = SkillManager(tmp_path).load_skill(APP_REGISTRY["settings"])
+    state = make_amazon_state(
+        visible_text=["Settings", "Network & internet"],
+        clickable_text=["Network & internet"],
+        components=[],
+    )
+    state.package_name = "com.android.settings"
+    state.activity_name = ".Settings"
+    state.screenshot_path.write_bytes(b"fake-image")
+
+    class FakeNvidiaResponse:
+        headers = {"Content-Type": "application/json"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {
+                                "content": json.dumps(
+                                    {
+                                        "screen_classification": "settings_home",
+                                        "goal_progress": "navigating",
+                                        "next_action": "wait",
+                                        "target_box": None,
+                                        "confidence": 0.77,
+                                        "reason": "Wait for the Settings screen to settle.",
+                                        "risk_level": "low",
+                                    }
+                                )
+                            }
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+
+    def fake_urlopen(request, timeout=60):
+        if "generativelanguage.googleapis.com" in request.full_url:
+            raise urllib.error.HTTPError(
+                request.full_url,
+                429,
+                "Too Many Requests",
+                hdrs=None,
+                fp=io.BytesIO(b'{"error":{"code":429,"message":"quota"}}'),
+            )
+        assert "integrate.api.nvidia.com" in request.full_url
+        return FakeNvidiaResponse()
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+
+    decision = agent._gemini_decision(
+        goal="open network settings",
+        state=state,
+        skill=bundle,
+        system_instruction="",
+        action_history=[],
+        available_tools=[],
+        yolo_mode=False,
+    )
+
+    assert decision.next_action == "wait"
+    assert agent.last_decision_meta["source"] == "nvidia_fallback_model"
+    assert agent.last_decision_meta["provider"] == "nvidia"
+    assert agent.last_decision_meta["upstream_source"] == "gemini_http_fallback"
+
+
+def test_gemini_text_message_falls_back_to_nvidia(monkeypatch) -> None:
+    agent = VisionAgent(
+        "fake-api-key",
+        "gemini-3.1-pro-preview",
+        provider="gemini",
+        nvidia_api_key="nvidia-key",
+        nvidia_model="qwen/qwen3.5-397b-a17b",
+        nvidia_base_url="https://integrate.api.nvidia.com/v1",
+    )
+
+    class FakeNvidiaResponse:
+        headers = {"Content-Type": "application/json"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {
+                                "content": "Can you do $650? Thanks"
+                            }
+                        }
+                    ]
+                }
+            ).encode("utf-8")
+
+    def fake_urlopen(request, timeout=60):
+        if "generativelanguage.googleapis.com" in request.full_url:
+            raise urllib.error.HTTPError(
+                request.full_url,
+                429,
+                "Too Many Requests",
+                hdrs=None,
+                fp=io.BytesIO(b'{"error":{"code":429,"message":"quota"}}'),
+            )
+        assert "integrate.api.nvidia.com" in request.full_url
+        return FakeNvidiaResponse()
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+
+    assert agent._gemini_text_message("draft one short reply") == "Can you do $650? Thanks"
+
+
 def test_lmstudio_decision_retries_after_http_400_with_text_response_format(tmp_path: Path, monkeypatch) -> None:
     agent = VisionAgent(
         None,
@@ -3673,6 +3803,119 @@ def test_facebook_postprocess_rewrites_fast_function_pickup_message_for_listing_
     assert decision.tool_name == "run_fast_function"
     assert decision.tool_arguments["function_name"] == "send_initial_message"
     assert decision.tool_arguments["arguments"]["message"] == "Hey, can you share the full specs for your MacBook Air?"
+
+
+def test_facebook_postprocess_rewrites_mixed_offer_and_specs_message(tmp_path: Path) -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Product Image,1 of 1",
+            "Macbook Air 13\" M2",
+            "$550",
+            "Message seller",
+            "Hi, is this available?",
+            "Send",
+        ],
+        clickable_text=["Hi, is this available?", "Send"],
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Hi, is this available?",
+                "enabled": True,
+                "target_box": {"x": 0.091, "y": 0.626, "width": 0.64, "height": 0.022},
+            },
+            {
+                "component_type": "button",
+                "label": "Send",
+                "enabled": True,
+                "target_box": {"x": 0.783, "y": 0.619, "width": 0.155, "height": 0.029},
+            },
+        ],
+    )
+    original = VisionDecision.tool(
+        tool_name="run_fast_function",
+        tool_arguments={
+            "app_name": "facebook",
+            "function_name": "send_initial_message",
+            "arguments": {"message": "Would you take $325, and what are the specs and condition?"},
+        },
+        screen_classification="marketplace_listing_message_input",
+        goal_progress="sending_reply",
+        confidence=0.95,
+        reason="Use the fast function to replace the default Marketplace message and send it with verification.",
+        target_label="send_initial_message",
+    )
+
+    decision = agent._apply_post_decision_overrides(
+        goal="Resume the Facebook Marketplace hunting workflow. Inspect valuable local resale listings, send short human buyer messages using the Facebook skill rules when profitable, and continue hunting.",
+        state=state,
+        skill=bundle,
+        action_history=[],
+        decision=original,
+    )
+
+    assert decision.next_action == "tool"
+    assert decision.tool_arguments["arguments"]["message"] == "Hey, can you share the full specs for your MacBook Air?"
+
+
+def test_facebook_default_marketplace_message_prefers_direct_offer_with_thanks_when_specs_known() -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Product Image,1 of 3",
+            "MacBook Air M2 8GB 256GB",
+            "$550",
+            "excellent condition",
+            "Send offer",
+        ],
+        clickable_text=["Send offer"],
+        components=[],
+    )
+
+    message = agent._facebook_default_marketplace_message(
+        state,
+        goal="Inspect valuable local resale listings and send short human buyer messages when profitable.",
+    )
+
+    assert message == "Hey, if it's in good shape, would you take $325 for your MacBook Air M2? Thanks"
+
+
+def test_facebook_message_candidate_rejection_event_is_recorded() -> None:
+    agent = VisionAgent(None, "gemini-3.1-pro-preview")
+    state = make_facebook_state(
+        activity_name=".activity.react.ImmersiveReactActivity",
+        visible_text=[
+            "Close",
+            "Product Image,1 of 3",
+            "PS5 & Two Controllers",
+            "$300",
+            "Message seller",
+        ],
+        clickable_text=["Message seller"],
+        components=[],
+    )
+
+    message = agent._facebook_finalize_marketplace_message(
+        "Hi, I can pick this up today. Is it still available?",
+        state=state,
+        goal="Inspect valuable local resale listings and send short human buyer messages when profitable.",
+        mode="initial",
+    )
+    events = agent.consume_events()
+
+    assert message == "Hey, can you share the full specs for your PS5 & Two Controllers?"
+    assert any(
+        event["type"] == "message_candidate_rejected"
+        and event["attempted_outbound_text"] == "Hi, I can pick this up today. Is it still available?"
+        and event["rejection_reason"] == "premature_logistics"
+        for event in events
+    )
 
 
 def test_facebook_message_recovery_prompt_auto_continues_in_yolo_mode(tmp_path: Path) -> None:

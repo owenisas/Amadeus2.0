@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from agent_runner.config import APP_REGISTRY
@@ -373,6 +374,141 @@ def test_skill_manager_updates_facebook_backup_from_thread_state(tmp_path: Path)
     assert "Canon RF 35mm f/1.8 Macro IS STM Lens" in bundle.backup_summary
 
 
+def test_skill_manager_filters_meta_banner_from_thread_snapshot(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.consume_events()
+    app = APP_REGISTRY["facebook"]
+    device = DeviceInfo(
+        serial="10.0.0.206:43337",
+        width=1080,
+        height=2400,
+        density=440,
+        orientation="portrait",
+        package_name=app.package_name,
+        activity_name=".ThreadActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/facebook-thread-meta.png"),
+        hierarchy_path=Path("/tmp/facebook-thread-meta.xml"),
+        screenshot_sha256="facebookmetahash",
+        xml_source="""
+        <hierarchy>
+          <node class="android.view.ViewGroup" text="Ron · High end gaming pc, RTX 5080 intel ultra 9 285k" content-desc="Ron · High end gaming pc, RTX 5080 intel ultra 9 285k" />
+          <node class="android.view.ViewGroup" text="Marketplace listing" content-desc="Marketplace listing" />
+          <node class="android.view.ViewGroup" text="Owen, Can you do $1800? Thanks" content-desc="Owen, Can you do $1800? Thanks" />
+          <node class="android.view.ViewGroup" text="To help identify and reduce scams and fraud, Meta may use technology to review Marketplace messages." content-desc="To help identify and reduce scams and fraud, Meta may use technology to review Marketplace messages." />
+          <node class="android.view.ViewGroup" text="Ron, It’s pending at the moment" content-desc="Ron, It’s pending at the moment" />
+        </hierarchy>
+        """,
+        visible_text=[
+            "Ron · High end gaming pc, RTX 5080 intel ultra 9 285k",
+            "Marketplace listing",
+            "Owen, Can you do $1800? Thanks",
+            "To help identify and reduce scams and fraud, Meta may use technology to review Marketplace messages.",
+            "Ron, It’s pending at the moment",
+        ],
+        clickable_text=["Ron · High end gaming pc, RTX 5080 intel ultra 9 285k"],
+        package_name=app.package_name,
+        activity_name=device.activity_name,
+        device=device,
+    )
+
+    manager.update_backup(bundle, state)
+
+    thread = bundle.backup_data["facebook_marketplace"]["threads"][0]
+    assert thread["last_outbound_message"] == "Can you do $1800? Thanks"
+    assert thread["last_inbound_message"] == "It’s pending at the moment"
+    assert "Meta may use technology" not in (thread["last_outbound_message"] or "")
+    assert "Meta may use technology" not in (thread["last_inbound_message"] or "")
+    assert thread["system_messages"]
+
+
+def test_skill_manager_repairs_poisoned_facebook_backup_messages(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    bundle.backup_data["facebook_marketplace"] = {
+        "threads": [
+        {
+            "thread_key": "ron-high-end-gaming-pc",
+            "thread_title": "Ron · High end gaming pc, RTX 5080 intel ultra 9 285k",
+            "seller_name": "Ron",
+            "item_title": "High end gaming pc, RTX 5080 intel ultra 9 285k",
+            "last_outbound_message": "RTX 5080 intel ultra 9 285k",
+            "last_inbound_message": "To help identify and reduce scams and fraud, Meta may use technology to review Marketplace messages.",
+            "messages": [],
+            "needs_reply": True,
+            "last_updated": manager._now_iso(),
+        }
+    ],
+        "contacted_items": [],
+        "inspected_items": [],
+        "workflow": manager._default_facebook_workflow(),
+    }
+
+    manager.update_backup(bundle, make_facebook_home_feed_state())
+
+    repaired = bundle.backup_data["facebook_marketplace"]["threads"][0]
+    assert repaired["last_outbound_message"] is None
+    assert repaired["last_inbound_message"] is None
+    assert repaired["needs_reply"] is False
+
+
+def test_skill_manager_listing_snapshot_only_persists_draft_message(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.consume_events()
+    app = APP_REGISTRY["facebook"]
+    device = DeviceInfo(
+        serial="10.0.0.206:43337",
+        width=1080,
+        height=2400,
+        density=440,
+        orientation="portrait",
+        package_name=app.package_name,
+        activity_name=".activity.react.ImmersiveReactActivity",
+    )
+    state = ScreenState(
+        screenshot_path=Path("/tmp/facebook-listing-sent.png"),
+        hierarchy_path=Path("/tmp/facebook-listing-sent.xml"),
+        screenshot_sha256="facebooklistinghash",
+        xml_source="""
+        <hierarchy>
+          <node class="android.view.View" text="Message sent to seller" content-desc="Message sent to seller" />
+          <node class="android.view.View" text="See conversation" content-desc="See conversation" />
+          <node class="android.view.View" text="MacBook Air M2 8GB 500GB" resource-id="mp_pdp_title" content-desc="MacBook Air M2 8GB 500GB" />
+          <node class="android.view.View" text="$425" content-desc="$425" />
+          <node class="android.widget.EditText" text="Can you do $350? Thanks" content-desc="Can you do $350? Thanks" />
+        </hierarchy>
+        """,
+        visible_text=[
+            "Message sent to seller",
+            "See conversation",
+            "MacBook Air M2 8GB 500GB",
+            "$425",
+            "Can you do $350? Thanks",
+        ],
+        clickable_text=["See conversation", "Can you do $350? Thanks"],
+        package_name=app.package_name,
+        activity_name=device.activity_name,
+        device=device,
+        components=[
+            {
+                "component_type": "text_input",
+                "label": "Can you do $350? Thanks",
+                "enabled": True,
+                "target_box": {"x": 0.2, "y": 0.8, "width": 0.5, "height": 0.03},
+            }
+        ],
+    )
+
+    manager.update_backup(bundle, state)
+
+    contacted = bundle.backup_data["facebook_marketplace"]["contacted_items"][0]
+    assert contacted["draft_message"] == "Can you do $350? Thanks"
+    assert contacted["last_outbound_message"] is None
+
+
 def test_skill_manager_classifies_screen_from_workflow(tmp_path: Path) -> None:
     manager = SkillManager(tmp_path)
     bundle = manager.load_skill(APP_REGISTRY["facebook"])
@@ -410,6 +546,22 @@ def test_skill_manager_extracts_actionable_marketplace_inbox_threads(tmp_path: P
     assert facebook_backup["workflow"]["mode"] == "reply"
     assert facebook_backup["workflow"]["reply_queue"][0]["thread_key"] == facebook_backup["threads"][0]["thread_key"]
     assert "Reply queue: 1" in bundle.backup_summary
+
+
+def test_skill_manager_emits_conversation_capture_verified_for_thread_snapshot(tmp_path: Path) -> None:
+    manager = SkillManager(tmp_path)
+    bundle = manager.load_skill(APP_REGISTRY["facebook"])
+    manager.consume_events()
+
+    manager.update_backup(bundle, make_facebook_thread_state())
+
+    events = manager.consume_events()
+    assert any(
+        event["type"] == "conversation_capture_verified"
+        and event["thread_key"] == "joshua-canon-rf-35mm-f-1-8-macro-is-stm-lens"
+        and event["persisted_outbound_text"] == "Hi, I’m interested in the Canon RF 35mm f/1.8 Macro IS STM Lens. Is it still available?"
+        for event in events
+    )
 
 
 def test_skill_manager_marketplace_inbox_marks_you_preview_as_not_needing_reply(tmp_path: Path) -> None:
